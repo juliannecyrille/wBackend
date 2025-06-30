@@ -22,7 +22,7 @@ function App() {
   const handleClearDate = (e) => {
     e.stopPropagation();
     setSelectedDate(null);
-    setShowDatePicker(false); // Hide date picker after clearing
+    setShowDatePicker(false);
   };
 
   const handleDateSelect = (day) => {
@@ -80,21 +80,37 @@ function App() {
     <div className="app-container">
       <header className={`app-header ${isFormExpanded ? 'app-header-minimized' : ''}`}>
         <div className="header-content-wrapper">
-          
-          <div className="university-info">
-            <h1 className="university-name">PAMANTASAN NG LUNGSOD NG MAYNILA</h1>
-            <p className="university-tagline">University of the City of Manila</p>
-          </div>
-          <img
-            src={plmLogo}
-            alt="PLM Logo"
-            className="university-logo"
-            onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/150x150/002060/FFFFFF?text=Error+Loading+Logo"; }}
-          />
+          {isFormExpanded ? (
+            <>
+              <img
+                src={plmLogo}
+                alt="PLM Logo"
+                className="university-logo"
+                onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/150x150/002060/FFFFFF?text=Error+Loading+Logo"; }}
+              />
+              <div className="university-info">
+                <h1 className="university-name">PAMANTASAN NG LUNGSOD NG MAYNILA</h1>
+                <p className="university-tagline">University of the City of Manila</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="university-info">
+                <h1 className="university-name">PAMANTASAN NG LUNGSOD NG MAYNILA</h1>
+                <p className="university-tagline">University of the City of Manila</p>
+              </div>
+              <img
+                src={plmLogo}
+                alt="PLM Logo"
+                className="university-logo"
+                onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/150x150/002060/FFFFFF?text=Error+Loading+Logo"; }}
+              />
+            </>
+          )}
         </div>
         <div className="office-info">
           <h2 className="office-title">Office of the</h2>
-          <h2 className="office-title">University Registrar</h2>
+          <p className="office-title2">University Registrar</p>
         </div>
       </header>
 
@@ -112,110 +128,112 @@ function App() {
               </button>
             </>
           ) : (
-            <div className="request-form-container">
-              <div className="request-form-header">
-                <h3 className="request-form-title">Request Form</h3>
-              </div>
-              <div className="request-form-content">
-                <h4 className="form-section-title">Applicant's Information</h4>
+            <>
+              <div className="request-form-container">
+                <div className="request-form-header">
+                  <h3 className="request-form-title">Request Form</h3>
+                </div>
+                <div className="request-form-content">
+                  <h4 className="form-section-title">Applicant's Information</h4>
 
-                <div className="form-group">
-                  <label className="form-label" htmlFor="student-number">Student Number</label>
-                  <input className="form-input" type="text" id="student-number" placeholder="202100098" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label" htmlFor="first-name">First Name</label>
-                  <input className="form-input" type="text" id="first-name" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label" htmlFor="last-name">Last Name</label>
-                  <input className="form-input" type="text" id="last-name" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label" htmlFor="middle-name">Middle Name</label>
-                  <input className="form-input" type="text" id="middle-name" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label" htmlFor="degree-program">Degree Program/Course</label>
-                  <select className="form-select" id="degree-program">
-                    <option value="">Select Course</option>
-                    <option value="BSIT">BS Information Technology</option>
-                    <option value="BSBA">BS Business Administration</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label className="form-label" htmlFor="college">College</label>
-                  <input className="form-input" type="text" id="college" />
-                </div>
-                <div className="form-group form-group-inline">
-                  <div>
-                    <label className="form-label" htmlFor="ay-admitted">AY admitted</label>
-                    <input className="form-input" type="text" id="ay-admitted" />
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="student-number">Student Number</label>
+                    <input className="form-input" type="text" id="student-number" placeholder="202100098" />
                   </div>
-                  <div>
-                    <label className="form-label" htmlFor="sem-admitted">Sem/AY last admitted</label>
-                    <input className="form-input" type="text" id="sem-admitted" />
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="first-name">First Name</label>
+                    <input className="form-input" type="text" id="first-name" />
                   </div>
-                </div>
-                <div className="form-group">
-                  <label className="form-label" htmlFor="graduation-date">If graduated, date of graduation:</label>
-                  <div className="date-input-container">
-                    <input
-                      className="form-input date-input"
-                      type="text"
-                      id="graduation-date"
-                      placeholder="Choose Date"
-                      readOnly
-                      value={selectedDate ? selectedDate.toLocaleDateString() : ''}
-                      onClick={handleDateInputClick}
-                    />
-                    <button className="date-picker-button" onClick={handleDateInputClick}>
-                      <svg className="calendar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path></svg>
-                    </button>
-                    {selectedDate && (
-                      <button className="clear-date-button" onClick={handleClearDate}>
-                        <svg className="clear-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="last-name">Last Name</label>
+                    <input className="form-input" type="text" id="last-name" />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="middle-name">Middle Name</label>
+                    <input className="form-input" type="text" id="middle-name" />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="degree-program">Degree Program/Course</label>
+                    <select className="form-select" id="degree-program">
+                      <option value="">Select Course</option>
+                      <option value="BSIT">BS Information Technology</option>
+                      <option value="BSBA">BS Business Administration</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="college">College</label>
+                    <input className="form-input" type="text" id="college" />
+                  </div>
+                  <div className="form-group form-group-inline">
+                    <div>
+                      <label className="form-label" htmlFor="ay-admitted">AY admitted</label>
+                      <input className="form-input" type="text" id="ay-admitted" />
+                    </div>
+                    <div>
+                      <label className="form-label" htmlFor="sem-admitted">Sem/AY last admitted</label>
+                      <input className="form-input" type="text" id="sem-admitted" />
+                    </div>
+                  </div>
+                  <div className="form-group form-group-vertical">
+                    <label className="form-label" htmlFor="graduation-date">If graduated, date of graduation:</label>
+                    <div className="date-input-container">
+                      <input
+                        className="form-input date-input"
+                        type="text"
+                        id="graduation-date"
+                        placeholder="Choose Date"
+                        readOnly
+                        value={selectedDate ? selectedDate.toLocaleDateString() : ''}
+                        onClick={handleDateInputClick}
+                      />
+                      <button className="date-picker-button" onClick={handleDateInputClick}>
+                        <svg className="calendar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path></svg>
                       </button>
-                    )}
-                  </div>
-                  {showDatePicker && (
-                    <div className="date-picker-modal-overlay" onClick={() => setShowDatePicker(false)}>
-                      <div className="date-picker-modal" onClick={(e) => e.stopPropagation()}>
-                        <div className="date-picker-header">
-                          <button className="nav-button" onClick={goToPreviousMonth}>&#x2039;</button>
-                          <span>{monthNames[currentMonth]} {currentYear}</span>
-                          <button className="nav-button" onClick={goToNextMonth}>&#x203A;</button>
-                        </div>
-                        <div className="calendar-weekdays">
-                          {weekDays.map(day => <div key={day} className="weekday-cell">{day}</div>)}
-                        </div>
-                        <div className="calendar-grid">
-                          {daysInCalendar.map((day, index) => (
-                            <div
-                              key={index}
-                              className={`day-cell ${day === null ? 'empty' : ''} ${selectedDate && selectedDate.getDate() === day && selectedDate.getMonth() === currentMonth && selectedDate.getFullYear() === currentYear ? 'selected' : ''}`}
-                              onClick={() => handleDateSelect(day)}
-                            >
-                              {day}
-                            </div>
-                          ))}
+                      {selectedDate && (
+                        <button className="clear-date-button" onClick={handleClearDate}>
+                          <svg className="clear-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
+                        </button>
+                      )}
+                    </div>
+                    {showDatePicker && (
+                      <div className="date-picker-modal-overlay" onClick={() => setShowDatePicker(false)}>
+                        <div className="date-picker-modal" onClick={(e) => e.stopPropagation()}>
+                          <div className="date-picker-header">
+                            <button className="nav-button" onClick={goToPreviousMonth}>&#x2039;</button>
+                            <span>{monthNames[currentMonth]} {currentYear}</span>
+                            <button className="nav-button" onClick={goToNextMonth}>&#x203A;</button>
+                          </div>
+                          <div className="calendar-weekdays">
+                            {weekDays.map(day => <div key={day} className="weekday-cell">{day}</div>)}
+                          </div>
+                          <div className="calendar-grid">
+                            {daysInCalendar.map((day, index) => (
+                              <div
+                                key={index}
+                                className={`day-cell ${day === null ? 'empty' : ''} ${selectedDate && selectedDate.getDate() === day && selectedDate.getMonth() === currentMonth && selectedDate.getFullYear() === currentYear ? 'selected' : ''}`}
+                                onClick={() => handleDateSelect(day)}
+                              >
+                                {day}
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
+                  <div className="form-group form-group-vertical">
+                    <label className="form-label" htmlFor="permanent-address">Permanent Address</label>
+                    <input className="form-input" type="text" id="permanent-address" />
+                  </div>
+                  <div className="form-group form-group-vertical">
+                    <label className="form-label" htmlFor="street-number">Street Number/Name</label>
+                    <input className="form-input" type="text" id="street-number" />
+                  </div>
+                  <button className="submit-form-button">Submit Details</button>
+                  <button className="close-form-button" onClick={toggleForm}>Close Form</button>
                 </div>
-                <div className="form-group">
-                  <label className="form-label" htmlFor="permanent-address">Permanent Address</label>
-                  <input className="form-input" type="text" id="permanent-address" />
-                </div>
-                <div className="form-group">
-                  <label className="form-label" htmlFor="street-number">Street Number/Name</label>
-                  <input className="form-input" type="text" id="street-number" />
-                </div>
-                <button className="submit-form-button">Submit Request</button>
-                <button className="close-form-button" onClick={toggleForm}>Close Form</button>
               </div>
-            </div>
+            </>
           )}
         </section>
       </main>
