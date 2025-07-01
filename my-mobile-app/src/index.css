@@ -14,20 +14,26 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #e0e0e0;
+  /* New: Full page background */
+  background-image: url('C:\Users\PLM-User\Documents\our_requests_frontend\temp\my-mobile-app\src\assets\fullbg.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Keeps background fixed during scroll */
 }
 
 #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--navy-blue);
+  background-color: transparent; /* Changed to transparent to show body background */
   width: 100%;
   min-width: 375px;
   padding: 0;
   margin: 0 auto;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   border-radius: 20px;
-  overflow: hidden;
+  overflow: hidden; /* Keeps content within bounds */
 }
 
 :root {
@@ -54,8 +60,9 @@ body {
 }
 
 .app-header {
-  width: 100%;
+  width: 100vw;
   background-color: var(--navy-blue);
+  opacity: 90%;
   color: #D7B993;
   padding: 0rem 1rem;
   display: flex;
@@ -207,14 +214,27 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end; /* Keeps content at the bottom */
-  padding: px;
+  padding: 0px;
   overflow: hidden;
 }
 
-
+/* Removed the background image from here, as it's now on the body */
+/* .main-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to top, rgba(0, 32, 96, 0.7), rgba(0, 32, 96, 0.3)), url('/bg.png');
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  z-index: 0;
+} */
 
 .privacy-section {
-  background-color: white; /* Changed to white for the container */
+  background-color: #F4EFEB; /* Changed to white for the container */
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
   padding: 15px;
@@ -227,6 +247,7 @@ body {
   z-index: 1; /* Ensures it's above the background */
   box-sizing: border-box;
   text-align: left;
+
   transition: all 0.5s ease-in-out, background-color 0s; /* Allow background-color to change instantly */
   overflow: hidden;
   min-height: 150px;
@@ -238,13 +259,51 @@ body {
 .privacy-section-expanded {
   max-height: calc(100vh - var(--minimized-header-height) - var(--footer-height)); /* Expands to fill available space */
   min-height: calc(100vh - var(--minimized-header-height) - var(--footer-height));
-  padding: 15px;
-  padding-top: 25px;
-  padding-bottom: 0; /* No padding on the outer section when expanded */
-  border-top-left-radius: 3rem; /* No rounded corners when fully expanded */
-  border-top-right-radius: 3rem;
-  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
-  background-color: #F4EFEB; /* Make this transparent so the inner container's white background shows */
+  padding: 20px; /* No padding on the outer section when expanded */
+  border-top-left-radius: 1rem; /* No rounded corners when fully expanded */
+  border-top-right-radius: 1rem;
+  background-color: #F4EFEB; 
+  opacity: 96%;
+}
+
+.privacy-section,
+.privacy-section-expanded,
+.request-form-container {
+  transition:
+    transform 0.9s cubic-bezier(0.23, 1, 0.32, 1),
+    opacity 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Only animate when expanding */
+.privacy-section.privacy-section-expanded {
+  animation: slideUpSection 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes slideUpSection {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Animate the inner form container as well, no delay */
+.privacy-section.privacy-section-expanded .request-form-container {
+  animation: slideUpForm 0.9s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes slideUpForm {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .request-form-container {
@@ -252,7 +311,7 @@ body {
   flex-direction: column;
   height: 100%; /* Take full height of parent when expanded */
   width: 100%;
-  background-color: white; /* This will be the main white background when expanded */
+  background-color: white; 
   border-top-left-radius: 1rem; /* Default rounded corners for the form container */
   border-top-right-radius: 1rem;
   box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
@@ -341,8 +400,6 @@ body {
   display: block;
   border: none;
   cursor: pointer;
-  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
-  font-family: 'Poppins', sans-serif;
 }
 
 .submit-form-button{
@@ -408,14 +465,6 @@ body {
   font-size: 12px;
 }
 
-
-.form-label1 {
-  min-width: 200px; /* or your preferred width */
-  margin-bottom: 0;
-  margin-right: .5rem;
-  text-align: left;
-  font-size: 12px;
-}
 
 .form-input, .form-select {
   width: 100%;
@@ -644,7 +693,7 @@ body {
   }
 
   .office-title {
-    font-size: 1.75rem;
+    font-size: 1.2rem;
   }
 
   .privacy-section {
@@ -653,5 +702,72 @@ body {
 
   .online-request-button, .submit-form-button, .close-form-button {
     max-width: 20rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    width: 100vw;
+    min-height: 100vh;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .privacy-section-expanded {
+    max-width: none;
+    width: 100vw;
+    min-height: 100vh;
+    border-radius: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .privacy-section {
+    max-width: none;
+    width: 100vw;
+    min-height: 100vh;
+    border-radius: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+  }
+  .request-form-container {
+    border-radius: 0;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    box-shadow: none;
+    width: 100;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+  .request-form-header{
+    border-radius: 0;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+  }
+  .privacy-section-expanded{
+    padding: 20px;
+    padding-right: 20px;
+  }
+  .privacy-header{
+    margin-top: 50px;
+    font-size: 14px;
+  }
+  .privacy-checkbox-label{
+    font-size: 12px;
+  }
+  .privacy-checkbox{
+    margin-top: 20px;
+    margin-right: 20px;
+  }
+  .privacy-section{
+    border-top-left-radius: 3rem;
+    border-top-right-radius: 3rem;
   }
 }

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import './App.css';
 
@@ -229,7 +230,7 @@ function App() {
                     <label className="form-label" htmlFor="street-number">Street Number/Name</label>
                     <input className="form-input" type="text" id="street-number" />
                   </div>
-                  <button className="submit-form-button">Submit Details</button>
+                  <button className="submit-form-button">Next</button>
                   <button className="close-form-button" onClick={toggleForm}>Close Form</button>
                 </div>
               </div>
