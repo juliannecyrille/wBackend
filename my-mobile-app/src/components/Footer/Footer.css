@@ -1,0 +1,39 @@
+.browser-footer {
+  width: 100%;
+  background-color: var(--red-accent);
+  border-top: 1px solid var(--border-gray);
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: flex-end; /* Centered icons */
+  align-items: center;
+  color: #6b7280;
+  font-size: 0.75rem;
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05), 0 -2px 4px -1px rgba(0, 0, 0, 0.03);
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+.footer-social-icons {
+  display: flex;
+  gap: 1.5rem; 
+  align-items: center;
+  margin-left: auto;
+}
+
+.social-icon {
+  width: 1.8rem; 
+  height: 1.8rem;
+  color: unset;
+    object-fit: contain;
+  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.social-icon:hover {
+  transform: scale(1.1);
+  color: var(--red-accent); 
+}
+
+.footer-item, .footer-text, .footer-url, .footer-actions, .footer-icon {
+  display: none;
+}

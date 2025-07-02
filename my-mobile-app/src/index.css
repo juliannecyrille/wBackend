@@ -7,33 +7,40 @@ html, body {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 body {
+  position: relative;
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #e0e0e0;
-  /* New: Full page background */
-  background-image: url('C:\Users\PLM-User\Documents\our_requests_frontend\temp\my-mobile-app\src\assets\fullbg.jpeg');
+  background-image: url('/fullbg.jpeg'); /* Image directly on body */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed; /* Keeps background fixed during scroll */
+  background-attachment: fixed;
+  background-color: var(--navy-blue); /* Fallback and base color */
 }
 
 #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: transparent; /* Changed to transparent to show body background */
+  background-color: transparent; /* Make root transparent */
   width: 100%;
   min-width: 375px;
   padding: 0;
   margin: 0 auto;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   border-radius: 20px;
-  overflow: hidden; /* Keeps content within bounds */
+  overflow: hidden;
 }
 
 :root {
@@ -59,10 +66,11 @@ body {
   width: 100%;
 }
 
+/* Header Styles */
 .app-header {
-  width: 100vw;
+  width: 100%;
   background-color: var(--navy-blue);
-  opacity: 90%;
+  opacity: 0.9; /* Reverted to 90% opacity as per user's provided CSS */
   color: #D7B993;
   padding: 0rem 1rem;
   display: flex;
@@ -207,34 +215,32 @@ body {
   margin-top: -15px;
 }
 
+/* Main Content Styles */
 .main-content {
-  flex-grow: 1;
-  width: 100%;
+  flex-grow: 1; /* Allow main-content to fill available space */
+  flex-shrink: 1;
+  flex-basis: auto;
+  min-height: unset;
+  height: auto;
+  padding: 0;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end; /* Keeps content at the bottom */
-  padding: 0px;
   overflow: hidden;
+  /* Default background for collapsed state (cover page) */
+  background-color: rgba(5, 23, 59, 0.9); /* Navy blue with 90% opacity */
 }
 
-/* Removed the background image from here, as it's now on the body */
-/* .main-content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: linear-gradient(to top, rgba(0, 32, 96, 0.7), rgba(0, 32, 96, 0.3)), url('/bg.png');
-  background-size: cover;
-  background-position: center bottom;
-  background-repeat: no-repeat;
-  z-index: 0;
-} */
+.main-content-expanded {
+  /* Background for expanded state */
+  background-image: linear-gradient(to top, rgba(255, 216, 138, 0.7), rgba(255, 255, 255, 0.87));
+  background-color: transparent; /* Ensure no solid color overrides the gradient */
+}
 
+/* Privacy Section Styles (Combined) */
 .privacy-section {
-  background-color: #F4EFEB; /* Changed to white for the container */
+  background-color: #F4EFEB; /* This will be the light background of the collapsed section */
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
   padding: 15px;
@@ -244,106 +250,40 @@ body {
   width: 100%;
   max-width: 450px;
   position: relative;
-  z-index: 1; /* Ensures it's above the background */
+  z-index: 1;
   box-sizing: border-box;
   text-align: left;
-
-  transition: all 0.5s ease-in-out, background-color 0s; /* Allow background-color to change instantly */
+  transition: background-color 0s, max-height 0.5s ease-in-out, min-height 0.5s ease-in-out, padding 0.5s ease-in-out, border-radius 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
   overflow: hidden;
-  min-height: 150px;
-  max-height: 300px; /* Max height when collapsed */
+  min-height: 0;
+  max-height: 350px;
   display: flex;
   flex-direction: column;
 }
 
 .privacy-section-expanded {
-  max-height: calc(100vh - var(--minimized-header-height) - var(--footer-height)); /* Expands to fill available space */
+  max-height: calc(100vh - var(--minimized-header-height) - var(--footer-height));
   min-height: calc(100vh - var(--minimized-header-height) - var(--footer-height));
-  padding: 20px; /* No padding on the outer section when expanded */
-  border-top-left-radius: 1rem; /* No rounded corners when fully expanded */
-  border-top-right-radius: 1rem;
-  background-color: #F4EFEB; 
-  opacity: 96%;
-}
-
-.privacy-section,
-.privacy-section-expanded,
-.request-form-container {
-  transition:
-    transform 0.9s cubic-bezier(0.23, 1, 0.32, 1),
-    opacity 0.9s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-/* Only animate when expanding */
-.privacy-section.privacy-section-expanded {
-  animation: slideUpSection 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+  padding: 20px; /* Keep padding for the expanded section */
+  padding-bottom: 0;
+  border-top-left-radius: 3rem;
+  border-top-right-radius: 3rem;
+  background-image: none; /* Remove gradient from here */
+  background-color: transparent; /* This section should be transparent to show main-content-expanded background */
+  opacity: 1;
+  margin-top: 20px;
+  animation: slideUpSection 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes slideUpSection {
   from {
-    transform: translateY(40px);
+    transform: translateY(100%);
     opacity: 0;
   }
   to {
     transform: translateY(0);
     opacity: 1;
   }
-}
-
-/* Animate the inner form container as well, no delay */
-.privacy-section.privacy-section-expanded .request-form-container {
-  animation: slideUpForm 0.9s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-}
-
-@keyframes slideUpForm {
-  from {
-    transform: translateY(40px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.request-form-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%; /* Take full height of parent when expanded */
-  width: 100%;
-  background-color: white; 
-  border-top-left-radius: 1rem; /* Default rounded corners for the form container */
-  border-top-right-radius: 1rem;
-  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
-  overflow: hidden; /* Hide anything that overflows within the form */
-}
-
-
-.request-form-header {
-  background-color: var(--form-header-red);
-  color: white;
-  padding: .5rem 1.5rem;
-  font-size: 9px;
-  font-weight: bold;
-  border-top-left-radius: 1rem; /* Default rounded corners for the header */
-  border-top-right-radius: 1rem;
-  font-family: 'Poppins', sans-serif;
-}
-
-
-.request-form-title {
-  font-size: 14px;
-  font-weight: bold;
-  color: white;
-  margin: 0;
-  text-align: left;
-}
-
-.request-form-content {
-  background-color: white;
-  padding: 1.5rem;
-  flex-grow: 1;
-  overflow-y: auto;
 }
 
 .privacy-header {
@@ -386,7 +326,7 @@ body {
   white-space: nowrap;
 }
 
-.online-request-button, .submit-form-button, .close-form-button {
+.online-request-button {
   background-color: var(--red-accent);
   color: white;
   font-weight: 600;
@@ -400,12 +340,76 @@ body {
   display: block;
   border: none;
   cursor: pointer;
+  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 40px;
+}
+
+.online-request-button:hover {
+  background-color: #8B0000;
+}
+
+/* Request Form Styles (Combined) */
+.request-form-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Take full height of parent when expanded */
+  width: 100%;
+  background-color: white; /* Keep this white for the form content */
+  border-top-left-radius: 1rem; /* Default rounded corners for the form container */
+  border-top-right-radius: 1rem;
+  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden; /* Hide anything that overflows within the form */
+}
+
+.request-form-header {
+  background-color: var(--form-header-red);
+  color: white;
+  padding: .5rem 1.5rem;
+  font-size: 9px;
+  font-weight: bold;
+  border-top-left-radius: 1rem; /* Default rounded corners for the header */
+  border-top-right-radius: 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.request-form-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  margin: 0;
+  text-align: left;
+}
+
+.request-form-content {
+  background-color: white;
+  padding: 1.5rem;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.submit-form-button, .close-form-button {
+  background-color: var(--red-accent);
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem .5rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 14px;
+  width: 80%;
+  max-width: 150px;
+  margin: 0 auto .7rem auto;
+  display: block;
+  border: none;
+  cursor: pointer;
+  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif;
 }
 
 .submit-form-button{
   margin-top: 20px;
 }
-.online-request-button:hover, .submit-form-button:hover, .close-form-button:hover {
+.submit-form-button:hover, .close-form-button:hover {
   background-color: #8B0000;
 }
 
@@ -425,7 +429,27 @@ body {
   margin-bottom: 1rem;
   border-bottom: 1px solid var(--form-border);
   padding-bottom: 0.5rem;
+
   margin-top: .1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.form-section-title-secondary {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gray-dark);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  margin-top: .1rem;
+  font-family: 'Poppins', sans-serif;
+  text-align: left;
+}
+
+.form-subtitle {
+  font-size: 10px;
+  color: var(--text-gray-medium);
+  margin-bottom: 1rem;
+  text-align: left;
   font-family: 'Poppins', sans-serif;
 }
 
@@ -441,21 +465,29 @@ body {
 .form-group-vertical {
   flex-direction: column !important;
   align-items: stretch;
+  font-family: 'Poppins', sans-serif;
 }
 .form-group-vertical .form-label {
   margin-bottom: 0.3rem;
   text-align: left;
+  font-family: 'Poppins', sans-serif;
 }
 
-.form-group-inline {
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 1rem;
+/* For mobile, default is vertical layout */
+.form-group-double-inline,
+.form-group-triple-inline {
+  display: flex;
+  flex-direction: column; /* Stack vertically on mobile */
+  gap: 0.6rem; /* Gap between stacked items */
+  margin-bottom: 0.6rem;
+  width: 100%;
 }
 
-.form-group-inline > div {
-  flex: 1;
+.form-group-double-inline > div,
+.form-group-triple-inline > div {
+  width: 100%; /* Take full width on mobile */
 }
+
 
 .form-label {
   min-width: 110px; /* or your preferred width */
@@ -528,13 +560,61 @@ body {
   background-color: #f3f4f6;
 }
 
-.calendar-icon, .clear-icon {
+.calendar-icon {
   width: 1.1rem;
   height: 1.1rem;
   vertical-align: middle;
   margin-right: -20px;
 }
 
+/* Horizontal Rule */
+.form-divider {
+  border: none;
+  border-top: 1px solid var(--border-gray);
+  margin: 1.5rem 0;
+}
+
+/* Checkbox Group Styles */
+.form-group-checkbox {
+  margin-bottom: 1rem;
+  text-align: left;
+  font-family: 'Poppins', sans-serif;
+}
+
+.checkbox-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gray-dark);
+  margin-bottom: 0.5rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-gray-medium);
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.form-checkbox {
+  margin-right: 0.5rem;
+  accent-color: var(--red-accent);
+  min-width: 14px;
+  min-height: 14px;
+}
+
+.checkbox-label-with-input {
+  flex-wrap: wrap; /* Allow wrapping for input on small screens */
+}
+
+.checkbox-label-with-input .checkbox-input {
+  margin-top: 0.5rem; /* Space between label text and input */
+  margin-left: 1.5rem; /* Indent input under the checkbox */
+}
+
+
+/* DatePicker Styles */
 .date-picker-modal-overlay {
   position: fixed;
   top: 0;
@@ -633,13 +713,14 @@ body {
   font-weight: bold;
 }
 
+/* Footer Styles */
 .browser-footer {
   width: 100%;
   background-color: white;
   border-top: 1px solid var(--border-gray);
   padding: 0.75rem 1rem;
   display: flex;
-  justify-content: space-around;
+  justify-content: center; /* Centered icons */
   align-items: center;
   color: #6b7280;
   font-size: 0.75rem;
@@ -649,34 +730,30 @@ body {
   box-sizing: border-box;
 }
 
-.footer-item {
+.footer-social-icons {
   display: flex;
+  gap: 1.5rem; /* Space between icons */
   align-items: center;
-  gap: 0.25rem;
 }
 
-.footer-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.social-icon {
+  width: 1.8rem; /* Larger icon size */
+  height: 1.8rem; /* Larger icon size */
+  color: var(--navy-blue); /* Icon color */
+  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
-.footer-text {
-  font-size: 1rem;
+.social-icon:hover {
+  transform: scale(1.1);
+  color: var(--red-accent); /* Change color on hover */
 }
 
-.footer-url {
-  font-family: 'monospace';
-  color: var(--text-gray-dark);
-}
 
-.footer-icon {
-  width: 1.1rem;
-  height: 1.1rem;
-  color: #a0aec0;
-}
 
+/* Media Queries */
 @media (min-width: 768px) {
+ 
+
   #root {
     max-width: 100%;
     border-radius: 0;
@@ -697,20 +774,16 @@ body {
   }
 
   .privacy-section {
-    max-width: 28rem;
-  }
-
-  .online-request-button, .submit-form-button, .close-form-button {
-    max-width: 20rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .main-content {
-    width: 100vw;
-    min-height: 100vh;
-    padding: 0;
-    border-radius: 0;
+    max-width: none; /* Allow full width on desktop */
+    width: 100vw; /* Occupy full viewport width */
+    min-height: 0; /* Occupy full viewport height */
+    max-height: unset;
+    border-radius: 0; /* Remove border-radius on desktop */
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    box-shadow: none;
+    margin: 0;
+    padding: 0; /* Ensure padding is 0 for the outer section on desktop */
   }
 
   .privacy-section-expanded {
@@ -718,43 +791,31 @@ body {
     width: 100vw;
     min-height: 100vh;
     border-radius: 0;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    box-shadow: none;
-    margin: 0;
-    padding: 0;
-  }
+    box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.2);
+    padding: 30px; /* Apply padding to the inner container */
+    padding-bottom: 0;
+    border-top-left-radius: 15px; /* Apply specific border-radius here */
+    border-top-right-radius: 15px;
+    background-color: transparent; /* Ensure no solid color overrides the gradient */
+    opacity: 1;
+    margin-top: 20px;
+    
+      animation: slideUpSection 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
 
-  .privacy-section {
-    max-width: none;
-    width: 100vw;
-    min-height: 100vh;
-    border-radius: 0;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    box-shadow: none;
-    margin: 0;
-    padding: 0;
+@keyframes slideUpSection {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
   }
-  .request-form-container {
-    border-radius: 0;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-    box-shadow: none;
-    width: 100;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
-  .request-form-header{
-    border-radius: 0;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-  }
-  .privacy-section-expanded{
-    padding: 20px;
-    padding-right: 20px;
-  }
+}
+
+  
+
   .privacy-header{
     margin-top: 50px;
     font-size: 14px;
@@ -767,7 +828,196 @@ body {
     margin-right: 20px;
   }
   .privacy-section{
-    border-top-left-radius: 3rem;
+    border-top-left-radius: 3rem; /* This seems to conflict with .privacy-section-expanded */
     border-top-right-radius: 3rem;
   }
+  .online-request-button, .submit-form-button, .close-form-button {
+    max-width: 20rem;
+  }
 }
+@media (min-width: 1024px) {
+  .date-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 350px; /* Match input width */
+    max-width: 100%;
+  }
+  .form-input.date-input {
+    width: 100%;
+    padding-right: 2.5rem; /* Make space for icon */
+    min-width: 0;
+  }
+  .date-picker-button {
+    position: absolute;
+    right: 0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    padding: 0;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    height: 1.5rem;
+    width: 1.5rem;
+    cursor: pointer;
+  }
+  .calendar-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+    margin: 0;
+    color: var(--text-gray-medium);
+    pointer-events: none;
+  }
+}
+@media (min-width: 1024px) {
+  .request-form-content {
+    
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    gap: 1.5rem 4.5rem; /* Row gap, Column gap */
+    padding: 1.5rem;
+  }
+.request-form-container {
+    max-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .request-form-title{
+    font-size: 15px;
+  }
+  .form-section-title, 
+  .form-subtitle{
+    margin-left: 2rem;
+    font-size: 15px;
+  }
+  .form-section-title,
+  .form-section-title-secondary,
+  .form-subtitle,
+  .form-group-checkbox {
+    grid-column: 1 / span 2; /* Span both columns for titles and full-width sections */
+    width: 100%; /* Ensure they take full width */
+  }
+.form-section-title-secondary {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gray-dark);
+  margin-top: .1rem;
+  font-family: 'Poppins', sans-serif;
+  text-align: left;
+}
+
+.form-subtitle {
+  font-size: 10px;
+  color: var(--text-gray-medium);
+  margin-bottom: 1rem;
+  margin-top: -30px;
+  text-align: left;
+  font-family: 'Poppins', sans-serif;
+  
+}
+  .form-group {
+    /* Individual form groups will flow into the grid columns */
+    grid-column: auto;
+    flex-direction: column; /* Ensure label and input are stacked */
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%; /* Take full width of its grid column */
+    padding-left: 4rem;
+    font-size: 13px;
+  }
+.form-group-checkbox{
+padding-left: 4rem;
+}
+  .form-group-vertical .form-label {
+    margin-bottom: 0.3rem; /* Keep vertical spacing for stacked label/input */
+    margin-right: 0; /* Remove right margin for vertical alignment */
+    font-size: 13px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .form-input, .form-select {
+    width: 350px; /* Fixed width for inputs on desktop */
+    max-width: 100%; /* Ensure it doesn't overflow its grid column */
+    min-width: 0;
+    margin-left: 0;
+    margin-right: auto;
+    display: block;
+  }
+
+  /* Specific styling for inline groups on desktop */
+  .form-group-double-inline,
+  .form-group-triple-inline {
+    display: flex;
+    flex-direction: row; /* Arrange horizontally on desktop */
+    gap: 1rem; /* Gap between inline items */
+    grid-column: 1 / span 2; /* Span both columns */
+    width: 100%; /* Take full width of the grid */
+    margin-bottom: 0.6rem; /* Consistent margin */
+    padding-left: 4rem;
+    font-size: 13px;
+    font-style: 'Poppins', sans-serif;
+  }
+
+  .form-group-double-inline > div,
+  .form-group-triple-inline > div {
+    flex: 1; /* Distribute space evenly among children */
+    width: auto; /* Allow flex to control width */
+  }
+.form-group-checkbox, 
+.checkbox-label{
+  font-size: 13px;
+  font-style: 'Poppins', sans-serif;
+}
+  .form-group-checkbox .checkbox-label-with-input .form-input.checkbox-input {
+    width: 500px !important;
+    max-width: 100%;
+    margin-left: 0.5rem;
+    margin-top: 0;
+    flex-grow: 0; /* Prevent stretching */
+  }
+
+  .checkbox-label-with-input .checkbox-input {
+    margin-top: 0; /* Align input horizontally with text */
+    margin-left: 0.5rem; /* Small space after text */
+    width: 500px; /* Allow input to size naturally */
+    flex-grow: 1; /* Allow input to take available space */
+  }
+
+  .submit-form-button{
+    margin-bottom: -20px;
+    padding: 0.7rem .1rem;
+  }
+
+  .close-form-button{
+    padding: 0.7rem .1rem;
+  }
+  .submit-form-button,
+  .close-form-button {
+    grid-column: 1 / 3; /* Span both columns for buttons */
+    justify-self: center;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+  
+
+
+  .form-group-college {
+    grid-column: 2;
+    grid-row: auto;
+    margin-top: 0; /* Remove extra space if needed */
+  }
+
+  .form-group-double-inline > .form-group-vertical:nth-child(2):has([id="college"]) {
+    margin-left: -490px;
+  }
+  .form-group-double-inline > .form-group-vertical:nth-child(2):has([id="barangay"]) {
+    margin-left: -490px;
+  }
+  .form-group-double-inline > .form-group-vertical:nth-child(2):has([id="province"]) {
+    margin-left: -490px;
+  }
+}
+ 
