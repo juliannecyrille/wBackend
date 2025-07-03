@@ -7,13 +7,13 @@ html, body {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
 }
 
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none; 
 }
 
 body {
@@ -21,19 +21,19 @@ body {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url('/fullbg.jpeg'); /* Image directly on body */
+  background-image: url('/fullbg.jpeg'); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-color: var(--navy-blue); /* Fallback and base color */
+  background-color: var(--navy-blue); 
 }
 
 #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: transparent; /* Make root transparent */
+  background-color: transparent; 
   width: 100%;
   min-width: 375px;
   padding: 0;
@@ -70,7 +70,7 @@ body {
 .app-header {
   width: 100%;
   background-color: var(--navy-blue);
-  opacity: 0.9; /* Reverted to 90% opacity as per user's provided CSS */
+  opacity: 0.9; 
   color: #D7B993;
   padding: 0rem 1rem;
   display: flex;
@@ -217,7 +217,7 @@ body {
 
 /* Main Content Styles */
 .main-content {
-  flex-grow: 1; /* Allow main-content to fill available space */
+  flex-grow: 1; 
   flex-shrink: 1;
   flex-basis: auto;
   min-height: unset;
@@ -226,21 +226,18 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Keeps content at the bottom */
+  justify-content: flex-end; 
   overflow: hidden;
-  /* Default background for collapsed state (cover page) */
-  background-color: rgba(5, 23, 59, 0.9); /* Navy blue with 90% opacity */
+  background-color: rgba(5, 23, 59, 0.9); 
 }
 
 .main-content-expanded {
-  /* Background for expanded state */
   background-image: linear-gradient(to top, rgba(255, 216, 138, 0.7), rgba(255, 255, 255, 0.87));
-  background-color: transparent; /* Ensure no solid color overrides the gradient */
+  background-color: transparent; 
 }
 
-/* Privacy Section Styles (Combined) */
 .privacy-section {
-  background-color: #F4EFEB; /* This will be the light background of the collapsed section */
+  background-color: #F4EFEB; 
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
   padding: 15px;
@@ -264,14 +261,14 @@ body {
 .privacy-section-expanded {
   max-height: calc(100vh - var(--minimized-header-height) - var(--footer-height));
   min-height: calc(100vh - var(--minimized-header-height) - var(--footer-height));
-  padding: 20px; /* Keep padding for the expanded section */
+  padding: 20px; 
   padding-bottom: 0;
   border-top-left-radius: 3rem;
   border-top-right-radius: 3rem;
-  background-image: none; /* Remove gradient from here */
-  background-color: transparent; /* This section should be transparent to show main-content-expanded background */
+  background-image: none; 
+  background-color: transparent;
   opacity: 1;
-  margin-top: 20px;
+  margin-top: 10px;
   animation: slideUpSection 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
@@ -298,6 +295,7 @@ body {
 
 .privacy-checkbox-label {
   font-family: 'Poppins', sans-serif;
+  font-size: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -311,13 +309,14 @@ body {
 }
 
 .privacy-checkbox {
-  margin-right: -10px;
-  margin-left: 20px;
-  margin-bottom: 20px;
+  margin-right: 2px;
+  margin-left: 10px;
+  margin-bottom: 70px;
   min-width: 10px;
   min-height: 10px;
   accent-color: #dc2626;
   flex-shrink: 0;
+
 }
 
 .privacy-link {
@@ -326,40 +325,82 @@ body {
   white-space: nowrap;
 }
 
+.button-group-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.rem;
+  }
+
 .online-request-button {
   background-color: var(--red-accent);
   color: white;
   font-weight: 600;
-  padding: 0.5rem .5rem;
+  padding: 0.3rem .5rem;
   border-radius: 9999px;
   transition: background-color 0.3s ease-in-out;
-  font-size: 14px;
+  font-size: 13px;
   width: 80%;
   max-width: 150px;
-  margin: 0 auto .7rem auto;
+  margin: 0 auto;
+  margin-bottom: 10px;
   display: block;
   border: none;
   cursor: pointer;
   box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
   font-family: 'Poppins', sans-serif;
-  margin-bottom: 40px;
+}
+.online-request-button2 {
+  background-color: var(--red-accent);
+  color: white;
+  font-weight: 600;
+  padding: 0.3rem .2rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 13px;
+  width: 80%;
+  max-width: 150px;
+  margin: 0 auto;
+  display: block;
+  border: none;
+  cursor: pointer;
+  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 10px;
+}
+.online-request-button3 {
+  background-color: #b8a054;
+  color: white;
+  font-weight: 600;
+  padding: .3rem 1rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 13px;
+  width: 55%;
+  max-width: none;
+  margin: 0 auto;
+  display: block;
+  border: none;
+  cursor: pointer;
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 30px;
 }
 
 .online-request-button:hover {
   background-color: #8B0000;
 }
 
-/* Request Form Styles (Combined) */
 .request-form-container {
   display: flex;
   flex-direction: column;
-  height: 100%; /* Take full height of parent when expanded */
+  height: 100%; 
   width: 100%;
-  background-color: white; /* Keep this white for the form content */
-  border-top-left-radius: 1rem; /* Default rounded corners for the form container */
+  background-color: white;
+  border-top-left-radius: 1rem; 
   border-top-right-radius: 1rem;
   box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
-  overflow: hidden; /* Hide anything that overflows within the form */
+  overflow: hidden; 
 }
 
 .request-form-header {
@@ -368,7 +409,7 @@ body {
   padding: .5rem 1.5rem;
   font-size: 9px;
   font-weight: bold;
-  border-top-left-radius: 1rem; /* Default rounded corners for the header */
+  border-top-left-radius: 1rem; 
   border-top-right-radius: 1rem;
   font-family: 'Poppins', sans-serif;
 }
@@ -386,6 +427,7 @@ body {
   padding: 1.5rem;
   flex-grow: 1;
   overflow-y: auto;
+  height: 100vh;
 }
 
 .submit-form-button, .close-form-button {
@@ -429,7 +471,6 @@ body {
   margin-bottom: 1rem;
   border-bottom: 1px solid var(--form-border);
   padding-bottom: 0.5rem;
-
   margin-top: .1rem;
   font-family: 'Poppins', sans-serif;
 }
@@ -465,38 +506,36 @@ body {
 .form-group-vertical {
   flex-direction: column !important;
   align-items: stretch;
-  font-family: 'Poppins', sans-serif;
 }
 .form-group-vertical .form-label {
   margin-bottom: 0.3rem;
   text-align: left;
+  
   font-family: 'Poppins', sans-serif;
 }
 
-/* For mobile, default is vertical layout */
 .form-group-double-inline,
 .form-group-triple-inline {
   display: flex;
-  flex-direction: column; /* Stack vertically on mobile */
-  gap: 0.6rem; /* Gap between stacked items */
+  flex-direction: column; 
+  gap: 0.6rem; 
   margin-bottom: 0.6rem;
   width: 100%;
 }
 
 .form-group-double-inline > div,
 .form-group-triple-inline > div {
-  width: 100%; /* Take full width on mobile */
+  width: 100%; 
 }
 
 
 .form-label {
-  min-width: 110px; /* or your preferred width */
+  min-width: 110px; 
   margin-bottom: 0;
   margin-right: 1rem;
   text-align: left;
   font-size: 12px;
 }
-
 
 .form-input, .form-select {
   width: 100%;
@@ -567,14 +606,12 @@ body {
   margin-right: -20px;
 }
 
-/* Horizontal Rule */
 .form-divider {
   border: none;
   border-top: 1px solid var(--border-gray);
   margin: 1.5rem 0;
 }
 
-/* Checkbox Group Styles */
 .form-group-checkbox {
   margin-bottom: 1rem;
   text-align: left;
@@ -605,16 +642,15 @@ body {
 }
 
 .checkbox-label-with-input {
-  flex-wrap: wrap; /* Allow wrapping for input on small screens */
+  flex-wrap: wrap; 
 }
 
 .checkbox-label-with-input .checkbox-input {
-  margin-top: 0.5rem; /* Space between label text and input */
-  margin-left: 1.5rem; /* Indent input under the checkbox */
+  margin-top: 0.5rem; 
+  margin-left: 1.5rem; 
+  width: calc(100% - 1.5rem); 
 }
 
-
-/* DatePicker Styles */
 .date-picker-modal-overlay {
   position: fixed;
   top: 0;
@@ -720,7 +756,7 @@ body {
   border-top: 1px solid var(--border-gray);
   padding: 0.75rem 1rem;
   display: flex;
-  justify-content: center; /* Centered icons */
+  justify-content: center; 
   align-items: center;
   color: #6b7280;
   font-size: 0.75rem;
@@ -732,28 +768,186 @@ body {
 
 .footer-social-icons {
   display: flex;
-  gap: 1.5rem; /* Space between icons */
+  gap: 1.5rem; 
   align-items: center;
 }
 
 .social-icon {
-  width: 1.8rem; /* Larger icon size */
-  height: 1.8rem; /* Larger icon size */
-  color: var(--navy-blue); /* Icon color */
+  width: 1.8rem; 
+  height: 1.8rem; 
+  color: var(--navy-blue); 
   transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
 .social-icon:hover {
   transform: scale(1.1);
-  color: var(--red-accent); /* Change color on hover */
+  color: var(--red-accent); 
 }
 
+  
+.documents-table-header {
+  display: grid;
+  grid-template-columns: 2fr 0.5fr 0.7fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border-gray);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--red-accent);
+  color: white;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+.documents-table-header > div {
+  padding: 0.2rem 0;
+}
+
+.documents-table-row {
+  display: grid;
+  grid-template-columns: 2fr 0.5fr 0.7fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-gray);
+  font-size: 13px;
+}
+
+.documents-table-row > .document-name-label {
+  background-color: var(--light-gray-bg);
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.3rem;
+  box-sizing: border-box;
+  
+  font-size: 10px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.documents-table-row > .document-qty-input {
+  background-color: #d0d0d0;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.3rem;
+  box-sizing: border-box;
+  font-size: 10px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.documents-table-row > .document-amount-display {
+  background-color: #a0a0a0;
+  color: white;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.3rem;
+  box-sizing: border-box;
+  font-size: 10px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.document-name-header,
+.document-qty-header,
+.document-amount-header {
+  text-align: left;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+}
+.document-qty-header,
+.document-amount-header {
+  text-align: center;
+}
+
+.document-name-label {
+  display: flex;
+  align-items: center;
+  color: var(--text-gray-medium);
+  cursor: pointer;
+}
+
+.documents-table-row .form-checkbox {
+  margin-right: 0.5rem;
+}
+
+.document-qty-input {
+  width: 60px;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid var(--form-border);
+  border-radius: 0.3rem;
+  font-size: 12px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.document-amount-display {
+  text-align: center;
+  color: var(--text-gray-dark);
+  font-weight: 500;
+}
+
+.documents-table-total {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1rem 0;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--red-accent);
+  border-top: 2px solid var(--form-border);
+  margin-top: 1rem;
+}
+
+.total-label {
+  margin-right: 1rem;
+}
+
+.total-value {
+  min-width: 80px;
+  text-align: right;
+}
+.info-item {
+    display: flex;
+    margin-bottom: 0.5rem;
+    font-size: 12px;
+  }
+
+  .info-label {
+    font-weight: 600;
+    color: var(--text-gray-dark);
+    min-width: 150px; 
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .info-value {
+    color: var(--text-gray-medium);
+    flex-grow: 1;
+  }
+
+  .pre-filled-info {
+    margin-bottom: 1.5rem;
+    text-align: left;
+    font-family: 'Poppins', sans-serif;
+    padding-left: 4px; 
+    padding-bottom: 1rem;
+  }
+
+  .documents-requested-section {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+@media (max-width: 1023px) {
+  .documents-requested-section {
+    width: 100%;
+    margin-left: 2px;
+    margin-right: 2px;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+}
 
 
 /* Media Queries */
 @media (min-width: 768px) {
- 
-
   #root {
     max-width: 100%;
     border-radius: 0;
@@ -774,16 +968,16 @@ body {
   }
 
   .privacy-section {
-    max-width: none; /* Allow full width on desktop */
-    width: 100vw; /* Occupy full viewport width */
-    min-height: 0; /* Occupy full viewport height */
+    max-width: none; 
+    width: 100vw; 
+    min-height: 0;
     max-height: unset;
-    border-radius: 0; /* Remove border-radius on desktop */
+    border-radius: 0; 
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     box-shadow: none;
     margin: 0;
-    padding: 0; /* Ensure padding is 0 for the outer section on desktop */
+    padding: 0; 
   }
 
   .privacy-section-expanded {
@@ -791,30 +985,17 @@ body {
     width: 100vw;
     min-height: 100vh;
     border-radius: 0;
-    box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.2);
-    padding: 30px; /* Apply padding to the inner container */
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    box-shadow: none;
+    padding: 20px; 
     padding-bottom: 0;
-    border-top-left-radius: 15px; /* Apply specific border-radius here */
+    border-top-left-radius: 15px;
     border-top-right-radius: 15px;
-    background-color: transparent; /* Ensure no solid color overrides the gradient */
+    background-color: transparent;
     opacity: 1;
     margin-top: 20px;
-    
-      animation: slideUpSection 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-}
-
-@keyframes slideUpSection {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
   }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-  
 
   .privacy-header{
     margin-top: 50px;
@@ -828,24 +1009,25 @@ body {
     margin-right: 20px;
   }
   .privacy-section{
-    border-top-left-radius: 3rem; /* This seems to conflict with .privacy-section-expanded */
+    border-top-left-radius: 3rem; 
     border-top-right-radius: 3rem;
   }
   .online-request-button, .submit-form-button, .close-form-button {
     max-width: 20rem;
   }
 }
+
 @media (min-width: 1024px) {
   .date-input-container {
     position: relative;
     display: flex;
     align-items: center;
-    width: 350px; /* Match input width */
+    width: 350px;
     max-width: 100%;
   }
   .form-input.date-input {
     width: 100%;
-    padding-right: 2.5rem; /* Make space for icon */
+    padding-right: 2.5rem;
     min-width: 0;
   }
   .date-picker-button {
@@ -870,16 +1052,14 @@ body {
     color: var(--text-gray-medium);
     pointer-events: none;
   }
-}
-@media (min-width: 1024px) {
+
   .request-form-content {
-    
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Two equal columns */
-    gap: 1.5rem 4.5rem; /* Row gap, Column gap */
+    grid-template-columns: 1fr 1fr; 
+    gap: 1.5rem 4.5rem; 
     padding: 1.5rem;
   }
-.request-form-container {
+  .request-form-container {
     max-height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
@@ -887,7 +1067,7 @@ body {
   .request-form-title{
     font-size: 15px;
   }
-  .form-section-title, 
+  .form-section-title,
   .form-subtitle{
     margin-left: 2rem;
     font-size: 15px;
@@ -896,65 +1076,60 @@ body {
   .form-section-title-secondary,
   .form-subtitle,
   .form-group-checkbox {
-    grid-column: 1 / span 2; /* Span both columns for titles and full-width sections */
-    width: 100%; /* Ensure they take full width */
+    grid-column: 1 / span 2;
+    width: 100%; 
   }
-.form-section-title-secondary {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-gray-dark);
-  margin-top: .1rem;
-  font-family: 'Poppins', sans-serif;
-  text-align: left;
-}
+  .form-section-title-secondary {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-gray-dark);
+    margin-top: .1rem;
+    font-family: 'Poppins', sans-serif;
+    text-align: left;
+  }
 
-.form-subtitle {
-  font-size: 10px;
-  color: var(--text-gray-medium);
-  margin-bottom: 1rem;
-  margin-top: -30px;
-  text-align: left;
-  font-family: 'Poppins', sans-serif;
-  
-}
+  .form-subtitle {
+    font-size: 10px;
+    color: var(--text-gray-medium);
+    margin-bottom: 1rem;
+    margin-top: -30px;
+    text-align: left;
+    font-family: 'Poppins', sans-serif;
+  }
   .form-group {
-    /* Individual form groups will flow into the grid columns */
     grid-column: auto;
-    flex-direction: column; /* Ensure label and input are stacked */
+    flex-direction: column; 
     align-items: flex-start;
     justify-content: flex-start;
-    width: 100%; /* Take full width of its grid column */
+    width: 100%; 
     padding-left: 4rem;
     font-size: 13px;
   }
-.form-group-checkbox{
-padding-left: 4rem;
-}
+  
   .form-group-vertical .form-label {
-    margin-bottom: 0.3rem; /* Keep vertical spacing for stacked label/input */
-    margin-right: 0; /* Remove right margin for vertical alignment */
+    margin-bottom: 0.3rem;
+    margin-right: 0; 
     font-size: 13px;
     font-family: 'Poppins', sans-serif;
   }
 
   .form-input, .form-select {
-    width: 350px; /* Fixed width for inputs on desktop */
-    max-width: 100%; /* Ensure it doesn't overflow its grid column */
+    width: 350px; 
+    max-width: 100%;
     min-width: 0;
     margin-left: 0;
     margin-right: auto;
     display: block;
   }
 
-  /* Specific styling for inline groups on desktop */
   .form-group-double-inline,
   .form-group-triple-inline {
     display: flex;
-    flex-direction: row; /* Arrange horizontally on desktop */
-    gap: 1rem; /* Gap between inline items */
-    grid-column: 1 / span 2; /* Span both columns */
-    width: 100%; /* Take full width of the grid */
-    margin-bottom: 0.6rem; /* Consistent margin */
+    flex-direction: row; 
+    gap: 1rem; 
+    grid-column: 1 / span 2; 
+    width: 100%; 
+    margin-bottom: 0.6rem;
     padding-left: 4rem;
     font-size: 13px;
     font-style: 'Poppins', sans-serif;
@@ -962,27 +1137,27 @@ padding-left: 4rem;
 
   .form-group-double-inline > div,
   .form-group-triple-inline > div {
-    flex: 1; /* Distribute space evenly among children */
-    width: auto; /* Allow flex to control width */
+    flex: 1; 
+    width: auto; 
   }
-.form-group-checkbox, 
-.checkbox-label{
-  font-size: 13px;
-  font-style: 'Poppins', sans-serif;
-}
+  .form-group-checkbox,
+  .checkbox-label{
+    font-size: 13px;
+    font-style: 'Poppins', sans-serif;
+  }
   .form-group-checkbox .checkbox-label-with-input .form-input.checkbox-input {
     width: 500px !important;
     max-width: 100%;
     margin-left: 0.5rem;
     margin-top: 0;
-    flex-grow: 0; /* Prevent stretching */
+    flex-grow: 0;
   }
 
   .checkbox-label-with-input .checkbox-input {
-    margin-top: 0; /* Align input horizontally with text */
-    margin-left: 0.5rem; /* Small space after text */
-    width: 500px; /* Allow input to size naturally */
-    flex-grow: 1; /* Allow input to take available space */
+    margin-top: 0;
+    margin-left: 0.5rem;
+    width: 500px;
+    flex-grow: 1;
   }
 
   .submit-form-button{
@@ -995,19 +1170,18 @@ padding-left: 4rem;
   }
   .submit-form-button,
   .close-form-button {
-    grid-column: 1 / 3; /* Span both columns for buttons */
+    grid-column: 1 / 3;
     justify-self: center;
     margin-left: auto;
     margin-right: auto;
     display: block;
-}
-  
+  }
 
 
   .form-group-college {
     grid-column: 2;
     grid-row: auto;
-    margin-top: 0; /* Remove extra space if needed */
+    margin-top: 0;
   }
 
   .form-group-double-inline > .form-group-vertical:nth-child(2):has([id="college"]) {
@@ -1019,5 +1193,67 @@ padding-left: 4rem;
   .form-group-double-inline > .form-group-vertical:nth-child(2):has([id="province"]) {
     margin-left: -490px;
   }
+
+  /* Styles for Document Requested Section */
+  .pre-filled-info {
+    margin-bottom: 1.5rem;
+    text-align: left;
+    font-family: 'Poppins', sans-serif;
+    padding-left: 4rem; 
+  }
+
+  .info-item {
+    display: flex;
+    margin-bottom: 0.5rem;
+    font-size: 12px;
+  }
+
+  .info-label {
+    font-weight: 600;
+    color: var(--text-gray-dark);
+    min-width: 150px; 
+  }
+
+  .info-value {
+    color: var(--text-gray-medium);
+    flex-grow: 1;
+  }
+
+  .online-request-button2 {
+  background-color: var(--red-accent);
+  color: white;
+  font-weight: 600;
+  padding: 0.3rem 1rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 13px;
+  width: 21%;
+  max-width: none;
+  margin: 0 auto;
+  display: block;
+  border: none;
+  cursor: pointer;
+  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 10px;
 }
- 
+.online-request-button3 {
+  background-color: #0f2b62;
+  color: white;
+  font-weight: 600;
+  padding: .3rem 1rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 13px;
+  width: 21%;
+  max-width: none;
+  margin: 0 auto;
+  display: block;
+  border: none;
+  cursor: pointer;
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 30px;
+}
+
+}
