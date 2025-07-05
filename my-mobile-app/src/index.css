@@ -7,13 +7,13 @@ html, body {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none; 
+  -ms-overflow-style: none;  
 }
 
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none; 
 }
 
 body {
@@ -21,19 +21,19 @@ body {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url('/fullbg.jpeg'); /* Image directly on body */
+  background-image: url('/fullbg.jpeg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-color: var(--navy-blue); /* Fallback and base color */
+  background-color: var(--navy-blue); 
 }
 
 #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: transparent; /* Make root transparent */
+  background-color: transparent;
   width: 100%;
   min-width: 375px;
   padding: 0;
@@ -66,11 +66,11 @@ body {
   width: 100%;
 }
 
-/* Header Styles */
+
 .app-header {
   width: 100%;
   background-color: var(--navy-blue);
-  opacity: 0.9; /* Reverted to 90% opacity as per user's provided CSS */
+  opacity: 0.9; 
   color: #D7B993;
   padding: 0rem 1rem;
   display: flex;
@@ -215,9 +215,8 @@ body {
   margin-top: -15px;
 }
 
-/* Main Content Styles */
 .main-content {
-  flex-grow: 1; /* Allow main-content to fill available space */
+  flex-grow: 1;
   flex-shrink: 1;
   flex-basis: auto;
   min-height: unset;
@@ -226,21 +225,18 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Keeps content at the bottom */
+  justify-content: flex-end;
   overflow: hidden;
-  /* Default background for collapsed state (cover page) */
-  background-color: rgba(5, 23, 59, 0.9); /* Navy blue with 90% opacity */
+  background-color: rgba(5, 23, 59, 0.9); 
 }
 
 .main-content-expanded {
-  /* Background for expanded state */
   background-image: linear-gradient(to top, rgba(255, 216, 138, 0.7), rgba(255, 255, 255, 0.87));
-  background-color: transparent; /* Ensure no solid color overrides the gradient */
+  background-color: transparent;
 }
 
-/* Privacy Section Styles (Combined) */
 .privacy-section {
-  background-color: #F4EFEB; /* This will be the light background of the collapsed section */
+  background-color: #F4EFEB;
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
   padding: 15px;
@@ -264,12 +260,12 @@ body {
 .privacy-section-expanded {
   max-height: calc(100vh - var(--minimized-header-height) - var(--footer-height));
   min-height: calc(100vh - var(--minimized-header-height) - var(--footer-height));
-  padding: 20px; /* Keep padding for the expanded section */
+  padding: 20px;
   padding-bottom: 0;
   border-top-left-radius: 3rem;
   border-top-right-radius: 3rem;
-  background-image: none; /* Remove gradient from here */
-  background-color: transparent; /* This section should be transparent to show main-content-expanded background */
+  background-image: none; 
+  background-color: transparent; 
   opacity: 1;
   margin-top: 10px;
   animation: slideUpSection 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
@@ -335,7 +331,7 @@ body {
     gap: 0.rem;
   }
 
-.online-request-button {
+.undergrad-button {
   background-color: var(--red-accent);
   color: white;
   font-weight: 600;
@@ -353,7 +349,7 @@ body {
   box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
   font-family: 'Poppins', sans-serif;
 }
-.online-request-button2 {
+.graduate-button2 {
   background-color: var(--red-accent);
   color: white;
   font-weight: 600;
@@ -371,7 +367,7 @@ body {
   font-family: 'Poppins', sans-serif;
   margin-bottom: 10px;
 }
-.online-request-button3 {
+.submit-button3 {
   background-color: #b8a054;
   color: white;
   font-weight: 600;
@@ -390,7 +386,7 @@ body {
   margin-bottom: 30px;
 }
 
-.online-request-button:hover {
+.undergrad-button:hover {
   background-color: #8B0000;
 }
 
@@ -434,7 +430,7 @@ body {
   height: 100vh;
 }
 
-.submit-form-button, .back-button, .close-form-button, .close-form-button1 {
+.submit-form-button, .submit-or-button, .close-or-button,.back-button, .close-form-button, .close-form-button1 {
   background-color: var(--red-accent);
   color: white;
   font-weight: 600;
@@ -450,7 +446,6 @@ body {
   cursor: pointer;
   box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
   font-family: 'Poppins', sans-serif;
-
 }
 
 .back-button{
@@ -458,20 +453,20 @@ body {
 }
 
 
-.submit-form-button{
+.submit-form-button, .submit-or-button{
   margin-top: 40px;
   
 }
-.submit-form-button:hover, .close-form-button:hover, .back-button:hover{
+.submit-form-button:hover, .submit-or-button:hover, .close-form-button:hover, .close-or-button:hover, .back-button:hover{
   background-color: #8B0000;
 }
 
-.close-form-button, .close-form-button1 {
+.close-form-button, .close-form-button1, .close-or-button {
   background-color: #6b7280;
   margin-top: 0.5rem;
 }
 
-.close-form-button:hover {
+.close-form-button:hover, .close-or-button:hover {
   background-color: #4b5563;
 }
 
@@ -521,7 +516,6 @@ body {
 .form-group-vertical .form-label {
   margin-bottom: 0.3rem;
   text-align: left;
-  
   font-family: 'Poppins', sans-serif;
 }
 
@@ -530,20 +524,20 @@ body {
 .form-group-double-inline,
 .form-group-triple-inline {
   display: flex;
-  flex-direction: column; /* Stack vertically on mobile */
-  gap: 0.6rem; /* Gap between stacked items */
+  flex-direction: column; 
+  gap: 0.6rem; 
   margin-bottom: 0.6rem;
   width: 100%;
 }
 
 .form-group-double-inline > div,
 .form-group-triple-inline > div {
-  width: 100%; /* Take full width on mobile */
+  width: 100%; 
 }
 
 
 .form-label {
-  min-width: 110px; /* or your preferred width */
+  min-width: 110px; 
   margin-bottom: 0;
   margin-right: 1rem;
   text-align: left;
@@ -657,13 +651,13 @@ body {
 }
 
 .checkbox-label-with-input {
-  flex-wrap: wrap; /* Allow wrapping for input on small screens */
+  flex-wrap: wrap; 
 }
 
 .checkbox-label-with-input .checkbox-input {
-  margin-top: 0.5rem; /* Space between label text and input */
-  margin-left: 1.5rem; /* Indent input under the checkbox */
-  width: calc(100% - 1.5rem); /* Adjust width considering indent */
+  margin-top: 0.5rem;
+  margin-left: 1.5rem;
+  width: calc(100% - 1.5rem); 
 }
 
 
@@ -773,7 +767,7 @@ body {
   border-top: 1px solid var(--border-gray);
   padding: 0.75rem 1rem;
   display: flex;
-  justify-content: center; /* Centered icons */
+  justify-content: center;
   align-items: center;
   color: #6b7280;
   font-size: 0.75rem;
@@ -785,20 +779,20 @@ body {
 
 .footer-social-icons {
   display: flex;
-  gap: 1.5rem; /* Space between icons */
+  gap: 1.5rem; 
   align-items: center;
 }
 
 .social-icon {
-  width: 1.8rem; /* Larger icon size */
-  height: 1.8rem; /* Larger icon size */
-  color: var(--navy-blue); /* Icon color */
+  width: 1.8rem; 
+  height: 1.8rem; 
+  color: var(--navy-blue); 
   transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
 .social-icon:hover {
   transform: scale(1.1);
-  color: var(--red-accent); /* Change color on hover */
+  color: var(--red-accent);
 }
 
 /* Styles for Document Requested Section */
@@ -838,26 +832,26 @@ body {
 
 .documents-table-header {
   display: grid;
-  grid-template-columns: 2fr 0.5fr 0.7fr; /* Document Name, Qty, Amount */
+  grid-template-columns: 2fr 0.5fr 0.7fr; 
   gap: 1rem;
   align-items: center;
-  padding: 0.5rem 1rem; /* Adjusted padding */
+  padding: 0.5rem 1rem;
   border-bottom: 1px solid var(--border-gray);
   font-size: 13px;
   font-weight: 600;
-  background-color: var(--red-accent); /* Red fill for header */
-  color: white; /* White text for header */
-  border-top-left-radius: 0.5rem; /* Added rounded corners for header */
-  border-top-right-radius: 0.5rem; /* Added rounded corners for header */
+  background-color: var(--red-accent); 
+  color: white; 
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 
 .documents-table-header > div {
-  padding: 0.2rem 0; /* Adjust padding within header cells */
+  padding: 0.2rem 0; 
 }
 
 .documents-table-row {
   display: grid;
-  grid-template-columns: 2fr 0.5fr 0.7fr; /* Document Name, Qty, Amount */
+  grid-template-columns: 2fr 0.5fr 0.7fr; 
   gap: 1rem;
   align-items: center;
   padding: 0.5rem 0;
@@ -866,9 +860,9 @@ body {
 }
 
 .documents-table-row > .document-name-label {
-  background-color: var(--light-gray-bg); /* Light gray for document name column */
-  padding: 0.4rem 0.6rem; /* Add padding to cells */
-  border-radius: 0.3rem; /* Rounded corners for cells */
+  background-color: var(--light-gray-bg); 
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.3rem; 
   box-sizing: border-box;
   
   font-size: 10px;
@@ -876,16 +870,16 @@ body {
 }
 
 .documents-table-row > .document-qty-input {
-  background-color: #d0d0d0; /* Gray for qty column */
-  padding: 0.4rem 0.6rem; /* Add padding to cells */
-  border-radius: 0.3rem; /* Rounded corners for cells */
+  background-color: #d0d0d0; 
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.3rem;
   box-sizing: border-box;
   font-size: 10px;
   font-family: 'Poppins', sans-serif;
 }
 
 .documents-table-row > .document-amount-display {
-  background-color: #a0a0a0; /* Dark gray for amount column */
+  background-color: #a0a0a0; 
   color: white;
   padding: 0.4rem 0.6rem;
   border-radius: 0.3rem;
@@ -929,7 +923,7 @@ body {
 
 .document-amount-display {
   text-align: center;
-  color: var(--text-gray-dark); /* This will be overridden by the new rule above */
+  color: var(--text-gray-dark);
   font-weight: 500;
 }
 
@@ -991,7 +985,7 @@ body {
 .document-detail-downloads,
 .document-detail-attachments {
   display: flex;
-  flex-direction: column; /* Stack label and value vertically */
+  flex-direction: column; 
   margin-bottom: 0.4rem;
   font-size: 11px;
   text-align: left;
@@ -1003,7 +997,7 @@ body {
 .document-detail-attachments .info-label {
   font-weight: 500;
   color: var(--text-gray-dark);
-  min-width: 120px; /* Align labels */
+  min-width: 120px; 
   margin-right: 0.5rem;
 }
 
@@ -1029,7 +1023,7 @@ body {
 }
 
 .upload-file-input {
-  width: 140px; /* or your preferred width */
+  width: 140px; 
 }
 .download-button, .upload-file-input {
   padding: 0.3rem 0.3rem;
@@ -1150,7 +1144,21 @@ body {
   left: 0;
 }
 
+.documents-row-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 2rem;
+}
 
+@media (max-width: 1023px) {
+  .documents-row-wrapper {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
 /* Media Queries */
 @media (max-width: 1023px) {
   .documents-requested-section {
@@ -1228,12 +1236,77 @@ body {
     border-top-left-radius: 3rem; 
     border-top-right-radius: 3rem;
   }
-  .online-request-button, .submit-form-button, .close-form-button {
+  .undergrad-button, .submit-form-button, .close-form-button {
     max-width: 20rem;
   }
 }
 
 @media (min-width: 1024px) {
+  
+  .form-group-double-inline > .form-group-vertical:nth-child(2):has([id="degree-program"]) {
+    margin-left: -480px; 
+  }
+
+  .form-group-double-inline > .form-group-vertical:nth-child(2):has([id="sem-admitted"]) {
+    margin-left: -480px;
+  }
+
+
+.undergrad-button {
+  background-color: var(--red-accent);
+  color: white;
+  font-weight: 600;
+  padding: 0.3rem .5rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 13px;
+  width: 80%;
+  max-width: 150px;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  display: block;
+  border: none;
+  cursor: pointer;
+  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif;
+}
+.graduate-button2 {
+  background-color: var(--red-accent);
+  color: white;
+  font-weight: 600;
+  padding: 0.3rem .2rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 13px;
+  width: 80%;
+  max-width: 150px;
+  margin: 0 auto;
+  display: block;
+  border: none;
+  cursor: pointer;
+  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 10px;
+}
+.submit-button3 {
+  background-color: #b8a054;
+  color: white;
+  font-weight: 600;
+  padding: .3rem 1rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 13px;
+  width: 200px;
+  max-width: none;
+  margin: 0 auto;
+  display: block;
+  border: none;
+  cursor: pointer;
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 30px;
+}
+
   .date-input-container {
     position: relative;
     display: flex;
@@ -1319,10 +1392,17 @@ body {
     justify-content: flex-start;
     width: 100%; 
     padding-left: 4rem;
-    font-size: 13px;
+    font-size: 14px;
   }
   
   .form-group-vertical .form-label {
+    margin-bottom: 0.3rem;
+    margin-right: 0; 
+    font-size: 13px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .form-group .form-label {
     margin-bottom: 0.3rem;
     margin-right: 0; 
     font-size: 13px;
@@ -1356,10 +1436,12 @@ body {
     flex: 1; 
     width: auto; 
   }
+  .checkbox-section-title,
   .form-group-checkbox,
   .checkbox-label{
     font-size: 13px;
     font-style: 'Poppins', sans-serif;
+    margin-left: 35px;
   }
   .form-group-checkbox .checkbox-label-with-input .form-input.checkbox-input {
     width: 500px !important;
@@ -1376,16 +1458,25 @@ body {
     flex-grow: 1;
   }
 
-  .submit-form-button{
+  .submit-form-button, .submit-or-button{
     margin-bottom: -20px;
-    padding: 0.7rem .1rem;
+    padding: 0.4rem 0.1rem;
+    max-width: 150px;
+    font-size: 14px;
   }
 
-  .close-form-button{
-    padding: 0.7rem .1rem;
+  .close-form-button, .close-or-button{
+    padding: 0.4rem 0.1rem;
+    max-width: 150px;
+    font-size: 14px;
   }
-  .submit-form-button,
-  .close-form-button {
+
+  .close-or-button{
+    padding: .2rem .1rem;
+  }
+
+  .submit-form-button, .submit-or-button,
+  .close-form-button, .close-or-button {
     grid-column: 1 / 3;
     justify-self: center;
     margin-left: auto;

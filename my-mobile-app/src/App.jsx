@@ -653,14 +653,14 @@ function App() {
                 <span>I fully understand and agree to the <a href="#" className="privacy-link">Terms and Conditions</a> and <a href="#" className="privacy-link">Privacy Policy</a>.</span>
               </label>
               <div className="button-group-row">
-                <button className="online-request-button" onClick={handleUndergraduateClick}>
+                <button className="undergrad-button" onClick={handleUndergraduateClick}>
                   Undergraduate
                 </button>
-                <button className="online-request-button2" onClick={handleGraduateAlumniClick}>
+                <button className="graduate-button2" onClick={handleGraduateAlumniClick}>
                   Graduate / Alumni
                 </button>
               </div>
-              <button className="online-request-button3" onClick={handleSubmitOriginalReceiptClick}>
+              <button className="submit-button3" onClick={handleSubmitOriginalReceiptClick}>
                 Submit Original Receipt
               </button>
             </>
@@ -699,7 +699,7 @@ function App() {
                     <label className="form-label" htmlFor="upload-receipt">Upload Scanned Copy of Original Receipt</label>
                     <input className="form-input" type="file" id="upload-receipt" />
                   </div>
-                  <button className="submit-form-button" onClick={handleSubmitOriginalReceiptForm}>Submit</button>
+                  <button className="submit-or-button" onClick={handleSubmitOriginalReceiptForm}>Submit</button>
                   <button className="close-form-button" onClick={closeForm}>Close</button>
                 </div>
               </div>
@@ -891,7 +891,7 @@ function App() {
                           <span className="info-value">{degreeProgram}</span>
                         </div>
                       </div>
-
+<div className="documents-row-wrapper">
                       <div className="documents-requested-section">
                         <div className="documents-table-header">
                           <div className="document-name-header">Document Requested</div>
@@ -992,6 +992,7 @@ function App() {
                           })}
                         </div>
                       )}
+                      </div>
 
                       <button className="submit-form-button" onClick={handleSubmitRequest}>Submit</button>
                       <button className="back-button" onClick={handleBackToPage1}>Back</button>
