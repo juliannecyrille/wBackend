@@ -821,6 +821,29 @@ function App() {
 
                       <hr className="form-divider" />
 
+                      <h4 className="form-section-title">Contact Information</h4>
+                      <div className="form-group-double-inline">
+                        <div className="form-group-vertical">
+                          <label className="form-label" htmlFor="street-number">Phone Number</label>
+                          <input className="form-input" type="text" id="phone-number" />
+                        </div>
+                        <div className="form-group-vertical">
+                          <label className="form-label" htmlFor="barangay">Landline No</label>
+                          <input className="form-input" type="text" id="landline" />
+                        </div>
+                      </div>
+                      <div className="form-group-double-inline">
+                        <div className="form-group-vertical">
+                          <label className="form-label" htmlFor="municipality">Email Address</label>
+                          <input className="form-input" type="text" id="email" />
+                        </div>
+                        <div className="form-group-vertical">
+                          <label className="form-label" htmlFor="province">Viber</label>
+                          <input className="form-input" type="text" id="viber" />
+                        </div>
+                      </div>
+                      <hr className="form-divider" />
+
                       <h4 className="form-section-title">Permanent Address</h4>
                       <div className="form-group-double-inline">
                         <div className="form-group-vertical">
@@ -854,10 +877,13 @@ function App() {
                           <input type="checkbox" className="form-checkbox" /> Evaluation
                         </label>
                         <label className="checkbox-label">
+                          <input type="checkbox" className="form-checkbox" /> Board Exam
+                        </label>
+                        <label className="checkbox-label">
                           <input type="checkbox" className="form-checkbox" /> Employment or Promotion
                         </label>
                         <label className="checkbox-label checkbox-label-with-input">
-                          <input type="checkbox" className="form-checkbox" /> Further Studies (specify the College/University)
+                          <input type="checkbox" className="form-checkbox" /> Further Studies (specify College/University)
                           <input type="text" className="form-input checkbox-input" />
                         </label>
                       </div>
@@ -877,7 +903,8 @@ function App() {
                   {currentPage === 2 && (
                     <>
                       <h4 className="form-section-title">Document Request</h4>
-                      <div className="pre-filled-info">
+                      <div className="documents-row-wrapper">
+                        <div className="pre-filled-info">
                         <div className="info-item">
                           <span className="info-label">Student Number:</span>
                           <span className="info-value">{studentNumber}</span>
@@ -891,7 +918,6 @@ function App() {
                           <span className="info-value">{degreeProgram}</span>
                         </div>
                       </div>
-<div className="documents-row-wrapper">
                       <div className="documents-requested-section">
                         <div className="documents-table-header">
                           <div className="document-name-header">Document Requested</div>
@@ -921,6 +947,7 @@ function App() {
                               {selectedDocuments[doc] ? `P${selectedDocuments[doc].amount.toFixed(2)}` : 'P0.00'}
                             </span>
                           </div>
+
                         ))}
                         <div className="documents-table-total">
                           <span className="total-label">Total:</span>
@@ -992,6 +1019,7 @@ function App() {
                           })}
                         </div>
                       )}
+                      
                       </div>
 
                       <button className="submit-form-button" onClick={handleSubmitRequest}>Submit</button>
