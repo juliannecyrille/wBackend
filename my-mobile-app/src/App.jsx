@@ -1029,7 +1029,7 @@ function App() {
                   )}
 
                   {currentPage === 3 && transactionDetails && (
-                    <div className="transaction-summary-container">
+                     <div className="request-form-content transaction-summary-container">
                       <h4 className="form-section-title">Request Submitted!</h4>
                       <p className="transaction-message">Please proceed to PLM Cashier for payment.</p>
                       

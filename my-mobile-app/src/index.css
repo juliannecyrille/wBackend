@@ -1047,7 +1047,7 @@ body {
   border-radius: 1rem;
   text-align: center;
   max-width: 500px;
-  margin: 2rem auto;
+  align-items: center;
 }
 
 .transaction-message {
@@ -1161,16 +1161,7 @@ body {
   }
 }
 /* Media Queries */
-@media (max-width: 1023px) {
-  .documents-requested-section {
-    width: 100%;
-    margin-left: 2px;
-    margin-right: 2px;
-    padding-left: 0;
-    padding-right: 0;
-    box-sizing: border-box;
-  }
-}
+
 
 @media (min-width: 768px) {
   #root {
@@ -1251,42 +1242,41 @@ body {
     padding: 1.5rem;
   }
 
+  .pre-filled-info .info-value {
+  color: var(--text-gray-medium);
+  flex-grow: 1;
+  padding-left: 1rem;
+width: 250px;
+}
   .pre-filled-info {
     width: 100%; 
-    max-width: 800px; 
+    max-width: 600px; 
     margin-bottom: 1rem; 
     text-align: left; 
     align-items: top;
-    padding-right: 9rem;
+    padding-right: 2rem;
     padding-left: 2rem;
     margin-left: 1rem;
   }
   
 
-  .documents-row-wrapper {
-    display: flex;
-    flex-direction: row; 
-    gap: 1.5rem; 
-    align-items: top; 
-    width: 100%; 
-    margin-bottom: 2rem;
-  }
+ .documents-row-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 2rem;
+}
 
 
-  .documents-requested-section {
-    width: 100%;
-    max-width: 500px; 
-    margin-left: -19rem;
-
-  }
-
-  .selected-documents-details {
-    width: 400px;
-    max-width: 500px; 
-    margin-right: auto; 
-    margin-top: 0; 
-    margin-bottom: 0; 
-  }
+  .documents-requested-section,
+.selected-documents-details {
+  flex: 1 1 0;
+  min-width: 350px;
+  max-width: 700px;
+  margin: 0;
+}
 
   .submit-form-button, .back-button, .close-form-button, .submit-or-button, .close-or-button {
     grid-column: auto; 
@@ -1424,6 +1414,7 @@ body {
   .form-section-title,
   .form-subtitle{
     font-size: 15px;
+    margin-left: 30px;
   }
   .form-section-title,
   .form-section-title-secondary,
@@ -1564,4 +1555,18 @@ body {
   .form-group-double-inline > .form-group-vertical:nth-child(2):has([id="province"]) {
     margin-left: -490px;
   }
+.transaction-summary-container{
+  padding: 2rem;
+  background-color: white;
+  border-radius: 1rem;
+  text-align: center;
+  max-width: 500px;
+  margin: auto;              /* Center horizontally */
+  position: absolute;        /* Center vertically */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
 }
