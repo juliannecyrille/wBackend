@@ -700,7 +700,7 @@ function App() {
                     <input className="form-input" type="file" id="upload-receipt" />
                   </div>
                   <button className="submit-or-button" onClick={handleSubmitOriginalReceiptForm}>Submit</button>
-                  <button className="close-form-button" onClick={closeForm}>Close</button>
+                  <button className="close-or-button" onClick={closeForm}>Close</button>
                 </div>
               </div>
             </>
@@ -1029,7 +1029,8 @@ function App() {
                   )}
 
                   {currentPage === 3 && transactionDetails && (
-                     <div className="request-form-content transaction-summary-container">
+                    
+                    <div className="transaction-summary-container">
                       <h4 className="form-section-title">Request Submitted!</h4>
                       <p className="transaction-message">Please proceed to PLM Cashier for payment.</p>
                       
@@ -1074,6 +1075,7 @@ function App() {
                   )}
                 </div>
               </div>
+              
             </>
           )}
         </section>
