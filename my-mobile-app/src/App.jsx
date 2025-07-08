@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// Import individual components
 import Header from './components/Header/Header.jsx';
 import DatePicker from './components/DatePicker/DatePicker.jsx'; 
 import Footer from './components/Footer/Footer.jsx';
@@ -23,6 +22,7 @@ function App() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [showYearSelector, setShowYearSelector] = useState(false);
 
   // Form 2 states
   const [selectedDocuments, setSelectedDocuments] = useState({}); 
@@ -31,6 +31,7 @@ function App() {
   // Transaction Summary State
   const [transactionDetails, setTransactionDetails] = useState(null);
 
+  
   // Data for Colleges and Degree Programs
   const collegesAndPrograms = {
     "College of Accountancy": ["Bachelor of Science in Accountancy"],
@@ -251,12 +252,12 @@ function App() {
       "Medicine": { amount: 146, message: null, attachments: [] },
       "Grad School Program": { amount: 219, message: null, attachments: [] }
     },
-    "Certificate of Medium of Instruction": { // Differentiate
+    "Certificate of Medium of Instruction (Graduate)": { // Differentiate
       "Bachelor Program": { amount: 146, message: null, attachments: [] },
       "Medicine": { amount: 146, message: null, attachments: [] },
       "Grad School Program": { amount: 219, message: null, attachments: [] }
     },
-    "Certificate of Units Earned": { // Differentiate
+    "Certificate of Units Earned (Graduate)": { // Differentiate
       "Bachelor Program": { amount: 146, message: null, attachments: [] },
       "Medicine": { amount: 146, message: null, attachments: [] },
       "Grad School Program": { amount: 219, message: null, attachments: [] }
@@ -320,8 +321,29 @@ function App() {
       "Bachelor Program": { amount: "FREE", message: null, attachments: ["Affidavit"] },
       "Medicine": { amount: "FREE", message: null, attachments: ["Affidavit"] },
       "Grad School Program": { amount: "FREE", message: null, attachments: ["Affidavit"] }
-    }
+    },
+    "Doc Stamp": {
+  "Bachelor Program": { amount: 30, message: null, attachments: [] },
+  "Medicine": { amount: 30, message: null, attachments: [] },
+  "Grad School Program": { amount: 30, message: null, attachments: [] }
+},
   };
+
+  const requiredFields = [
+  'first-name', 'last-name', 'middle-name', 'college', 'degree-program',
+  'phone-number', 'email', 'street-number', 'barangay', 'municipality', 'province', 'purpose-request'
+];
+
+const isRequired = (id) => requiredFields.includes(id);
+  // Helper to determine if a document is a diploma
+const isDiploma = (docName) => docName.toLowerCase().includes('diploma');
+
+// Count how many non-diploma documents are selected
+const docStampCount = Object.keys(selectedDocuments).filter(docName => !isDiploma(docName)).length;
+const docStampAmount = docStampCount * 30;
+
+// Add Doc Stamp to total calculation
+const totalWithDocStamp = totalAmount + docStampAmount;
 
   // Function to determine program type based on college, degree, and active form
   const getProgramType = (college, degree, activeForm, documentName) => {
@@ -572,22 +594,24 @@ function App() {
   };
 
   const handleQuantityChange = (docName, qty) => {
-    setSelectedDocuments(prev => {
-      const newSelected = { ...prev };
-      if (newSelected[docName]) {
-        const parsedQty = parseInt(qty, 10);
-        const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, docName);
-        const docInfo = documentDetails[docName]?.[currentProgramType];
-        const price = docInfo ? (docInfo.amount === "FREE" ? 0 : docInfo.amount) : 0;
-        newSelected[docName] = {
-          ...newSelected[docName],
-          qty: isNaN(parsedQty) || parsedQty < 0 ? 0 : parsedQty,
-          amount: (isNaN(parsedQty) || parsedQty < 0 ? 0 : parsedQty) * price
-        };
-      }
-      return newSelected;
-    });
-  };
+  setSelectedDocuments(prev => {
+    const newSelected = { ...prev };
+    if (newSelected[docName]) {
+      let parsedQty = parseInt(qty, 10);
+      if (isNaN(parsedQty) || parsedQty < 0) parsedQty = 0;
+      if (parsedQty > 6) parsedQty = 6; // <-- enforce max limit
+      const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, docName);
+      const docInfo = documentDetails[docName]?.[currentProgramType];
+      const price = docInfo ? (docInfo.amount === "FREE" ? 0 : docInfo.amount) : 0;
+      newSelected[docName] = {
+        ...newSelected[docName],
+        qty: parsedQty,
+        amount: parsedQty * price
+      };
+    }
+    return newSelected;
+  });
+};
 
   useEffect(() => {
     const calculatedTotal = Object.values(selectedDocuments).reduce((sum, doc) => sum + doc.amount, 0);
@@ -610,8 +634,9 @@ function App() {
       college: selectedCollege,
       degreeProgram: degreeProgram,
       totalAmount: totalAmount,
-      selectedDocuments: selectedDocuments 
-    });
+      selectedDocuments: selectedDocuments,
+      docStampCount: docStampCount
+});
     setCurrentPage(3); 
   };
 
@@ -676,27 +701,39 @@ function App() {
                     <input className="form-input" type="text" id="student-number-or" />
                   </div>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="first-name-or">First Name</label>
+                    <label className="form-label" htmlFor="first-name-or">First Name
+                      <span style={{color: 'red'}}>*</span>
+                    </label>
                     <input className="form-input" type="text" id="first-name-or" />
                   </div>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="last-name-or">Last Name</label>
+                    <label className="form-label" htmlFor="last-name-or">Last Name
+                      <span style={{color: 'red'}}>*</span>
+                    </label>
                     <input className="form-input" type="text" id="last-name-or" />
                   </div>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="middle-name-or">Middle Name</label>
+                    <label className="form-label" htmlFor="middle-name-or">Middle Name
+                      <span style={{color: 'red'}}>*</span>
+                    </label>
                     <input className="form-input" type="text" id="middle-name-or" />
                   </div>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="reference-no-or">Reference No.:</label>
+                    <label className="form-label" htmlFor="reference-no-or">Reference No.:
+                      <span style={{color: 'red'}}>*</span>
+                    </label>
                     <input className="form-input" type="text" id="reference-no-or" />
                   </div>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="or-number-or">OR Number:</label>
+                    <label className="form-label" htmlFor="or-number-or">OR Number:
+                      <span style={{color: 'red'}}>*</span>
+                    </label>
                     <input className="form-input" type="text" id="or-number-or" />
                   </div>
                   <div className="form-group form-group-vertical">
-                    <label className="form-label" htmlFor="upload-receipt">Upload Scanned Copy of Original Receipt</label>
+                    <label className="form-label" htmlFor="upload-receipt">Upload Scanned Copy of Original Receipt
+                      <span style={{color: 'red'}}>*</span>
+                    </label>
                     <input className="form-input" type="file" id="upload-receipt" />
                   </div>
                   <button className="submit-or-button" onClick={handleSubmitOriginalReceiptForm}>Submit</button>
@@ -733,21 +770,30 @@ function App() {
                       </div>
                       <div className="form-group-triple-inline">
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="first-name">First Name</label>
+                          <label className="form-label" htmlFor="first-name">First Name
+                            <span style={{color: 'red'}}>*</span>
+                          </label>
                           <input className="form-input" type="text" id="first-name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                         </div>
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="last-name">Last Name</label>
+                            <label className="form-label" htmlFor="last-name">
+    {activeForm === 'graduate' ? 'Maiden Last Name' : 'Last Name'} <span style={{color: 'red'}}>*</span>
+  </label>
+                          
                           <input className="form-input" type="text" id="last-name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
                         </div>
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="middle-name">Middle Name</label>
+                          <label className="form-label" htmlFor="middle-name">Middle Name
+                            <span style={{color: 'red'}}>*</span>
+                          </label>
                           <input className="form-input" type="text" id="middle-name" value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
                         </div>
                       </div>
                       <div className="form-group-double-inline">
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="college">College</label>
+                          <label className="form-label" htmlFor="college">College
+                            <span style={{color: 'red'}}>*</span>
+                          </label>
                           <select className="form-select" id="college" value={selectedCollege} onChange={(e) => { setSelectedCollege(e.target.value); setDegreeProgram(''); }}>
                             <option value="">Select College</option>
                             {Object.keys(collegesAndPrograms).map((collegeName) => (
@@ -756,7 +802,9 @@ function App() {
                           </select>
                         </div>
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="degree-program">Degree Program/Course</label>
+                          <label className="form-label" htmlFor="degree-program">Degree Program/Course
+                            <span style={{color: 'red'}}>*</span>
+                          </label>
                           <select className="form-select" id="degree-program" value={degreeProgram} onChange={(e) => setDegreeProgram(e.target.value)} disabled={!selectedCollege}>
                             <option value="">Select Course</option>
                             {selectedCollege && collegesAndPrograms[selectedCollege]?.map((program) => (
@@ -779,7 +827,10 @@ function App() {
 
                       {activeForm === 'graduate' && (
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="graduation-date">If graduated, date of graduation:</label>
+                          <label className="form-label" htmlFor="graduation-date">If graduated, date of graduation:
+                            <span style={{color: 'red'}}>*</span>
+
+                          </label>
                           <div className="date-input-container">
                             <input
                               className="form-input date-input"
@@ -824,7 +875,10 @@ function App() {
                       <h4 className="form-section-title">Contact Information</h4>
                       <div className="form-group-double-inline">
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="street-number">Phone Number</label>
+                          <label className="form-label" htmlFor="street-number">Phone Number
+                            <span style={{color: 'red'}}>*</span>
+
+                          </label>
                           <input className="form-input" type="text" id="phone-number" />
                         </div>
                         <div className="form-group-vertical">
@@ -834,7 +888,10 @@ function App() {
                       </div>
                       <div className="form-group-double-inline">
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="municipality">Email Address</label>
+                          <label className="form-label" htmlFor="municipality">Email Address
+                            <span style={{color: 'red'}}>*</span>
+
+                          </label>
                           <input className="form-input" type="text" id="email" />
                         </div>
                         <div className="form-group-vertical">
@@ -847,28 +904,43 @@ function App() {
                       <h4 className="form-section-title">Permanent Address</h4>
                       <div className="form-group-double-inline">
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="street-number">Street Number/Name</label>
+                          <label className="form-label" htmlFor="street-number">Street Number/Name
+                            <span style={{color: 'red'}}>*</span>
+
+                          </label>
                           <input className="form-input" type="text" id="street-number" />
                         </div>
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="barangay">Barangay</label>
+                          <label className="form-label" htmlFor="barangay">Barangay
+                            <span style={{color: 'red'}}>*</span>
+
+                          </label>
                           <input className="form-input" type="text" id="barangay" />
                         </div>
                       </div>
                       <div className="form-group-double-inline">
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="municipality">Municipality</label>
+                          <label className="form-label" htmlFor="municipality">Municipality
+                            <span style={{color: 'red'}}>*</span>
+
+                          </label>
                           <input className="form-input" type="text" id="municipality" />
                         </div>
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="province">Province</label>
+                          <label className="form-label" htmlFor="province">Province
+                            <span style={{color: 'red'}}>*</span>
+
+                          </label>
                           <input className="form-input" type="text" id="province" />
                         </div>
                       </div>
 
                       <hr className="form-divider" />
 
-                      <h4 className="form-section-title">Purpose of Request</h4>
+                      <h4 className="form-section-title">Purpose of Request
+                            <span style={{color: 'red'}}>*</span>
+
+                      </h4>
                       <p className="form-subtitle">The purpose of request should be indicated in the document requested.</p>
 
                       <div className="form-group-checkbox">
@@ -942,6 +1014,7 @@ function App() {
                               onChange={(e) => handleQuantityChange(doc, e.target.value)}
                               disabled={!selectedDocuments[doc]}
                               min="0"
+                              max="6" 
                             />
                             <span className="document-amount-display">
                               {selectedDocuments[doc] ? `P${selectedDocuments[doc].amount.toFixed(2)}` : 'P0.00'}
@@ -949,6 +1022,24 @@ function App() {
                           </div>
 
                         ))}
+
+{docStampCount > 0 && (
+  <div className="documents-table-row">
+    <label className="document-name-label" style={{ opacity: 0.7, pointerEvents: 'none' }}>
+      Doc Stamp
+    </label>
+    <input
+      type="number"
+      className="document-qty-input"
+      value={docStampCount}
+      disabled
+      style={{ background: '#f0f0f0', color: '#888' }}
+    />
+    <span className="document-amount-display">
+      P{docStampAmount.toFixed(2)}
+    </span>
+  </div>
+)}
                         <div className="documents-table-total">
                           <span className="total-label">Total:</span>
                           <span className="total-value">P{totalAmount.toFixed(2)}</span>
@@ -963,9 +1054,13 @@ function App() {
                             const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, docName);
                             const programSpecificDetails = docInfo?.[currentProgramType];
 
+                            
                             if (!programSpecificDetails) {
                               return null; 
                             }
+                            
+                        
+                            
 
                             return (
                               <div key={docName} className="document-detail-item">
@@ -1063,12 +1158,17 @@ function App() {
 
                       <h5 className="summary-documents-title">Requested Documents:</h5>
                       <ul className="summary-documents-list">
-                        {Object.keys(transactionDetails.selectedDocuments).map((docName, index) => (
-                          <li key={index} className="summary-document-item">
-                            {docName} (Qty: {transactionDetails.selectedDocuments[docName].qty}) - P{transactionDetails.selectedDocuments[docName].amount.toFixed(2)}
-                          </li>
-                        ))}
-                      </ul>
+  {Object.keys(transactionDetails.selectedDocuments).map((docName, index) => (
+    <li key={index} className="summary-document-item">
+      {docName} (Qty: {transactionDetails.selectedDocuments[docName].qty}) - P{transactionDetails.selectedDocuments[docName].amount.toFixed(2)}
+    </li>
+  ))}
+  {transactionDetails.docStampCount > 0 && (
+    <li className="summary-document-item">
+      Doc Stamp (Qty: {transactionDetails.docStampCount}) - P{(transactionDetails.docStampCount * 30).toFixed(2)}
+    </li>
+  )}
+</ul>
 
                       <button className="close-form-button" onClick={closeForm}>Close</button>
                     </div>

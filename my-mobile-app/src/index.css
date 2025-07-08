@@ -1622,6 +1622,21 @@ width: 250px;
   font-family: 'Poppins', sans-serif;
 }
 
+.year-selector {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: 200px;
+  overflow-y: auto;
+  gap: 4px;
+}
+.year-option {
+  width: 60px;
+  margin: 5px;
+  padding: 4px 0;
+  border: 1px solid #f1efef;
+  border-radius: 2px;
+  cursor: pointer;
+}
 
 .message-below{
   font-size: 12px;
