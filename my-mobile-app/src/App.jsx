@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-// Import individual components
 import Header from './components/Header/Header.jsx';
 import DatePicker from './components/DatePicker/DatePicker.jsx'; 
 import Footer from './components/Footer/Footer.jsx';
+//import { QRCode } from "qrcode.react";
+//npm install qrcode.react
 
 function App() {
   const [msg, setMsg] = useState('');
@@ -37,11 +38,13 @@ function App() {
   const [ayAdmitted, setAyAdmitted] = useState('');
   const [semAdmitted, setSemAdmitted] = useState('');
   const [graduationDate, setGraduationDate] = useState(null);
+  
 
   // Date picker states
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [showYearSelector, setShowYearSelector] = useState(false);
 
   // Form 2 states
   const [selectedDocuments, setSelectedDocuments] = useState({}); 
@@ -50,6 +53,7 @@ function App() {
   // Transaction Summary State
   const [transactionDetails, setTransactionDetails] = useState(null);
 
+  
   // Data for Colleges and Degree Programs
   const collegesAndPrograms = {
     "College of Accountancy": ["Bachelor of Science in Accountancy"],
@@ -166,48 +170,48 @@ function App() {
       "MEDICINE": { amount: 146, message: null, attachments: ["Printed SER"] }
     },
     "Certificate of Grades": {
-      "BACHELOR PROGRAM": { amount: 146, message: null, attachments: [] },
-      "MEDICINE": { amount: 146, message: null, attachments: [] }
+      "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
     "Certificate of Grades with GWA": {
-      "BACHELOR PROGRAM": { amount: 146, message: null, attachments: [] },
-      "MEDICINE": { amount: 146, message: null, attachments: [] }
+      "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
     "Certificate of Units Earned": {
-      "BACHELOR PROGRAM": { amount: 146, message: null, attachments: [] },
-      "MEDICINE": { amount: 146, message: null, attachments: [] }
+      "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
     "Certificate of Medium of Instruction": { // Differentiate from Graduate one
-      "BACHELOR PROGRAM": { amount: 146, message: null, attachments: [] },
-      "MEDICINE": { amount: 146, message: null, attachments: [] }
+      "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
     "Certificate of NSTP Serial No. (ROTC/CWTS)": { // Differentiate
-      "BACHELOR PROGRAM": { amount: 146, message: null, attachments: [] },
-      "MEDICINE": { amount: 146, message: null, attachments: [] }
+      "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
-    "Certificate of Course Description (All subjects taken or Specific subject only)": { // Differentiate
-      "BACHELOR PROGRAM": { amount: 146, message: null, attachments: [] },
-      "MEDICINE": { amount: 146, message: null, attachments: [] }
+    "Certificate of Course Description (All subjects taken)": { // Differentiate
+      "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
-    "Certificate of Course Description (Specific subject only)": { // Differentiate
-      "BACHELOR PROGRAM": { amount: 146, message: null, attachments: [] },
-      "MEDICINE": { amount: 146, message: null, attachments: [] }
+    "Certificate of Course Description (Specific Subject Only)": { // Differentiate
+      "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
     "Certificate of Course Syllabus": { // Differentiate
-      "BACHELOR PROGRAM": { amount: 146, message: null, attachments: [] },
-      "MEDICINE": { amount: 146, message: null, attachments: [] }
+      "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
     "CTC of F137": { // Differentiate
-      "BACHELOR PROGRAM": { amount: 146, message: null, attachments: [] },
-      "MEDICINE": { amount: 146, message: null, attachments: [] }
+      "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
     "Replacement of ID": {
-      "BACHELOR PROGRAM": { amount: 100, message: null, attachments: ["Affidavit of Loss"] },
-      "MEDICINE": { amount: 100, message: null, attachments: ["Affidavit of Loss"] }
+      "BACHELOR PROGRAM": { amount: 100, message: "Step 1:  Upload scanned copy of Affidavit of Loss (notarized) \n Step 2.  Go to registrar office and personally submit the original copy of Affidavit of Loss (notarized). ", attachments: ["Affidavit of Loss"] },
+      "MEDICINE": { amount: 100, message: "Step 1:  Upload the Affidavit of Loss (notarized) \n Step 2.  Go to registrar office and personally submit the original copy of Affidavit of Loss (notarized).", attachments: ["Affidavit of Loss"] }
     },
     "Transfer out/Honorable Dismissal": { // Differentiate
-      "BACHELOR PROGRAM": { amount: 146, message: "Please go to registrar first to request for the Clearance Form and surrender your PLM/Student ID.", attachments: ["Certificate of Grades", "Endorsement Letter from College", "Transcript of Records"] },
-      "MEDICINE": { amount: 146, message: "Please go to registrar first to request for the Clearance Form and surrender your PLM/Student ID.", attachments: ["Certificate of Grades", "Endorsement Letter from College", "Transcript of Records"] }
+      "BACHELOR PROGRAM": { amount: 146, message: "Step 1.  Go to registrar office for the Clearance Form & other documents. \n Step 2.  Surrender PLM/Student ID. \n Step 3.  Upload scanned copy of filled-out Clearance Form (with complete signatures) and submit original copy PERSONALLY to registrar office. \n Step 4.  Upload other supporting documents (accessible only after Step 3).", attachments: ["Clearance Form","Certificate of Grades", "Endorsement Letter from College", "Transcript of Records"] },
+      "MEDICINE": { amount: 146, message: "Step 1.  Go to registrar office for the Clearance Form & other documents. \n Step 2.  Surrender PLM/Student ID. \n Step 3.  Upload scanned copy of filled-out Clearance Form (with complete signatures) and submit original copy PERSONALLY to registrar office. \n Step 4.  Upload other supporting documents (accessible only after Step 3).", attachments: ["Clearance Form","Certificate of Grades", "Endorsement Letter from College", "Transcript of Records"] }
     },
     "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2017 - Below)": {
       "BACHELOR PROGRAM": { amount: 730, message: null, downloads: ["Endorsement Letter (fill out then upload)"], attachments: ["Endorsement Letter", "Certificate of Enrollment", "Certificate of Grades or TOR"] },
@@ -229,26 +233,26 @@ function App() {
       "Medicine": { amount: 584, message: null, attachments: ["Diploma (English and Tagalog for below 2017 Grad)", "Transcript of Record"] },
       "Grad School Program": { amount: 876, message: null, attachments: ["Diploma (English and Tagalog for below 2017 Grad)", "Transcript of Record"] }
     },
-    "CAV for Abroad or DFA/CHED Authentication (Graduate)": { // This is the Graduate version
+    "CAV for Abroad or DFA/CHED Authentication (Graduate)": { //Graduate version
       "Bachelor Program": { amount: 730, message: null, downloads: ["Endorsement Letter (fill out then upload)"], attachments: ["Diploma (English and Tagalog for below 2017 Grad)", "Photocopy of TOR", "Endorsement Letter"] },
       "Medicine": { amount: 730, message: null, downloads: ["Endorsement Letter (fill out then upload)"], attachments: ["Diploma (English and Tagalog for below 2017 Grad)", "Photocopy of TOR", "Endorsement Letter"] },
       "Grad School Program": { amount: 1095, message: null, downloads: ["Endorsement Letter (fill out then upload)"], attachments: ["Diploma (English and Tagalog for below 2017 Grad)", "Photocopy of TOR", "Endorsement Letter"] }
     },
-    "Transcript of Records": { // This one has special pricing for specific programs
+    "Transcript of Records": { // has special pricing for specific programs
       "Bachelor Program": { amount: 220, message: null, attachments: ["1.5 X 1.5 White Background w/ Nametag"] },
       "Medicine": { amount: 220, message: null, attachments: ["1.5 X 1.5 White Background w/ Nametag"] },
       "Grad School Program": { amount: 330, message: null, attachments: ["1.5 X 1.5 White Background w/ Nametag"] },
       "Student PT, Engr, Nursing, Arch, IT, CS": { amount: 241, message: null, attachments: ["1.5 X 1.5 White Background w/ Nametag"] }
     },
     "Certified True Copy of TOR": {
-      "Bachelor Program": { amount: 146, message: null, attachments: [] },
-      "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 219, message: null, attachments: [] }
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: 219, message:"No other attachment needed.", attachments: [] }
     },
     "Original TOR for other school or to transfer credentials": {
-      "Bachelor Program": { amount: 146, message: null, attachments: [] },
-      "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 150, message: null, attachments: [] }
+      "Bachelor Program": { amount: 146, message: "NOTE: Transfer Credentials can only be issued ONCE. Any subsequent requests will NOT be processed, and you will be notified via email accordingly. ", attachments: ["Request Letter (from other school)"] },
+      "Medicine": { amount: 146, message: "NOTE: Transfer Credentials can only be issued ONCE. Any subsequent requests will NOT be processed, and you will be notified via email accordingly.", attachments: ["Request Letter (from other school)"] },
+      "Grad School Program": { amount: 150, message: "NOTE: Transfer Credentials can only be issued ONCE. Any subsequent requests will NOT be processed, and you will be notified via email accordingly.", attachments: [] }
     },
     "CTC Diploma": {
       "Bachelor Program": { amount: 146, message: null, attachments: ["Original Diploma"] },
@@ -256,69 +260,74 @@ function App() {
       "Grad School Program": { amount: 219, message: null, attachments: ["Original Diploma"] }
     },
     "Certificate of Graduation with special paper for loss diploma": {
-      "Bachelor Program": { amount: 146, message: null, downloads: ["OUR Affidavit Form"], attachments: ["Notarized Affidavit of Loss", "OUR Affidavit Form"] },
-      "Medicine": { amount: 146, message: null, downloads: ["OUR Affidavit Form"], attachments: ["Notarized Affidavit of Loss", "OUR Affidavit Form"] },
+      "Bachelor Program": { amount: 146, message: "Step 1.  Download and fill-out OUR Affidavit Form. \n Step 2.  Upload filled-out OUR Affidavit Form. \n Step 3. Upload scanned copy of Affidavit of Loss (notarized) and personally submit original copy to registrar office.", downloads: ["OUR Affidavit Form"], attachments: ["Notarized Affidavit of Loss", "OUR Affidavit Form"] },
+      "Medicine": { amount: 146, message: "Step 1.  Download and fill-out OUR Affidavit Form. \n Step 2.  Upload filled-out OUR Affidavit Form. \n Step 3. Upload scanned copy of Affidavit of Loss (notarized) and personally submit original copy to registrar office.", downloads: ["OUR Affidavit Form"], attachments: ["Notarized Affidavit of Loss", "OUR Affidavit Form"] },
       "Grad School Program": { amount: 219, message: null, downloads: ["OUR Affidavit Form"], attachments: ["Notarized Affidavit of Loss", "OUR Affidavit Form"] }
     },
     "Certificate of Graduation": { // Differentiate
-      "Bachelor Program": { amount: 146, message: null, attachments: [] },
-      "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 219, message: null, attachments: [] }
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
     "Certificate of Graduation w/ Latin Honor": { // Differentiate
-      "Bachelor Program": { amount: 146, message: null, attachments: [] },
-      "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 219, message: null, attachments: [] }
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
-    "Certificate of Medium of Instruction": { // Differentiate
-      "Bachelor Program": { amount: 146, message: null, attachments: [] },
-      "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 219, message: null, attachments: [] }
+    "Certificate of Medium of Instruction (Graduate)": { // Differentiate
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
-    "Certificate of Units Earned": { // Differentiate
-      "Bachelor Program": { amount: 146, message: null, attachments: [] },
-      "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 219, message: null, attachments: [] }
+    "Certificate of Units Earned (Graduate)": { // Differentiate
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
     "Certificate of GWA": { // Differentiate
-      "Bachelor Program": { amount: 146, message: null, attachments: [] },
-      "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 219, message: null, attachments: [] }
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
     "Certificate of NSTP ROTC/CWTS": { // Differentiate
-      "Bachelor Program": { amount: 146, message: null, attachments: [] },
-      "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 219, message: null, attachments: [] }
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
-    "Course Description (All subjects or Specific subject only)": { // Differentiate
-      "Bachelor Program": { amount: 146, message: null, attachments: [] },
+    "Course Description (All subjects)": { // Differentiate
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 219, message: null, attachments: [] }
+      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
-    "Course Syllabus (Selected Courses)": {
-      "Bachelor Program": { amount: 146, message: null, attachments: [] },
+    "Course Description (Specific Subject Only)": { // Differentiate
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 219, message: null, attachments: [] }
+      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
+    },
+    "Course Syllabus": {
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
     "Certificate of Completion": {
-      "Bachelor Program": { amount: 146, message: null, attachments: [] },
-      "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 219, message: null, attachments: [] }
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
     "Certificate of Ranking": {
-      "Bachelor Program": { amount: 146, message: null, attachments: [] },
-      "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 219, message: null, attachments: [] }
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
     "Certificate of No Objection": {
-      "Bachelor Program": { amount: 146, message: null, attachments: [] },
-      "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 219, message: null, attachments: [] }
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
-    "English Translation of Diploma (For below 2017 Grad. They need to submit a copy of Tagalog Diploma)": {
-      "Bachelor Program": { amount: 96, message: null, attachments: [] },
-      "Medicine": { amount: 96, message: null, attachments: [] },
-      "Grad School Program": { amount: 96, message: null, attachments: [] }
+    "English Translation of Diploma": {
+      "Bachelor Program": { amount: 96, message: null, attachments: ["Tagalog Diploma"] },
+      "Medicine": { amount: 96, message: null, attachments: ["Tagalog Diploma"] },
+      "Grad School Program": { amount: 96, message: null, attachments: ["Tagalog Diploma"] }
     },
     "Honorable Dismissal for Graduation": { // Note: There are two "Honorable Dismissal" documents. Assuming this is for Graduate/Alumni.
       "Bachelor Program": { amount: 146, message: null, attachments: ["Request Letter from Other School"] },
@@ -326,21 +335,42 @@ function App() {
       "Grad School Program": { amount: 219, message: null, attachments: ["Request Letter from Other School"] }
     },
     "CTC F137 (Graduate)": { // Differentiate
-      "Bachelor Program": { amount: 146, message: null, attachments: [] },
-      "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 219, message: null, attachments: [] }
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
     "Company Verification": {
-      "Bachelor Program": { amount: 300, message: null, attachments: [] },
-      "Medicine": { amount: 300, message: null, attachments: [] },
-      "Grad School Program": { amount: 300, message: null, attachments: [] }
+      "Bachelor Program": { amount: 300, message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: 300, message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: 300, message: "No other attachment needed.", attachments: [] }
     },
     "First Copy of TOR": {
-      "Bachelor Program": { amount: "FREE", message: null, attachments: ["Affidavit"] },
-      "Medicine": { amount: "FREE", message: null, attachments: ["Affidavit"] },
-      "Grad School Program": { amount: "FREE", message: null, attachments: ["Affidavit"] }
-    }
+      "Bachelor Program": { amount: "FREE", message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: "FREE", message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: "FREE", message:"No other attachment needed.", attachments: [] }
+    },
+    "Doc Stamp": {
+  "Bachelor Program": { amount: 30, message: "No other attachment needed.", attachments: [] },
+  "Medicine": { amount: 30, message: "No other attachment needed.", attachments: [] },
+  "Grad School Program": { amount: 30, message: "No other attachment needed.", attachments: [] }
+},
   };
+
+  const requiredFields = [
+  'first-name', 'last-name', 'middle-name', 'college', 'degree-program',
+  'phone-number', 'email', 'street-number', 'barangay', 'municipality', 'province', 'purpose-request'
+];
+
+const isRequired = (id) => requiredFields.includes(id);
+  // Helper to determine if a document is a diploma
+const isDiploma = (docName) => docName.toLowerCase().includes('diploma');
+
+// Count how many non-diploma documents are selected
+const docStampCount = Object.keys(selectedDocuments).filter(docName => !isDiploma(docName)).length;
+const docStampAmount = docStampCount * 30;
+
+// Add Doc Stamp to total calculation
+const totalWithDocStamp = totalAmount + docStampAmount;
 
   // Function to determine program type based on college, degree, and active form
   const getProgramType = (college, degree, activeForm, documentName) => {
@@ -538,7 +568,8 @@ function App() {
     "Certificate of Units Earned",
     "Certificate of Medium of Instruction",
     "Certificate of NSTP Serial No. (ROTC/CWTS)",
-    "Certificate of Course Description (All subjects taken or Specific subject only)",
+    "Certificate of Course Description (All subjects taken)",
+    "Certificate of Course Description (Specific Subject Only)",
     "Certificate of Course Syllabus",
     "CTC of F137",
     "Replacement of ID",
@@ -558,8 +589,8 @@ function App() {
     "Certificate of Graduation with special paper for loss diploma",
     "Certificate of Graduation",
     "Certificate of Graduation w/ Latin Honor",
-    "Certificate of Medium of Instruction",
-    "Certificate of Units Earned",
+    "Certificate of Medium of Instruction (Graduate)",
+    "Certificate of Units Earned (Graduate)",
     "Certificate of GWA",
     "Certificate of NSTP ROTC/CWTS",
     "Course Description (All subjects)",
@@ -568,7 +599,7 @@ function App() {
     "Certificate of Completion",
     "Certificate of Ranking",
     "Certificate of No Objection",
-    "English Translation of Diploma (For below 2017 Grad. They need to submit a copy of Tagalog Diploma)",
+    "English Translation of Diploma",
     "Honorable Dismissal for Graduation",
     "CTC F137 (Graduate)",
     "Company Verification",
@@ -591,22 +622,24 @@ function App() {
   };
 
   const handleQuantityChange = (docName, qty) => {
-    setSelectedDocuments(prev => {
-      const newSelected = { ...prev };
-      if (newSelected[docName]) {
-        const parsedQty = parseInt(qty, 10);
-        const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, docName);
-        const docInfo = documentDetails[docName]?.[currentProgramType];
-        const price = docInfo ? (docInfo.amount === "FREE" ? 0 : docInfo.amount) : 0;
-        newSelected[docName] = {
-          ...newSelected[docName],
-          qty: isNaN(parsedQty) || parsedQty < 0 ? 0 : parsedQty,
-          amount: (isNaN(parsedQty) || parsedQty < 0 ? 0 : parsedQty) * price
-        };
-      }
-      return newSelected;
-    });
-  };
+  setSelectedDocuments(prev => {
+    const newSelected = { ...prev };
+    if (newSelected[docName]) {
+      let parsedQty = parseInt(qty, 10);
+      if (isNaN(parsedQty) || parsedQty < 0) parsedQty = 0;
+      if (parsedQty > 6) parsedQty = 6; // <-- enforce max limit
+      const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, docName);
+      const docInfo = documentDetails[docName]?.[currentProgramType];
+      const price = docInfo ? (docInfo.amount === "FREE" ? 0 : docInfo.amount) : 0;
+      newSelected[docName] = {
+        ...newSelected[docName],
+        qty: parsedQty,
+        amount: parsedQty * price
+      };
+    }
+    return newSelected;
+  });
+};
 
   useEffect(() => {
     const calculatedTotal = Object.values(selectedDocuments).reduce((sum, doc) => sum + doc.amount, 0);
@@ -629,8 +662,9 @@ function App() {
       college: selectedCollege,
       degreeProgram: degreeProgram,
       totalAmount: totalAmount,
-      selectedDocuments: selectedDocuments 
-    });
+      selectedDocuments: selectedDocuments,
+      docStampCount: docStampCount
+});
     setCurrentPage(3); 
   };
 
@@ -697,27 +731,39 @@ function App() {
                     <input className="form-input" type="text" id="student-number-or" />
                   </div>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="first-name-or">First Name</label>
+                    <label className="form-label" htmlFor="first-name-or">First Name
+                      <span style={{color: 'red'}}>*</span>
+                    </label>
                     <input className="form-input" type="text" id="first-name-or" />
                   </div>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="last-name-or">Last Name</label>
+                    <label className="form-label" htmlFor="last-name-or">Last Name
+                      <span style={{color: 'red'}}>*</span>
+                    </label>
                     <input className="form-input" type="text" id="last-name-or" />
                   </div>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="middle-name-or">Middle Name</label>
+                    <label className="form-label" htmlFor="middle-name-or">Middle Name
+                      <span style={{color: 'red'}}>*</span>
+                    </label>
                     <input className="form-input" type="text" id="middle-name-or" />
                   </div>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="reference-no-or">Reference No.:</label>
+                    <label className="form-label" htmlFor="reference-no-or">Reference No.:
+                      <span style={{color: 'red'}}>*</span>
+                    </label>
                     <input className="form-input" type="text" id="reference-no-or" />
                   </div>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="or-number-or">OR Number:</label>
+                    <label className="form-label" htmlFor="or-number-or">OR Number:
+                      <span style={{color: 'red'}}>*</span>
+                    </label>
                     <input className="form-input" type="text" id="or-number-or" />
                   </div>
                   <div className="form-group form-group-vertical">
-                    <label className="form-label" htmlFor="upload-receipt">Upload Scanned Copy of Original Receipt</label>
+                    <label className="form-label" htmlFor="upload-receipt">Upload Scanned Copy of Original Receipt
+                      <span style={{color: 'red'}}>*</span>
+                    </label>
                     <input className="form-input" type="file" id="upload-receipt" />
                   </div>
                   <button className="submit-or-button" onClick={handleSubmitOriginalReceiptForm}>Submit</button>
@@ -754,21 +800,30 @@ function App() {
                       </div>
                       <div className="form-group-triple-inline">
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="first-name">First Name</label>
+                          <label className="form-label" htmlFor="first-name">First Name
+                            <span style={{color: 'red'}}>*</span>
+                          </label>
                           <input className="form-input" type="text" id="first-name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                         </div>
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="last-name">Last Name</label>
+                            <label className="form-label" htmlFor="last-name">
+    {activeForm === 'graduate' ? 'Maiden Last Name' : 'Last Name'} <span style={{color: 'red'}}>*</span>
+  </label>
+                          
                           <input className="form-input" type="text" id="last-name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
                         </div>
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="middle-name">Middle Name</label>
+                          <label className="form-label" htmlFor="middle-name">Middle Name
+                            <span style={{color: 'red'}}>*</span>
+                          </label>
                           <input className="form-input" type="text" id="middle-name" value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
                         </div>
                       </div>
                       <div className="form-group-double-inline">
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="college">College</label>
+                          <label className="form-label" htmlFor="college">College
+                            <span style={{color: 'red'}}>*</span>
+                          </label>
                           <select className="form-select" id="college" value={selectedCollege} onChange={(e) => { setSelectedCollege(e.target.value); setDegreeProgram(''); }}>
                             <option value="">Select College</option>
                             {Object.keys(collegesAndPrograms).map((collegeName) => (
@@ -777,7 +832,9 @@ function App() {
                           </select>
                         </div>
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="degree-program">Degree Program/Course</label>
+                          <label className="form-label" htmlFor="degree-program">Degree Program/Course
+                            <span style={{color: 'red'}}>*</span>
+                          </label>
                           <select className="form-select" id="degree-program" value={degreeProgram} onChange={(e) => setDegreeProgram(e.target.value)} disabled={!selectedCollege}>
                             <option value="">Select Course</option>
                             {selectedCollege && collegesAndPrograms[selectedCollege]?.map((program) => (
@@ -800,7 +857,10 @@ function App() {
 
                       {activeForm === 'graduate' && (
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="graduation-date">If graduated, date of graduation:</label>
+                          <label className="form-label" htmlFor="graduation-date">If graduated, date of graduation:
+                            <span style={{color: 'red'}}>*</span>
+
+                          </label>
                           <div className="date-input-container">
                             <input
                               className="form-input date-input"
@@ -845,7 +905,10 @@ function App() {
                       <h4 className="form-section-title">Contact Information</h4>
                       <div className="form-group-double-inline">
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="street-number">Phone Number</label>
+                          <label className="form-label" htmlFor="street-number">Phone Number
+                            <span style={{color: 'red'}}>*</span>
+
+                          </label>
                           <input className="form-input" type="text" id="phone-number" />
                         </div>
                         <div className="form-group-vertical">
@@ -855,7 +918,10 @@ function App() {
                       </div>
                       <div className="form-group-double-inline">
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="municipality">Email Address</label>
+                          <label className="form-label" htmlFor="municipality">Email Address
+                            <span style={{color: 'red'}}>*</span>
+
+                          </label>
                           <input className="form-input" type="text" id="email" />
                         </div>
                         <div className="form-group-vertical">
@@ -868,28 +934,43 @@ function App() {
                       <h4 className="form-section-title">Permanent Address</h4>
                       <div className="form-group-double-inline">
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="street-number">Street Number/Name</label>
+                          <label className="form-label" htmlFor="street-number">Street Number/Name
+                            <span style={{color: 'red'}}>*</span>
+
+                          </label>
                           <input className="form-input" type="text" id="street-number" />
                         </div>
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="barangay">Barangay</label>
+                          <label className="form-label" htmlFor="barangay">Barangay
+                            <span style={{color: 'red'}}>*</span>
+
+                          </label>
                           <input className="form-input" type="text" id="barangay" />
                         </div>
                       </div>
                       <div className="form-group-double-inline">
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="municipality">Municipality</label>
+                          <label className="form-label" htmlFor="municipality">Municipality
+                            <span style={{color: 'red'}}>*</span>
+
+                          </label>
                           <input className="form-input" type="text" id="municipality" />
                         </div>
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="province">Province</label>
+                          <label className="form-label" htmlFor="province">Province
+                            <span style={{color: 'red'}}>*</span>
+
+                          </label>
                           <input className="form-input" type="text" id="province" />
                         </div>
                       </div>
 
                       <hr className="form-divider" />
 
-                      <h4 className="form-section-title">Purpose of Request</h4>
+                      <h4 className="form-section-title">Purpose of Request
+                            <span style={{color: 'red'}}>*</span>
+
+                      </h4>
                       <p className="form-subtitle">The purpose of request should be indicated in the document requested.</p>
 
                       <div className="form-group-checkbox">
@@ -938,6 +1019,14 @@ function App() {
                           <span className="info-label">Degree Program/Course:</span>
                           <span className="info-value">{degreeProgram}</span>
                         </div>
+                        <div className="info-item">
+                          <span className="info-label">Ay Admitted:</span>
+                          <span className="info-value">{ayAdmitted}</span>
+                        </div>
+                        <div className="info-item">
+                          <span className="info-label">Last Ay/Sem Admitted:</span>
+                          <span className="info-value">{semAdmitted}</span>
+                        </div>
                       </div>
                       <div className="documents-requested-section">
                         <div className="documents-table-header">
@@ -963,6 +1052,7 @@ function App() {
                               onChange={(e) => handleQuantityChange(doc, e.target.value)}
                               disabled={!selectedDocuments[doc]}
                               min="0"
+                              max="6" 
                             />
                             <span className="document-amount-display">
                               {selectedDocuments[doc] ? `P${selectedDocuments[doc].amount.toFixed(2)}` : 'P0.00'}
@@ -970,6 +1060,24 @@ function App() {
                           </div>
 
                         ))}
+
+{docStampCount > 0 && (
+  <div className="documents-table-row">
+    <label className="document-name-label" style={{ opacity: 0.7, pointerEvents: 'none' }}>
+      Doc Stamp
+    </label>
+    <input
+      type="number"
+      className="document-qty-input"
+      value={docStampCount}
+      disabled
+      style={{ background: '#f0f0f0', color: '#888' }}
+    />
+    <span className="document-amount-display">
+      P{docStampAmount.toFixed(2)}
+    </span>
+  </div>
+)}
                         <div className="documents-table-total">
                           <span className="total-label">Total:</span>
                           <span className="total-value">P{totalAmount.toFixed(2)}</span>
@@ -984,9 +1092,13 @@ function App() {
                             const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, docName);
                             const programSpecificDetails = docInfo?.[currentProgramType];
 
+                            
                             if (!programSpecificDetails) {
                               return null; 
                             }
+                            
+                        
+                            
 
                             return (
                               <div key={docName} className="document-detail-item">
@@ -1006,7 +1118,14 @@ function App() {
                                 {programSpecificDetails.message && (
                                   <div className="document-detail-message">
                                     <span className="info-label">Message:</span>
-                                    <span className="info-value">{programSpecificDetails.message}</span>
+                                    <span className="info-value">
+                                      {programSpecificDetails.message.split('\n').map((line, idx) => (
+        <React.Fragment key={idx}>
+          {line}
+          <br />
+        </React.Fragment>
+      ))}
+                                    </span>
                                   </div>
                                 )}
                                 {programSpecificDetails.downloads && programSpecificDetails.downloads.length > 0 && (
@@ -1054,7 +1173,7 @@ function App() {
                     <div className="transaction-summary-container">
                       <h4 className="form-section-title">Request Submitted!</h4>
                       <p className="transaction-message">Please proceed to PLM Cashier for payment.</p>
-                      
+                      <p className='message-below2'>You will receive a confirmation email shortly with a summary of your request.</p>
                       <div className="summary-info-block">
                         <div className="info-item">
                           <span className="info-label">Transaction Reference No.:</span>
@@ -1084,12 +1203,21 @@ function App() {
 
                       <h5 className="summary-documents-title">Requested Documents:</h5>
                       <ul className="summary-documents-list">
-                        {Object.keys(transactionDetails.selectedDocuments).map((docName, index) => (
-                          <li key={index} className="summary-document-item">
-                            {docName} (Qty: {transactionDetails.selectedDocuments[docName].qty}) - P{transactionDetails.selectedDocuments[docName].amount.toFixed(2)}
-                          </li>
-                        ))}
-                      </ul>
+  {Object.keys(transactionDetails.selectedDocuments).map((docName, index) => (
+    <li key={index} className="summary-document-item">
+      {docName} (Qty: {transactionDetails.selectedDocuments[docName].qty}) - P{transactionDetails.selectedDocuments[docName].amount.toFixed(2)}
+    </li>
+  ))}
+  {transactionDetails.docStampCount > 0 && (
+    <li className="summary-document-item">
+      Doc Stamp (Qty: {transactionDetails.docStampCount}) - P{(transactionDetails.docStampCount * 30).toFixed(2)}
+    </li>
+  )}
+</ul>
+<p className='transaction-message2'>🔔 Important Note:</p>
+                      <p className="message-below3">Please submit a scanned copy of your Original Receipt through the Office of the Registrar website by clicking the “Submit Original Receipt” button on the homepage.</p>
+                      <p className='message-below4'>⚠️ Failure to do so will result in your request not being processed.</p>
+                      
 
                       <button className="close-form-button" onClick={closeForm}>Close</button>
                     </div>
