@@ -5,6 +5,25 @@ import DatePicker from './components/DatePicker/DatePicker.jsx';
 import Footer from './components/Footer/Footer.jsx';
 
 function App() {
+  const [msg, setMsg] = useState('');
+
+  // useEffect(() => {
+    // fetch('/server/test') // Assuming your backend is running on the same origin as your frontend, or use a full URL
+          // .then(res => {
+      // if (!res.ok) {
+        // throw new Error(`HTTP error! status: ${res.status}`);
+      // }
+      // return res.json();})
+      // .then(data => {
+        // setMsg(data.message);
+        // console.log("Backend message:", data.message); // Log the message
+      // })
+      // .catch(error => {
+        // console.error("Error fetching from backend:", error);
+        // setMsg("Failed to connect to backend."); // Update state to show error
+      // });
+  // }, []);
+
   const [activeForm, setActiveForm] = useState(null); 
   const [currentPage, setCurrentPage] = useState(1); 
 
@@ -636,10 +655,12 @@ function App() {
     // link.click();
     // document.body.removeChild(link);
     alert(`Downloading dummy file: ${fileName}`);
+  
   };
 
   return (
     <div className="app-container">
+      {msg && <p>Backend Status: {msg}</p>}
       {/* Header component */}
       <Header isFormExpanded={activeForm !== null} />
 
