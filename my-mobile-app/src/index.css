@@ -1059,12 +1059,55 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
+.transaction-message2 {
+  margin-top: 50px;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--red-accent);
+  margin-bottom: 2.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
 .message-below{
   font-size: 12px;
   font-weight: 600;
   color: var(--red-accent);
   margin-bottom: 5.5rem;
   padding: 1rem 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.message-below2{
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gray-medium);
+  margin-bottom: 1rem;
+  margin-top: -3rem;
+  padding: 1rem 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.message-below3{
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gray-medium);
+  margin-bottom: 3rem;
+  margin-top: -3rem;
+  margin-left: 20px;
+  text-align: left;
+  padding: 1rem .5rem;
+  font-family: 'Poppins', sans-serif;
+}
+.message-below4{
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gray-medium);
+  margin-bottom: 3rem;
+  margin-top: -3rem;
+  margin-left: 20px;
+  text-align: left;
+  padding: 1rem 0rem;
   font-family: 'Poppins', sans-serif;
 }
 
@@ -1633,9 +1676,18 @@ width: 250px;
   width: 60px;
   margin: 5px;
   padding: 4px 0;
-  border: 1px solid #f1efef;
+  
   border-radius: 2px;
   cursor: pointer;
+}
+.transaction-message2 {
+  margin-top: 50px;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--red-accent);
+  margin-bottom: 2.5rem;
+  font-family: 'Poppins', sans-serif;
 }
 
 .message-below{
@@ -1643,8 +1695,41 @@ width: 250px;
   font-weight: 600;
   color: var(--red-accent);
   margin-bottom: 5.5rem;
+  text-align: center;
+  padding: 1rem 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.message-below2{
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gray-medium);
+  margin-bottom: 1rem;
+  margin-top: -3rem;
   margin-left: 20px;
   padding: 1rem 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.message-below3{
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gray-medium);
+  margin-bottom: 3rem;
+  margin-top: -3rem;
+  margin-left: 20px;
+  text-align: left;
+  padding: 1rem .5rem;
+  font-family: 'Poppins', sans-serif;
+}
+.message-below4{
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gray-medium);
+  margin-bottom: 3rem;
+  margin-top: -3rem;
+  margin-left: 20px;
+  padding: 1rem 0srem;
   font-family: 'Poppins', sans-serif;
 }
 
