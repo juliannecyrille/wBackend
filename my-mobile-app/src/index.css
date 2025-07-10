@@ -233,24 +233,29 @@ body {
 .main-content-expanded {
   background-image: linear-gradient(to top, rgba(255, 216, 138, 0.7), rgba(255, 255, 255, 0.87));
   background-color: transparent;
+  width: 100vw;
+  min-width: none;
 }
+
+
+
+
 
 .privacy-section {
   background-color: #F4EFEB;
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
-  padding: 15px;
-  box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.2);
+  
   margin-left: auto;
   margin-right: auto;
-  width: 100%;
+  width: 100vw;
   max-width: 450px;
   position: relative;
   z-index: 1;
   box-sizing: border-box;
   text-align: left;
   transition: background-color 0s, max-height 0.5s ease-in-out, min-height 0.5s ease-in-out, padding 0.5s ease-in-out, border-radius 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
-  overflow: hidden;
+  overflow-y: auto;
   min-height: 0;
   max-height: 350px;
   display: flex;
@@ -291,26 +296,46 @@ body {
   text-align: center;
   letter-spacing: 0.02em;
 }
-
-.privacy-checkbox-label {
+.privacy-content {
   font-family: 'Poppins', sans-serif;
-  font-size: 9px;
-  display: flex;
+  font-size: 10px;
+  display: column;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
   color: var(--text-gray-medium);
   cursor: pointer;
   padding: 0 2rem;
   margin-bottom: 20px;
   box-sizing: border-box;
-  text-align: center;
+  text-align: justify;
 }
 
-.privacy-checkbox {
-  margin-right: 2px;
-  margin-left: 10px;
+.privacy-content-inside{
+  text-indent: -1em;     /* pulls first line left */
+  padding-left: 1em;
+  margin: 1rem;
+}
+
+
+.privacy-checkbox-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-gray-medium);
+  cursor: pointer;
+  padding: 0 1rem;
   margin-bottom: 20px;
+  margin-top: 20px;
+  box-sizing: border-box;
+  text-align: justify;
+}
+
+#graduate-privacy-checkbox {
+  margin-right: 20px;
+  margin-left: 10px;
+  margin-bottom: 65px;
   min-width: 10px;
   min-height: 10px;
   accent-color: #dc2626;
@@ -343,6 +368,7 @@ body {
   max-width: 150px;
   margin: 0 auto;
   margin-bottom: 10px;
+  margin-top: 20px;
   display: block;
   border: none;
   cursor: pointer;
@@ -1018,13 +1044,15 @@ body {
 
 .download-item-container, .attachment-item-container {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 0.5rem;
   margin-bottom: 0.3rem;
 }
 
 .upload-file-input {
   width: 140px; 
+  margin-left: auto;
+  display: block;
 }
 .download-button, .upload-file-input {
   padding: 0.3rem 0.3rem;
@@ -1040,6 +1068,53 @@ body {
   background-color: #d0d0d0;
 }
 
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 9999;
+  
+}
+.modal-content {
+  background: #fff; padding: 2rem 0rem; border-radius: 8px; box-shadow: 0 2px 16px rgba(0,0,0,0.2); max-width: 350px; width: 100%;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+}
+.access-code-input {
+  width: 80%; padding-left: 0.5rem; padding-right: 0rem; margin: 1rem 0;
+  font-family: 'Poppins', sans-serif; padding: 0.5rem;
+}
+.error-message {
+  color: red; font-size: 11px; margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+.modal-actions {
+  display: flex; gap: 1rem; justify-content: flex-end;
+}
+
+.modal-actions .submit-form-button{
+  margin-bottom: 20px;
+  padding: 0.5rem .5rem;
+  width: 100px;
+  margin-left: 70px;
+}
+
+.modal-actions .cancel-form-button{
+  background-color: #6b7280;
+  margin-top: 2.5rem;
+  margin-right: 70px;
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem .05rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 12px;
+  width: 100px;
+  height: fit-content;
+  display: block;
+  border: none;
+  cursor: pointer;
+  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif;
+}
 /* Transaction Summary Page Styles */
 .transaction-summary-container {
   padding: 0rem;
@@ -1199,6 +1274,7 @@ body {
   margin-bottom: 2rem;
 }
 
+
 @media (max-width: 1023px) {
   .documents-row-wrapper {
     flex-direction: column;
@@ -1259,15 +1335,28 @@ body {
   }
 
   .privacy-header{
-    margin-top: 50px;
+    margin-top: 20px;
     font-size: 14px;
   }
   .privacy-checkbox-label{
     font-size: 12px;
   }
-  .privacy-checkbox{
+  .privacy-content{
+    font-size: 12px;
+    padding: 0rem 20rem;
+  
+  }
+
+  #graduate-privacy-checkbox{
+    margin-right: 15px;
+    margin-bottom: 20px;
+  }
+  .privacy-content .close-form-button{
+    margin-top: 30px;
+  }
+ .privacy-checkbox{
     margin-top: 20px;
-    margin-right: 20px;
+    margin-right: 80px;
   }
   .privacy-section{
     border-top-left-radius: 3rem; 
@@ -1376,6 +1465,7 @@ width: 250px;
   max-width: 150px;
   margin: 0 auto;
   margin-bottom: 10px;
+  margin-top: 30px;
   display: block;
   border: none;
   cursor: pointer;
@@ -1473,6 +1563,8 @@ width: 250px;
   .form-subtitle{
     font-size: 15px;
     margin-left: 30px;
+    
+
   }
   .form-section-title,
   .form-section-title-secondary,
@@ -1731,6 +1823,54 @@ width: 250px;
   margin-left: 20px;
   padding: 1rem 0srem;
   font-family: 'Poppins', sans-serif;
+  
+}
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 9999;
+  
+}
+.modal-content {
+  background: #fff; padding: 2rem 0rem; border-radius: 8px; box-shadow: 0 2px 16px rgba(0,0,0,0.2); max-width: 350px; width: 100%;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+}
+.access-code-input {
+  width: 80%; padding-left: 0.5rem; padding-right: 0rem; margin: 1rem 0;
+  font-family: 'Poppins', sans-serif; padding: 0.5rem;
+}
+.error-message {
+  color: red; font-size: 11px; margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+.modal-actions {
+  display: flex; gap: 1rem; justify-content: flex-end;
 }
 
+.modal-actions .submit-form-button{
+  margin-bottom: 20px;
+  padding: 0.5rem .5rem;
+  width: 100px;
+  margin-left: 70px;
+  font-size: 13px;
+}
+
+.modal-actions .cancel-form-button{
+  background-color: #6b7280;
+  margin-top: 2.5rem;
+  margin-right: 70px;
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem .05rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 13px;
+  width: 100px;
+  height: fit-content;
+  display: block;
+  border: none;
+  cursor: pointer;
+  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif;
+}
 }

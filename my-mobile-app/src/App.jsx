@@ -19,7 +19,30 @@ function App() {
   const [ayAdmitted, setAyAdmitted] = useState('');
   const [semAdmitted, setSemAdmitted] = useState('');
   const [graduationDate, setGraduationDate] = useState(null);
+  const [fieldsDisabled, setFieldsDisabled] = useState(false);
   
+  /* FOR AUTO-FILL OUT IF MAGPPROCEED
+  const dummyStudentData = {
+  "202100098": {
+    firstName: "Juan",
+    lastName: "Dela Cruz",
+    middleName: "Santos",
+    selectedCollege: "College of Engineering",
+    degreeProgram: "Bachelor of Science in Civil Engineering",
+    ayAdmitted: "2021-2022",
+    semAdmitted: "2nd Sem, 2022-2023",
+    phoneNumber: "09171234567",
+    landline: "1234567",
+    email: "juan.delacruz@email.com",
+    viber: "09171234567",
+    streetNumber: "123 Main St",
+    barangay: "Barangay 123",
+    municipality: "Manila",
+    province: "Metro Manila"
+  }
+};
+*/
+
 
   // Date picker states
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -34,6 +57,15 @@ function App() {
   // Transaction Summary State
   const [transactionDetails, setTransactionDetails] = useState(null);
 
+  //Data Privacy for Graduate/Alumni
+  const [showGraduatePrivacy, setShowGraduatePrivacy] = useState(false);
+  const [graduatePrivacyAgreed, setGraduatePrivacyAgreed] = useState(false);
+
+  //Access Code
+  const [showAccessCodeModal, setShowAccessCodeModal] = useState(false);
+const [accessCodeInput, setAccessCodeInput] = useState('');
+const [accessCodeError, setAccessCodeError] = useState('');
+const [pendingSubmit, setPendingSubmit] = useState(false);
   
   // Data for Colleges and Degree Programs
   const collegesAndPrograms = {
@@ -187,37 +219,48 @@ function App() {
       "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
     "Replacement of ID": {
-      "BACHELOR PROGRAM": { amount: 100, message: "Step 1:  Upload scanned copy of Affidavit of Loss (notarized) \n Step 2.  Go to registrar office and personally submit the original copy of Affidavit of Loss (notarized). ", attachments: ["Affidavit of Loss"] },
-      "MEDICINE": { amount: 100, message: "Step 1:  Upload the Affidavit of Loss (notarized) \n Step 2.  Go to registrar office and personally submit the original copy of Affidavit of Loss (notarized).", attachments: ["Affidavit of Loss"] }
+      "BACHELOR PROGRAM": { amount: 100, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Affidavit of Loss (notarized)", attachments: [] },
+      "MEDICINE": { amount: 100, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Affidavit of Loss (notarized)", attachments: [] }
     },
     "Transfer out/Honorable Dismissal": { // Differentiate
-      "BACHELOR PROGRAM": { amount: 146, message: "Step 1.  Go to registrar office for the Clearance Form & other documents. \n Step 2.  Surrender PLM/Student ID. \n Step 3.  Upload scanned copy of filled-out Clearance Form (with complete signatures) and submit original copy PERSONALLY to registrar office. \n Step 4.  Upload other supporting documents (accessible only after Step 3).", attachments: ["Clearance Form","Certificate of Grades", "Endorsement Letter from College", "Transcript of Records"] },
-      "MEDICINE": { amount: 146, message: "Step 1.  Go to registrar office for the Clearance Form & other documents. \n Step 2.  Surrender PLM/Student ID. \n Step 3.  Upload scanned copy of filled-out Clearance Form (with complete signatures) and submit original copy PERSONALLY to registrar office. \n Step 4.  Upload other supporting documents (accessible only after Step 3).", attachments: ["Clearance Form","Certificate of Grades", "Endorsement Letter from College", "Transcript of Records"] }
+      "BACHELOR PROGRAM": { amount: 512, message: "Please see PLM Registrar Office \n and submit the following documents: \n \n 1. PLM/Student ID \n 2. 1.5 x 1.5 ID picture \n 3. Endorsement Letter from College \n 4. Clearance Form with complete signatures \n \n Payment Inclusions: \n Certificate of Grades \n Transcript of Records", attachments: [] },
+      "MEDICINE": { amount: 512, message: "Please see PLM Registrar Office \n and submit the following documents: \n \n 1. PLM/Student ID \n 2. 1.5 x 1.5 ID picture \n 3. Endorsement Letter from College \n 4. Clearance Form with complete signatures  \n \n Payment Inclusions: \n Certificate of Grades \n Transcript of Records", attachments: []}
+    },
+    "Transcript of Record for Employment": { // Differentiate
+      "BACHELOR PROGRAM": { amount: 220, message: "Please see PLM Registrar Office \n and submit the following documents: \n \n 1. PLM/Student ID or Affidavit of Loss (if loss ID) \n 2. 1.5 x 1.5 ID picture \n 3. Endorsement Letter from College \n 4. Clearance Form with complete signatures", attachments: [] },
+      "MEDICINE": { amount: 220, message: "Please see PLM Registrar Office \n and submit the following documents: \n \n 1. PLM/Student ID or Affidavit of Loss (if loss ID) \n 2. 1.5 x 1.5 ID picture \n 3. Endorsement Letter from College \n 4. Clearance Form with complete signatures", attachments: []},
+      "Student PT, Engr, Nursing, Arch, IT, CS": { amount: 241, message: "Please see PLM Registrar Office \n and submit the following documents: \n \n 1. PLM/Student ID or Affidavit of Loss (if loss ID) \n 2. 1.5 x 1.5 ID picture \n 3. Endorsement Letter from College \n 4. Clearance Form with complete signatures", attachments: [] }
     },
     "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2017 - Below)": {
-      "BACHELOR PROGRAM": { amount: 730, message: null, downloads: ["Endorsement Letter (fill out then upload)"], attachments: ["Endorsement Letter", "Certificate of Enrollment", "Certificate of Grades or TOR"] },
-      "MEDICINE": { amount: 730, message: null, downloads: ["Endorsement Letter (fill out then upload)"], attachments: ["Endorsement Letter", "Certificate of Enrollment", "Certificate of Grades or TOR"] }
+      "BACHELOR PROGRAM": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
+      "MEDICINE": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] }
     },
     "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2018 - Present)": {
-      "BACHELOR PROGRAM": { amount: 584, message: null, downloads: ["Endorsement Letter (fill out then upload)"], attachments: ["Endorsement Letter", "Certificate of Enrollment", "Certificate of Grades or TOR"] },
-      "MEDICINE": { amount: 584, message: null, downloads: ["Endorsement Letter (fill out then upload)"], attachments: ["Endorsement Letter", "Certificate of Enrollment", "Certificate of Grades or TOR"] }
+      "BACHELOR PROGRAM": { amount: 584, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
+      "MEDICINE": { amount: 584, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: []}
     },
 
     // Graduate / Alumni Documents
     "CAV for Board Exam (Graduate - 2017 - Below)": {
-      "Bachelor Program": { amount: 730, message: null, attachments: ["Diploma (English and Tagalog for below 2017 Grad)", "Transcript of Record"] },
-      "Medicine": { amount: 730, message: null, attachments: ["Diploma (English and Tagalog for below 2017 Grad)", "Transcript of Record"] },
-      "Grad School Program": { amount: 1095, message: null, attachments: ["Diploma (English and Tagalog for below 2017 Grad)", "Transcript of Record"] }
+      "Bachelor Program": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
+      "Medicine": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
+      "Grad School Program": { amount: 1095, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] }
     },
     "CAV for Board Exam (Graduate - 2018 - Present)": {
-      "Bachelor Program": { amount: 584, message: null, attachments: ["Diploma (English and Tagalog for below 2017 Grad)", "Transcript of Record"] },
-      "Medicine": { amount: 584, message: null, attachments: ["Diploma (English and Tagalog for below 2017 Grad)", "Transcript of Record"] },
-      "Grad School Program": { amount: 876, message: null, attachments: ["Diploma (English and Tagalog for below 2017 Grad)", "Transcript of Record"] }
+      "Bachelor Program": { amount: 584, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
+      "Medicine": { amount: 584, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
+      "Grad School Program": { amount: 876, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] }
     },
-    "CAV for Abroad or DFA/CHED Authentication (Graduate)": { //Graduate version
-      "Bachelor Program": { amount: 730, message: null, downloads: ["Endorsement Letter (fill out then upload)"], attachments: ["Diploma (English and Tagalog for below 2017 Grad)", "Photocopy of TOR", "Endorsement Letter"] },
-      "Medicine": { amount: 730, message: null, downloads: ["Endorsement Letter (fill out then upload)"], attachments: ["Diploma (English and Tagalog for below 2017 Grad)", "Photocopy of TOR", "Endorsement Letter"] },
-      "Grad School Program": { amount: 1095, message: null, downloads: ["Endorsement Letter (fill out then upload)"], attachments: ["Diploma (English and Tagalog for below 2017 Grad)", "Photocopy of TOR", "Endorsement Letter"] }
+    "CAV for Abroad or DFA/CHED Authentication (Graduate - 2017 - Below)": { //Graduate version
+      "Bachelor Program": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
+      "Medicine": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
+      "Grad School Program": { amount: 1095, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] }
+    },
+    
+    "CAV for Abroad or DFA/CHED Authentication (Graduate - 2018 - Present)": { //Graduate version
+      "Bachelor Program": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
+      "Medicine": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)",  attachments: [] },
+      "Grad School Program": { amount: 1095, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] }
     },
     "Transcript of Records": { // has special pricing for specific programs
       "Bachelor Program": { amount: 220, message: null, attachments: ["1.5 X 1.5 White Background w/ Nametag"] },
@@ -226,23 +269,18 @@ function App() {
       "Student PT, Engr, Nursing, Arch, IT, CS": { amount: 241, message: null, attachments: ["1.5 X 1.5 White Background w/ Nametag"] }
     },
     "Certified True Copy of TOR": {
-      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
-      "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
-      "Grad School Program": { amount: 219, message:"No other attachment needed.", attachments: [] }
+      "Bachelor Program": { amount: 146, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Original copy of Diploma (to be presented upon request)\n 2. Photocopy of Original Diploma", attachments: [] },
+      "Medicine": { amount: 146, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Original copy of Diploma (to be presented upon request)\n 2. Photocopy of Original Diploma", attachments: [] },
+      "Grad School Program": { amount: 219, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Original copy of Diploma (to be presented upon request)\n 2. Photocopy of Original Diploma", attachments: [] }
     },
-    "Original TOR for other school or to transfer credentials": {
-      "Bachelor Program": { amount: 146, message: "NOTE: Transfer Credentials can only be issued ONCE. Any subsequent requests will NOT be processed, and you will be notified via email accordingly. ", attachments: ["Request Letter (from other school)"] },
-      "Medicine": { amount: 146, message: "NOTE: Transfer Credentials can only be issued ONCE. Any subsequent requests will NOT be processed, and you will be notified via email accordingly.", attachments: ["Request Letter (from other school)"] },
-      "Grad School Program": { amount: 150, message: "NOTE: Transfer Credentials can only be issued ONCE. Any subsequent requests will NOT be processed, and you will be notified via email accordingly.", attachments: [] }
-    },
-    "CTC Diploma": {
-      "Bachelor Program": { amount: 146, message: null, attachments: ["Original Diploma"] },
-      "Medicine": { amount: 146, message: null, attachments: ["Original Diploma"] },
-      "Grad School Program": { amount: 219, message: null, attachments: ["Original Diploma"] }
+    "CTC of Diploma": {
+      "Bachelor Program": { amount: 146, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Original copy of Diploma (to be presented upon request)\n 2. Photocopy of Original Diploma", attachments: [] },
+      "Medicine": { amount: 146, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Original copy of Diploma (to be presented upon request)\n 2. Photocopy of Original Diploma", attachments: [] },
+      "Grad School Program": { amount: 219, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Original copy of Diploma (to be presented upon request)\n 2. Photocopy of Original Diploma", attachments: [] }
     },
     "Certificate of Graduation with special paper for loss diploma": {
-      "Bachelor Program": { amount: 146, message: "Step 1.  Download and fill-out OUR Affidavit Form. \n Step 2.  Upload filled-out OUR Affidavit Form. \n Step 3. Upload scanned copy of Affidavit of Loss (notarized) and personally submit original copy to registrar office.", downloads: ["OUR Affidavit Form"], attachments: ["Notarized Affidavit of Loss", "OUR Affidavit Form"] },
-      "Medicine": { amount: 146, message: "Step 1.  Download and fill-out OUR Affidavit Form. \n Step 2.  Upload filled-out OUR Affidavit Form. \n Step 3. Upload scanned copy of Affidavit of Loss (notarized) and personally submit original copy to registrar office.", downloads: ["OUR Affidavit Form"], attachments: ["Notarized Affidavit of Loss", "OUR Affidavit Form"] },
+      "Bachelor Program": { amount: 146, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Notarized Affidavit of Loss (form is accessible at registrar office)", attachments: [] },
+      "Medicine": { amount: 146, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Notarized Affidavit of Loss (form is accessible at registrar office)", attachments: [] },
       "Grad School Program": { amount: 219, message: null, downloads: ["OUR Affidavit Form"], attachments: ["Notarized Affidavit of Loss", "OUR Affidavit Form"] }
     },
     "Certificate of Graduation": { // Differentiate
@@ -306,14 +344,14 @@ function App() {
       "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
     "English Translation of Diploma": {
-      "Bachelor Program": { amount: 96, message: null, attachments: ["Tagalog Diploma"] },
-      "Medicine": { amount: 96, message: null, attachments: ["Tagalog Diploma"] },
-      "Grad School Program": { amount: 96, message: null, attachments: ["Tagalog Diploma"] }
+      "Bachelor Program": { amount: 96, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Photocopy of Tagalog Diploma \n 2. Original copy of Tagalog Diploma (to be presented upon request)", attachments: [] },
+      "Medicine": { amount: 96, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Photocopy of Tagalog Diploma \n 2. Original copy of Tagalog Diploma (to be presented upon request)", attachments: [] },
+      "Grad School Program": { amount: 96, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Photocopy of Tagalog Diploma \n 2. Original copy of Tagalog Diploma (to be presented upon request)", attachments: [] }
     },
-    "Honorable Dismissal for Graduation": { // Note: There are two "Honorable Dismissal" documents. Assuming this is for Graduate/Alumni.
-      "Bachelor Program": { amount: 146, message: null, attachments: ["Request Letter from Other School"] },
-      "Medicine": { amount: 146, message: null, attachments: ["Request Letter from Other School"] },
-      "Grad School Program": { amount: 219, message: null, attachments: ["Request Letter from Other School"] }
+    "Honorable Dismissal / Original TOR for other school / Transfer Credentials": { // Note: There are two "Honorable Dismissal" documents. Assuming this is for Graduate/Alumni.
+      "Bachelor Program": { amount: 146, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Request Letter (from other school)\n \n NOTE: Transfer Credentials can only be issued ONCE. Any subsequent requests will NOT be processed, and you will be notified via email accordingly.", attachments: [] },
+      "Medicine": { amount: 146, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Request Letter (from other school)\n \n NOTE: Transfer Credentials can only be issued ONCE. Any subsequent requests will NOT be processed, and you will be notified via email accordingly.", attachments: [] },
+      "Grad School Program": { amount: 219, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Request Letter (from other school)\n \n NOTE: Transfer Credentials can only be issued ONCE. Any subsequent requests will NOT be processed, and you will be notified via email accordingly.", attachments: [] }
     },
     "CTC F137 (Graduate)": { // Differentiate
       "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
@@ -441,10 +479,18 @@ const totalWithDocStamp = totalAmount + docStampAmount;
   };
 
   const handleGraduateAlumniClick = () => {
-    setActiveForm('graduate');
-    setCurrentPage(1); // Always start at page 1 for main forms
-    setShowDatePicker(false);
-  };
+    setShowGraduatePrivacy(true);
+    setGraduatePrivacyAgreed(false);
+    setActiveForm(null); // Don't show form yet
+};
+
+const handleGraduatePrivacyAgree = () => {
+  setShowGraduatePrivacy(false);
+  setGraduatePrivacyAgreed(true);
+  setActiveForm('graduate');
+  setCurrentPage(1);
+  setShowDatePicker(false);
+};
 
   const handleSubmitOriginalReceiptClick = () => {
     setActiveForm('originalReceipt');
@@ -546,45 +592,46 @@ const totalWithDocStamp = totalAmount + docStampAmount;
     "CTC of SER",
     "Certificate of Grades",
     "Certificate of Grades with GWA",
-    "Certificate of Units Earned",
-    "Certificate of Medium of Instruction",
-    "Certificate of NSTP Serial No. (ROTC/CWTS)",
+    "Transfer out/Honorable Dismissal",
     "Certificate of Course Description (All subjects taken)",
     "Certificate of Course Description (Specific Subject Only)",
-    "Certificate of Course Syllabus",
+    "Certificate of NSTP Serial No. (ROTC/CWTS)",
+    "Certificate of Units Earned",
+    "Certificate of Medium of Instruction",
     "CTC of F137",
     "Replacement of ID",
-    "Transfer out/Honorable Dismissal",
+     "Transcript of Record for Employment",
     "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2017 - Below)",
-    "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2018 - Present)"
-  ];
+    "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2018 - Present)",
+    "Certificate of Course Syllabus"
+    ];
 
   const graduateAlumniDocuments = [
-    "CAV for Board Exam (Graduate - 2017 - Below)",
-    "CAV for Board Exam (Graduate - 2018 - Present)",
-    "CAV for Abroad or DFA/CHED Authentication (Graduate)",
+    "First Copy of TOR",
     "Transcript of Records",
     "Certified True Copy of TOR",
-    "Original TOR for other school or to transfer credentials",
-    "CTC Diploma",
-    "Certificate of Graduation with special paper for loss diploma",
     "Certificate of Graduation",
     "Certificate of Graduation w/ Latin Honor",
-    "Certificate of Medium of Instruction (Graduate)",
-    "Certificate of Units Earned (Graduate)",
+    "Certificate of Graduation with special paper for loss diploma",
     "Certificate of GWA",
-    "Certificate of NSTP ROTC/CWTS",
+    "CTC of Diploma",
+    "Certificate of Units Earned (Graduate)",
+    "Certificate of Medium of Instruction (Graduate)",
+    "CAV for Board Exam (Graduate - 2017 - Below)",
+    "CAV for Board Exam (Graduate - 2018 - Present)",
+    "CAV for Abroad or DFA/CHED Authentication (Graduate - 2017 - Below)",
+    "CAV for Abroad or DFA/CHED Authentication (Graduate - 2018 - Present)",
+    "CTC F137 (Graduate)",
+    "Certificate of Completion",
+    "Certificate of Ranking",
     "Course Description (All subjects)",
     "Course Description (Specific Subject Only)",
     "Course Syllabus",
-    "Certificate of Completion",
-    "Certificate of Ranking",
-    "Certificate of No Objection",
+    "Honorable Dismissal / Original TOR for other school / Transfer Credentials",
+    "Certificate of NSTP ROTC/CWTS",
     "English Translation of Diploma",
-    "Honorable Dismissal for Graduation",
-    "CTC F137 (Graduate)",
-    "Company Verification",
-    "First Copy of TOR"
+    "Certificate of No Objection",
+    "Company Verification"
   ];
 
   const handleDocumentCheckboxChange = (docName, isChecked) => {
@@ -635,6 +682,16 @@ const totalWithDocStamp = totalAmount + docStampAmount;
   };
 
   const handleSubmitRequest = () => {
+    const needsAccessCode = Object.keys(selectedDocuments).some(doc =>
+    accessCodeRequiredDocs.includes(doc)
+  );
+  if (needsAccessCode && !pendingSubmit) {
+    setShowAccessCodeModal(true);
+    setAccessCodeInput('');
+    setAccessCodeError('');
+    setPendingSubmit(true);
+    return;
+  }
     const transactionRef = generateTransactionRef();
     setTransactionDetails({
       transactionRef,
@@ -647,6 +704,7 @@ const totalWithDocStamp = totalAmount + docStampAmount;
       docStampCount: docStampCount
 });
     setCurrentPage(3); 
+    setPendingSubmit(false);
   };
 
   const handleSubmitOriginalReceiptForm = () => {
@@ -671,6 +729,23 @@ const totalWithDocStamp = totalAmount + docStampAmount;
     // document.body.removeChild(link);
     alert(`Downloading dummy file: ${fileName}`);
   };
+  const accessCodeRequiredDocs = [
+  // Undergraduate
+  "Transfer out/Honorable Dismissal",
+  "Replacement of ID",
+  "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2017 - Below)",
+  "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2018 - Present)",
+  // Graduate/Alumni
+  "Certificate of Graduation with special paper for loss diploma",
+  "CTC of Diploma",
+  "Certified True Copy of TOR",
+  "CAV for Board Exam (Graduate - 2017 - Below)",
+  "CAV for Board Exam (Graduate - 2018 - Present)",
+  "CAV for Abroad or DFA/CHED Authentication (Graduate - 2017 - Below)",
+  "CAV for Abroad or DFA/CHED Authentication (Graduate - 2018 - Present)",
+  "English Translation of Diploma",
+  "Honorable Dismissal / Original TOR for other school / Transfer Credentials"
+];
 
   return (
     <div className="app-container">
@@ -679,13 +754,58 @@ const totalWithDocStamp = totalAmount + docStampAmount;
 
       <main className={`main-content ${activeForm !== null ? 'main-content-expanded' : ''}`}>
         <section className={`privacy-section ${activeForm !== null ? 'privacy-section-expanded' : ''}`}>
-          {activeForm === null ? (
+  {showGraduatePrivacy ? (
+  <div className="privacy-section privacy-section-expanded">
+    <div className="privacy-header">COMMITMENT TO COMPLY WITH <br /> THE DATA PRIVACY ACT OF 2012</div>
+      <div className="privacy-content">
+        <p>
+I, hereby commit, in the performance of my official duties and functions, to strictly comply with and abide by Republic Act No. 10173 or the Data Privacy Act of 2012, its Implementing Rules and Regulations, and other pertinent issuances, rules and regulations issued by the National Privacy Commission and other government regulatory agencies. In particular, I shall: <br />
+<p className='privacy-content-inside'>
+1. Keep the confidentiality, privacy and privileged character of all personal information, records and documents in my custody. I shall not disclose, either deliberately or thru negligence, any personal or privileged information that may be passed to or through me for processing or storage;
+</p><p className='privacy-content-inside'>
+2. Not use or divulge confidential, privileged or classified information which are officially known to me by reason of my official position, in order to further my private interests or give undue patronage to anyone, or to prejudice the University's, the public's or anyone's interest;
+</p><p className='privacy-content-inside'>
+3. Disclose or process personal information only in instances authorized by law, such as when there is informed consent, or by virtue of a contractual obligation of the University, or under legal obligation, or for the protection of life and health, or by any other criteria provided under the Data Privacy Act of 2012;
+</p><p className='privacy-content-inside'>
+4. Strictly adhere to the data privacy principles of transparency, legitimate purpose and proportionality whenever I process personal information in the course of my official functions;
+</p><p className='privacy-content-inside'>
+5. Protect at all times the rights of the University's data subjects, including their right to information, right to access information, right to data portability, right to rectification, right to erasure or blocking of personal information, right to object, right to file a complaint, and right to damages;
+</p><p className='privacy-content-inside'>
+6. Ensure that the personal or privileged information stored, collected, and processed by me will not be misused, altered, maliciously disclosed, or improperly disposed of, by instituting reasonable and appropriate physical and technical measures for the protection of personal information; and
+</p><p className='privacy-content-inside'>
+7. Ensure the confidentiality, privacy and privileged character of information and documents that I may process or which may come into my custody in the course of my official functions, even after employment and/or service engagement with the Pamantasan ng Lungsod ng Maynila (PLM).
+</p><p>
+I fully understand that failure to comply with the above-mentioned obligations may subject me to possible criminal and/or administrative sanctions under the Data Privacy Act of 2012, the Code of Conduct and Ethical Standards for Public Officials and Employees, and/or other pertinent Civil Service rules and regulations. 
+</p>
+<p><strong><br />CONFORME:</strong></p>
+</p>
+        <label htmlFor="graduate-privacy-checkbox" className="privacy-checkbox-label">
+          <input
+            type="checkbox"
+            id="graduate-privacy-checkbox"
+            checked={graduatePrivacyAgreed}
+            onChange={e => setGraduatePrivacyAgreed(e.target.checked)}
+          />
+          <span>I confirm that I or my designated representative will collect the documents within forty-five (45) calendar days of release, otherwise, OUR will dispose of unclaimed documents after the 45-day period.<br />
+</span>
+        </label>
+        <button className="submit-form-button" onClick={handleGraduatePrivacyAgree} disabled={!graduatePrivacyAgreed}>
+          Proceed
+        </button>
+        <button className="close-form-button" onClick={() => setShowGraduatePrivacy(false)}>
+          Cancel
+        </button>
+      </div>
+    </div>
+  ) : activeForm === null ? (
+    // ...existing code...
             <>
-              <p className="privacy-header">DATA PRIVACY AND NON-DISCLOSURE AGREEMENT</p>
+              {/*<p className="privacy-header">DATA PRIVACY AND NON-DISCLOSURE AGREEMENT</p>
               <label htmlFor="agree-checkbox" className="privacy-checkbox-label">
                 <input type="checkbox" id="agree-checkbox" className="privacy-checkbox" />
                 <span>I fully understand and agree to the <a href="#" className="privacy-link">Terms and Conditions</a> and <a href="#" className="privacy-link">Privacy Policy</a>.</span>
-              </label>
+              </label>*/}
+
               <div className="button-group-row">
                 <button className="undergrad-button" onClick={handleUndergraduateClick}>
                   Undergraduate
@@ -773,29 +893,74 @@ const totalWithDocStamp = totalAmount + docStampAmount;
                     <>
                       <h4 className="form-section-title">Applicant's Information</h4>
 
-                      <div className="form-group">
+                        <div className="form-group">
                         <label className="form-label" htmlFor="student-number">Student Number</label>
                         <input className="form-input" type="text" id="student-number" placeholder="202100098" value={studentNumber} onChange={(e) => setStudentNumber(e.target.value)} />
                       </div>
+  {/*<label className="form-label" htmlFor="student-number">Student Number</label>
+  <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+   } <input
+      className="form-input"
+      type="text"
+      id="student-number"
+      placeholder="202100098"
+      value={studentNumber}
+      onChange={(e) => {
+        setStudentNumber(e.target.value);
+        setFieldsDisabled(false); // Allow editing if student number changes
+      }}
+      style={{ flex: 1 }}
+      disabled={fieldsDisabled}
+    />
+    <button
+      type="button"
+      className="search-student-btn"
+      style={{ marginLeft: '8px', padding: '0.3rem 0.8rem', borderRadius: '6px', background: '#b8a054', color: 'white', border: 'none', cursor: 'pointer' }}
+      onClick={() => {
+        const data = dummyStudentData[studentNumber];
+        if (data) {
+          setFirstName(data.firstName);
+          setLastName(data.lastName);
+          setMiddleName(data.middleName);
+          setSelectedCollege(data.selectedCollege);
+          setDegreeProgram(data.degreeProgram);
+          setAyAdmitted(data.ayAdmitted);
+          setSemAdmitted(data.semAdmitted);
+          setPhoneNumber(data.phoneNumber);
+          setLandline(data.landline);
+          setEmail(data.email);
+          setViber(data.viber);
+          setStreetNumber(data.streetNumber);
+          setBarangay(data.barangay);
+          setMunicipality(data.municipality);
+          setProvince(data.province);
+          setFieldsDisabled(true);
+        } else {
+          alert("Student not found in dummy data.");
+        }
+      }}
+    >
+      Search
+    </button>*/}
+  
                       <div className="form-group-triple-inline">
                         <div className="form-group-vertical">
                           <label className="form-label" htmlFor="first-name">First Name
                             <span style={{color: 'red'}}>*</span>
                           </label>
-                          <input className="form-input" type="text" id="first-name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-                        </div>
+                          <input className="form-input" type="text" id="first-name" value={firstName} onChange={(e) => setFirstName(e.target.value)} /></div>
                         <div className="form-group-vertical">
                             <label className="form-label" htmlFor="last-name">
     {activeForm === 'graduate' ? 'Maiden Last Name' : 'Last Name'} <span style={{color: 'red'}}>*</span>
   </label>
                           
-                          <input className="form-input" type="text" id="last-name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                          <input className="form-input" type="text" id="last-name" value={lastName} onChange={(e) => setLastName(e.target.value)}   />
                         </div>
                         <div className="form-group-vertical">
                           <label className="form-label" htmlFor="middle-name">Middle Name
                             <span style={{color: 'red'}}>*</span>
                           </label>
-                          <input className="form-input" type="text" id="middle-name" value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
+                          <input className="form-input" type="text" id="middle-name" value={middleName} onChange={(e) => setMiddleName(e.target.value)}  />
                         </div>
                       </div>
                       <div className="form-group-double-inline">
@@ -803,7 +968,7 @@ const totalWithDocStamp = totalAmount + docStampAmount;
                           <label className="form-label" htmlFor="college">College
                             <span style={{color: 'red'}}>*</span>
                           </label>
-                          <select className="form-select" id="college" value={selectedCollege} onChange={(e) => { setSelectedCollege(e.target.value); setDegreeProgram(''); }}>
+                          <select className="form-select" id="college" value={selectedCollege} onChange={(e) => { setSelectedCollege(e.target.value); setDegreeProgram(''); }}  >
                             <option value="">Select College</option>
                             {Object.keys(collegesAndPrograms).map((collegeName) => (
                               <option key={collegeName} value={collegeName}>{collegeName}</option>
@@ -892,7 +1057,7 @@ const totalWithDocStamp = totalAmount + docStampAmount;
                         </div>
                         <div className="form-group-vertical">
                           <label className="form-label" htmlFor="barangay">Landline No</label>
-                          <input className="form-input" type="text" id="landline" />
+                          <input className="form-input" type="text" id="landline"/>
                         </div>
                       </div>
                       <div className="form-group-double-inline">
@@ -901,7 +1066,7 @@ const totalWithDocStamp = totalAmount + docStampAmount;
                             <span style={{color: 'red'}}>*</span>
 
                           </label>
-                          <input className="form-input" type="text" id="email" />
+                          <input className="form-input" type="text" id="email"/>
                         </div>
                         <div className="form-group-vertical">
                           <label className="form-label" htmlFor="province">Viber</label>
@@ -924,7 +1089,7 @@ const totalWithDocStamp = totalAmount + docStampAmount;
                             <span style={{color: 'red'}}>*</span>
 
                           </label>
-                          <input className="form-input" type="text" id="barangay" />
+                          <input className="form-input" type="text" id="barangay"/>
                         </div>
                       </div>
                       <div className="form-group-double-inline">
@@ -933,7 +1098,7 @@ const totalWithDocStamp = totalAmount + docStampAmount;
                             <span style={{color: 'red'}}>*</span>
 
                           </label>
-                          <input className="form-input" type="text" id="municipality" />
+                          <input className="form-input" type="text" id="municipality"/>
                         </div>
                         <div className="form-group-vertical">
                           <label className="form-label" htmlFor="province">Province
@@ -1208,6 +1373,47 @@ const totalWithDocStamp = totalAmount + docStampAmount;
           )}
         </section>
       </main>
+      {showAccessCodeModal && (
+  <div className="modal-overlay">
+    <div className="modal-content">
+      <h3>Access Code Required</h3>
+      <p>One or more of your selected documents require an admin access code. Please enter the code to proceed.</p>
+      <input
+        type="password"
+        value={accessCodeInput}
+        onChange={e => setAccessCodeInput(e.target.value)}
+        placeholder="Enter access code"
+        className="access-code-input"
+      />
+      {accessCodeError && <div className="error-message">{accessCodeError}</div>}
+      <div className="modal-actions">
+        <button
+          className="submit-form-button"
+          onClick={() => {
+            if (accessCodeInput === "@OUR2025") {
+              setShowAccessCodeModal(false);
+              setAccessCodeError('');
+              handleSubmitRequest(); // Call again, now with pendingSubmit true
+            } else {
+              setAccessCodeError("Invalid access code. Please try again.");
+            }
+          }}
+        >
+          Submit
+        </button>
+        <button
+          className="cancel-form-button"
+          onClick={() => {
+            setShowAccessCodeModal(false);
+            setPendingSubmit(false);
+          }}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {/* Footer component */}
       <Footer />
