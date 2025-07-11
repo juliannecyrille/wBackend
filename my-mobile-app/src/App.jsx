@@ -655,17 +655,59 @@ const totalWithDocStamp = totalAmount + docStampAmount;
 
   const handleSubmitRequest = () => {
     const transactionRef = generateTransactionRef();
-    setTransactionDetails({
-      transactionRef,
-      name: `${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`,
-      studentNumber: studentNumber,
-      college: selectedCollege,
-      degreeProgram: degreeProgram,
-      totalAmount: totalAmount,
-      selectedDocuments: selectedDocuments,
-      docStampCount: docStampCount
-});
-    setCurrentPage(3); 
+  const payload = {
+    studentNumber,
+    firstName,
+    lastName,
+    middleName,
+    degreeProgram,
+    selectedCollege,
+    ayAdmitted,
+    semAdmitted,
+    graduationDate,
+    phoneNumber: document.getElementById('phone-number').value,
+    landline: document.getElementById('landline').value,
+    email: document.getElementById('email').value,
+    viber: document.getElementById('viber').value,
+    address: {
+      streetNumber: document.getElementById('street-number').value,
+      barangay: document.getElementById('barangay').value,
+      municipality: document.getElementById('municipality').value,
+      province: document.getElementById('province').value,
+    },
+    purposeOfRequest: document.getElementById('purpose-request')?.value || 'Not specified'
+  };
+
+  try {
+    const res = await fetch('/api/submit-request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      console.log('Request saved with ID:', data.requestId);
+    } else {
+      console.error('Failed to save:', data.error);
+    }
+  } catch (err) {
+    console.error('Submission error:', err);
+  }
+
+  setTransactionDetails({
+    transactionRef,
+    name: `${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`,
+    studentNumber,
+    college: selectedCollege,
+    degreeProgram,
+    totalAmount,
+    selectedDocuments,
+    docStampCount
+  });
+  setCurrentPage(3);
+};
+
   };
 
   const handleSubmitOriginalReceiptForm = () => {
