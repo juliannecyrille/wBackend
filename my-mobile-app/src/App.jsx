@@ -1,34 +1,37 @@
+
+
+// App.jsx (Frontend React App)
+
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header/Header.jsx';
 import DatePicker from './components/DatePicker/DatePicker.jsx'; 
 import Footer from './components/Footer/Footer.jsx';
-//import { QRCode } from "qrcode.react";
-//npm install qrcode.react
 
 function App() {
   const [msg, setMsg] = useState('');
 
-  // useEffect(() => {
-    // fetch('/server/test') // Assuming your backend is running on the same origin as your frontend, or use a full URL
-          // .then(res => {
-      // if (!res.ok) {
-        // throw new Error(`HTTP error! status: ${res.status}`);
-      // }
-      // return res.json();})
-      // .then(data => {
-        // setMsg(data.message);
-        // console.log("Backend message:", data.message); // Log the message
-      // })
-      // .catch(error => {
-        // console.error("Error fetching from backend:", error);
-        // setMsg("Failed to connect to backend."); // Update state to show error
-      // });
-  // }, []);
-
+  useEffect(() => {
+    fetch('http://localhost:5000/server/test')
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        setMsg(data.message);
+        console.log("Backend message:", data.message);
+      })
+      .catch(error => {
+        console.error("Error fetching from backend:", error);
+        setMsg("Failed to connect to backend.");
+      });
+  }, []);
+  
   const [activeForm, setActiveForm] = useState(null); 
   const [currentPage, setCurrentPage] = useState(1); 
 
-  // Form 1 states
+  // Form 1 states (Applicant's Information)
   const [studentNumber, setStudentNumber] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -38,54 +41,60 @@ function App() {
   const [ayAdmitted, setAyAdmitted] = useState('');
   const [semAdmitted, setSemAdmitted] = useState('');
   const [graduationDate, setGraduationDate] = useState(null);
-  const [fieldsDisabled, setFieldsDisabled] = useState(false);
-  
-  /* FOR AUTO-FILL OUT IF MAGPPROCEED
-  const dummyStudentData = {
-  "202100098": {
-    firstName: "Juan",
-    lastName: "Dela Cruz",
-    middleName: "Santos",
-    selectedCollege: "College of Engineering",
-    degreeProgram: "Bachelor of Science in Civil Engineering",
-    ayAdmitted: "2021-2022",
-    semAdmitted: "2nd Sem, 2022-2023",
-    phoneNumber: "09171234567",
-    landline: "1234567",
-    email: "juan.delacruz@email.com",
-    viber: "09171234567",
-    streetNumber: "123 Main St",
-    barangay: "Barangay 123",
-    municipality: "Manila",
-    province: "Metro Manila"
-  }
-};
-*/
 
+  // Contact Information states
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [landline, setLandline] = useState('');
+  const [emailAddress, setEmailAddress] = useState('');
+  const [viber, setViber] = useState('');
+
+  // Permanent Address states
+  const [streetNumber, setStreetNumber] = useState('');
+  const [barangay, setBarangay] = useState('');
+  const [municipality, setMunicipality] = useState('');
+  const [province, setProvince] = useState('');
+
+  // Purpose of Request states
+  const [purposeTorEvaluation, setPurposeTorEvaluation] = useState(false);
+  const [purposeTorBoardExam, setPurposeTorBoardExam] = useState(false);
+  const [purposeTorEmployment, setPurposeTorEmployment] = useState(false);
+  const [purposeTorFurtherStudies, setPurposeTorFurtherStudies] = useState(false);
+  const [purposeTorFurtherStudiesText, setPurposeTorFurtherStudiesText] = useState('');
+  const [purposeCertificationsText, setPurposeCertificationsText] = useState('');
 
   // Date picker states
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [showYearSelector, setShowYearSelector] = useState(false);
+  // const [showYearSelector, setShowYearSelector] = useState(false); // Not used in provided DatePicker
 
-  // Form 2 states
+  // Form 2 states (Document Request)
   const [selectedDocuments, setSelectedDocuments] = useState({}); 
   const [totalAmount, setTotalAmount] = useState(0);
+  const [transactionRef, setTransactionRef] = useState(''); // To store the generated transaction reference
 
   // Transaction Summary State
   const [transactionDetails, setTransactionDetails] = useState(null);
 
-  //Data Privacy for Graduate/Alumni
+  // Data Privacy for Graduate/Alumni
   const [showGraduatePrivacy, setShowGraduatePrivacy] = useState(false);
   const [graduatePrivacyAgreed, setGraduatePrivacyAgreed] = useState(false);
 
-  //Access Code
+  // Access Code for specific documents
   const [showAccessCodeModal, setShowAccessCodeModal] = useState(false);
-const [accessCodeInput, setAccessCodeInput] = useState('');
-const [accessCodeError, setAccessCodeError] = useState('');
-const [pendingSubmit, setPendingSubmit] = useState(false);
-  
+  const [accessCodeInput, setAccessCodeInput] = useState('');
+  const [accessCodeError, setAccessCodeError] = useState('');
+  const [pendingSubmit, setPendingSubmit] = useState(false);
+
+  // Original Receipt Submission Form states
+  const [orStudentNumber, setOrStudentNumber] = useState('');
+  const [orFirstName, setOrFirstName] = useState('');
+  const [orLastName, setOrLastName] = useState('');
+  const [orMiddleName, setOrMiddleName] = useState('');
+  const [orReferenceNo, setOrReferenceNo] = useState(''); // This will be the transactionRef for OR submission
+  const [orNumberInput, setOrNumberInput] = useState('');
+  const [uploadReceiptFile, setUploadReceiptFile] = useState(null); // For the actual file object
+
   // Data for Colleges and Degree Programs
   const collegesAndPrograms = {
     "College of Accountancy": ["Bachelor of Science in Accountancy"],
@@ -188,7 +197,6 @@ const [pendingSubmit, setPendingSubmit] = useState(false);
 
   // Data for Document Details including pricing, messages, and attachments
   const documentDetails = {
-    // Undergraduate Documents
     "Certificate of Candidacy for Graduation": {
       "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
@@ -213,27 +221,27 @@ const [pendingSubmit, setPendingSubmit] = useState(false);
       "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
-    "Certificate of Medium of Instruction": { // Differentiate from Graduate one
+    "Certificate of Medium of Instruction": {
       "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
-    "Certificate of NSTP Serial No. (ROTC/CWTS)": { // Differentiate
+    "Certificate of NSTP Serial No. (ROTC/CWTS)": {
       "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
-    "Certificate of Course Description (All subjects taken)": { // Differentiate
+    "Certificate of Course Description (All subjects taken)": {
       "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
-    "Certificate of Course Description (Specific Subject Only)": { // Differentiate
+    "Certificate of Course Description (Specific Subject Only)": {
       "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
-    "Certificate of Course Syllabus": { // Differentiate
+    "Certificate of Course Syllabus": {
       "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
-    "CTC of F137": { // Differentiate
+    "CTC of F137": {
       "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
@@ -241,11 +249,11 @@ const [pendingSubmit, setPendingSubmit] = useState(false);
       "BACHELOR PROGRAM": { amount: 100, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Affidavit of Loss (notarized)", attachments: [] },
       "MEDICINE": { amount: 100, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Affidavit of Loss (notarized)", attachments: [] }
     },
-    "Transfer out/Honorable Dismissal": { // Differentiate
+    "Transfer out/Honorable Dismissal": {
       "BACHELOR PROGRAM": { amount: 512, message: "Please see PLM Registrar Office \n and submit the following documents: \n \n 1. PLM/Student ID \n 2. 1.5 x 1.5 ID picture \n 3. Endorsement Letter from College \n 4. Clearance Form with complete signatures \n \n Payment Inclusions: \n Certificate of Grades \n Transcript of Records", attachments: [] },
       "MEDICINE": { amount: 512, message: "Please see PLM Registrar Office \n and submit the following documents: \n \n 1. PLM/Student ID \n 2. 1.5 x 1.5 ID picture \n 3. Endorsement Letter from College \n 4. Clearance Form with complete signatures  \n \n Payment Inclusions: \n Certificate of Grades \n Transcript of Records", attachments: []}
     },
-    "Transcript of Record for Employment": { // Differentiate
+    "Transcript of Record for Employment": {
       "BACHELOR PROGRAM": { amount: 220, message: "Please see PLM Registrar Office \n and submit the following documents: \n \n 1. PLM/Student ID or Affidavit of Loss (if loss ID) \n 2. 1.5 x 1.5 ID picture \n 3. Endorsement Letter from College \n 4. Clearance Form with complete signatures", attachments: [] },
       "MEDICINE": { amount: 220, message: "Please see PLM Registrar Office \n and submit the following documents: \n \n 1. PLM/Student ID or Affidavit of Loss (if loss ID) \n 2. 1.5 x 1.5 ID picture \n 3. Endorsement Letter from College \n 4. Clearance Form with complete signatures", attachments: []},
       "Student PT, Engr, Nursing, Arch, IT, CS": { amount: 241, message: "Please see PLM Registrar Office \n and submit the following documents: \n \n 1. PLM/Student ID or Affidavit of Loss (if loss ID) \n 2. 1.5 x 1.5 ID picture \n 3. Endorsement Letter from College \n 4. Clearance Form with complete signatures", attachments: [] }
@@ -259,7 +267,6 @@ const [pendingSubmit, setPendingSubmit] = useState(false);
       "MEDICINE": { amount: 584, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: []}
     },
 
-    // Graduate / Alumni Documents
     "CAV for Board Exam (Graduate - 2017 - Below)": {
       "Bachelor Program": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
       "Medicine": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
@@ -270,18 +277,18 @@ const [pendingSubmit, setPendingSubmit] = useState(false);
       "Medicine": { amount: 584, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
       "Grad School Program": { amount: 876, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] }
     },
-    "CAV for Abroad or DFA/CHED Authentication (Graduate - 2017 - Below)": { //Graduate version
+    "CAV for Abroad or DFA/CHED Authentication (Graduate - 2017 - Below)": {
       "Bachelor Program": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
       "Medicine": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
       "Grad School Program": { amount: 1095, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] }
     },
     
-    "CAV for Abroad or DFA/CHED Authentication (Graduate - 2018 - Present)": { //Graduate version
+    "CAV for Abroad or DFA/CHED Authentication (Graduate - 2018 - Present)": {
       "Bachelor Program": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
       "Medicine": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)",  attachments: [] },
       "Grad School Program": { amount: 1095, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] }
     },
-    "Transcript of Records": { // has special pricing for specific programs
+    "Transcript of Records": {
       "Bachelor Program": { amount: 220, message: null, attachments: ["1.5 X 1.5 White Background w/ Nametag"] },
       "Medicine": { amount: 220, message: null, attachments: ["1.5 X 1.5 White Background w/ Nametag"] },
       "Grad School Program": { amount: 330, message: null, attachments: ["1.5 X 1.5 White Background w/ Nametag"] },
@@ -302,42 +309,42 @@ const [pendingSubmit, setPendingSubmit] = useState(false);
       "Medicine": { amount: 146, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Notarized Affidavit of Loss (form is accessible at registrar office)", attachments: [] },
       "Grad School Program": { amount: 219, message: null, downloads: ["OUR Affidavit Form"], attachments: ["Notarized Affidavit of Loss", "OUR Affidavit Form"] }
     },
-    "Certificate of Graduation": { // Differentiate
+    "Certificate of Graduation": {
       "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
-    "Certificate of Graduation w/ Latin Honor": { // Differentiate
+    "Certificate of Graduation w/ Latin Honor": {
       "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
-    "Certificate of Medium of Instruction (Graduate)": { // Differentiate
+    "Certificate of Medium of Instruction (Graduate)": {
       "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
-    "Certificate of Units Earned (Graduate)": { // Differentiate
+    "Certificate of Units Earned (Graduate)": {
       "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
-    "Certificate of GWA": { // Differentiate
+    "Certificate of GWA": {
       "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
-    "Certificate of NSTP ROTC/CWTS": { // Differentiate
+    "Certificate of NSTP ROTC/CWTS": {
       "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
-    "Course Description (All subjects)": { // Differentiate
+    "Course Description (All subjects)": {
       "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Medicine": { amount: 146, message: null, attachments: [] },
       "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
-    "Course Description (Specific Subject Only)": { // Differentiate
+    "Course Description (Specific Subject Only)": {
       "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Medicine": { amount: 146, message: null, attachments: [] },
       "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
@@ -367,12 +374,12 @@ const [pendingSubmit, setPendingSubmit] = useState(false);
       "Medicine": { amount: 96, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Photocopy of Tagalog Diploma \n 2. Original copy of Tagalog Diploma (to be presented upon request)", attachments: [] },
       "Grad School Program": { amount: 96, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Photocopy of Tagalog Diploma \n 2. Original copy of Tagalog Diploma (to be presented upon request)", attachments: [] }
     },
-    "Honorable Dismissal / Original TOR for other school / Transfer Credentials": { // Note: There are two "Honorable Dismissal" documents. Assuming this is for Graduate/Alumni.
+    "Honorable Dismissal / Original TOR for other school / Transfer Credentials": {
       "Bachelor Program": { amount: 146, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Request Letter (from other school)\n \n NOTE: Transfer Credentials can only be issued ONCE. Any subsequent requests will NOT be processed, and you will be notified via email accordingly.", attachments: [] },
       "Medicine": { amount: 146, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Request Letter (from other school)\n \n NOTE: Transfer Credentials can only be issued ONCE. Any subsequent requests will NOT be processed, and you will be notified via email accordingly.", attachments: [] },
       "Grad School Program": { amount: 219, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Request Letter (from other school)\n \n NOTE: Transfer Credentials can only be issued ONCE. Any subsequent requests will NOT be processed, and you will be notified via email accordingly.", attachments: [] }
     },
-    "CTC F137 (Graduate)": { // Differentiate
+    "CTC F137 (Graduate)": {
       "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
@@ -388,31 +395,20 @@ const [pendingSubmit, setPendingSubmit] = useState(false);
       "Grad School Program": { amount: "FREE", message:"No other attachment needed.", attachments: [] }
     },
     "Doc Stamp": {
-  "Bachelor Program": { amount: 30, message: "No other attachment needed.", attachments: [] },
-  "Medicine": { amount: 30, message: "No other attachment needed.", attachments: [] },
-  "Grad School Program": { amount: 30, message: "No other attachment needed.", attachments: [] }
-},
+      "Bachelor Program": { amount: 30, message: "No other attachment needed.", attachments: [] },
+      "Medicine": { amount: 30, message: "No other attachment needed.", attachments: [] },
+      "Grad School Program": { amount: 30, message: "No other attachment needed.", attachments: [] }
+    },
   };
 
-  const requiredFields = [
-  'first-name', 'last-name', 'middle-name', 'college', 'degree-program',
-  'phone-number', 'email', 'street-number', 'barangay', 'municipality', 'province', 'purpose-request'
-];
+  const isDiploma = (docName) => docName.toLowerCase().includes('diploma');
 
-const isRequired = (id) => requiredFields.includes(id);
-  // Helper to determine if a document is a diploma
-const isDiploma = (docName) => docName.toLowerCase().includes('diploma');
+  // Count how many non-diploma documents are selected for Doc Stamp
+  const docStampCount = Object.keys(selectedDocuments).filter(docName => !isDiploma(docName)).length;
+  const docStampAmount = docStampCount * 30;
 
-// Count how many non-diploma documents are selected
-const docStampCount = Object.keys(selectedDocuments).filter(docName => !isDiploma(docName)).length;
-const docStampAmount = docStampCount * 30;
-
-// Add Doc Stamp to total calculation
-const totalWithDocStamp = totalAmount + docStampAmount;
-
-  // Function to determine program type based on college, degree, and active form
+  // Helper to determine program type based on college, degree, and active form
   const getProgramType = (college, degree, activeForm, documentName) => {
-    // Special handling for Transcript of Records for specific colleges/degrees for graduate/alumni
     if (documentName === "Transcript of Records" && activeForm === 'graduate') {
       if (college === "College of Physical Therapy" && degree === "Bachelor of Science in Physical Therapy") {
         return "Student PT, Engr, Nursing, Arch, IT, CS";
@@ -444,16 +440,13 @@ const totalWithDocStamp = totalAmount + docStampAmount;
       }
     }
 
-    // General program type determination
     if (college === "College of Medicine") {
       return "Medicine";
     }
     if (activeForm === 'graduate') {
-      // Check for specific graduate colleges
       if (college === "Graduate School of Law" || college === "School of Public Health") {
         return "Grad School Program";
       }
-      // Check for specific graduate degrees within other colleges
       const gradSchoolDegrees = [
         "Doctor of Business Administration", "Master in Business Administration",
         "Master of Engineering with Specialization in Computer Engineering",
@@ -481,62 +474,97 @@ const totalWithDocStamp = totalAmount + docStampAmount;
       if (gradSchoolDegrees.includes(degree)) {
         return "Grad School Program";
       }
-      // If it's a graduate/alumni but none of the above specific cases, default to Bachelor Program for pricing
-      // This handles cases where alumni from a bachelor program request documents.
       return "Bachelor Program";
-
     }
-    // Default for undergraduate
     return "BACHELOR PROGRAM";
   };
 
-
   const handleUndergraduateClick = () => {
     setActiveForm('undergraduate');
-    setCurrentPage(1); // Always start at page 1 for main forms
+    setCurrentPage(1);
     setShowDatePicker(false);
   };
 
   const handleGraduateAlumniClick = () => {
     setShowGraduatePrivacy(true);
     setGraduatePrivacyAgreed(false);
-    setActiveForm(null); // Don't show form yet
-};
+    setActiveForm(null);
+  };
 
-const handleGraduatePrivacyAgree = () => {
-  setShowGraduatePrivacy(false);
-  setGraduatePrivacyAgreed(true);
-  setActiveForm('graduate');
-  setCurrentPage(1);
-  setShowDatePicker(false);
-};
+  const handleGraduatePrivacyAgree = () => {
+    setShowGraduatePrivacy(false);
+    setGraduatePrivacyAgreed(true);
+    setActiveForm('graduate');
+    setCurrentPage(1);
+    setShowDatePicker(false);
+  };
 
   const handleSubmitOriginalReceiptClick = () => {
     setActiveForm('originalReceipt');
-    setCurrentPage(1); // Start at page 1 for original receipt form
+    setCurrentPage(1);
     setShowDatePicker(false);
   };
 
   const closeForm = () => {
-    setActiveForm(null); // Reset active form when closing
-    setCurrentPage(1); // Reset to page 1
-    // Clear all form data
+    setActiveForm(null);
+    setCurrentPage(1);
+    // Clear all form data states
     setStudentNumber('');
     setFirstName('');
     setLastName('');
     setMiddleName('');
     setDegreeProgram('');
-    setSelectedCollege(''); // Clear selected college
+    setSelectedCollege('');
     setAyAdmitted('');
     setSemAdmitted('');
     setGraduationDate(null);
+    setPhoneNumber('');
+    setLandline('');
+    setEmailAddress('');
+    setViber('');
+    setStreetNumber('');
+    setBarangay('');
+    setMunicipality('');
+    setProvince('');
+    setPurposeTorEvaluation(false);
+    setPurposeTorBoardExam(false);
+    setPurposeTorEmployment(false);
+    setPurposeTorFurtherStudies(false);
+    setPurposeTorFurtherStudiesText('');
+    setPurposeCertificationsText('');
     setSelectedDocuments({});
     setTotalAmount(0);
+    setTransactionRef('');
     setShowDatePicker(false);
-    setTransactionDetails(null); // Clear transaction details
+    setTransactionDetails(null);
+    setOrStudentNumber('');
+    setOrFirstName('');
+    setOrLastName('');
+    setOrMiddleName('');
+    setOrReferenceNo('');
+    setOrNumberInput('');
+    setUploadReceiptFile(null);
   };
 
   const handleNextPage = () => {
+    // Basic validation for Page 1 fields
+    if (!firstName || !lastName || !middleName || !selectedCollege || !degreeProgram || !phoneNumber || !emailAddress || !streetNumber || !barangay || !municipality || !province) {
+      alert('Please fill in all required fields (marked with *) before proceeding.');
+      return;
+    }
+    if (activeForm === 'graduate' && !graduationDate) {
+      alert('Please select a graduation date for graduate/alumni requests.');
+      return;
+    }
+    if (purposeTorFurtherStudies && !purposeTorFurtherStudiesText.trim()) {
+      alert('Please specify the College/University for further studies purpose.');
+      return;
+    }
+    if (!purposeTorEvaluation && !purposeTorBoardExam && !purposeTorEmployment && !purposeTorFurtherStudies && !purposeCertificationsText.trim()) {
+      alert('Please select at least one purpose for your request or specify a certification.');
+      return;
+    }
+
     setCurrentPage(2);
   };
 
@@ -619,7 +647,7 @@ const handleGraduatePrivacyAgree = () => {
     "Certificate of Medium of Instruction",
     "CTC of F137",
     "Replacement of ID",
-     "Transcript of Record for Employment",
+    "Transcript of Record for Employment",
     "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2017 - Below)",
     "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2018 - Present)",
     "Certificate of Course Syllabus"
@@ -669,24 +697,24 @@ const handleGraduatePrivacyAgree = () => {
   };
 
   const handleQuantityChange = (docName, qty) => {
-  setSelectedDocuments(prev => {
-    const newSelected = { ...prev };
-    if (newSelected[docName]) {
-      let parsedQty = parseInt(qty, 10);
-      if (isNaN(parsedQty) || parsedQty < 0) parsedQty = 0;
-      if (parsedQty > 6) parsedQty = 6; // <-- enforce max limit
-      const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, docName);
-      const docInfo = documentDetails[docName]?.[currentProgramType];
-      const price = docInfo ? (docInfo.amount === "FREE" ? 0 : docInfo.amount) : 0;
-      newSelected[docName] = {
-        ...newSelected[docName],
-        qty: parsedQty,
-        amount: parsedQty * price
-      };
-    }
-    return newSelected;
-  });
-};
+    setSelectedDocuments(prev => {
+      const newSelected = { ...prev };
+      if (newSelected[docName]) {
+        let parsedQty = parseInt(qty, 10);
+        if (isNaN(parsedQty) || parsedQty < 0) parsedQty = 0;
+        if (parsedQty > 6) parsedQty = 6;
+        const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, docName);
+        const docInfo = documentDetails[docName]?.[currentProgramType];
+        const price = docInfo ? (docInfo.amount === "FREE" ? 0 : docInfo.amount) : 0;
+        newSelected[docName] = {
+          ...newSelected[docName],
+          qty: parsedQty,
+          amount: parsedQty * price
+        };
+      }
+      return newSelected;
+    });
+  };
 
   useEffect(() => {
     const calculatedTotal = Object.values(selectedDocuments).reduce((sum, doc) => sum + doc.amount, 0);
@@ -700,133 +728,210 @@ const handleGraduatePrivacyAgree = () => {
     return `TRN-${timestamp}-${randomChars}`.toUpperCase();
   };
 
-  const handleSubmitRequest = () => {
+  const accessCodeRequiredDocs = [
+    "Transfer out/Honorable Dismissal",
+    "Replacement of ID",
+    "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2017 - Below)",
+    "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2018 - Present)",
+    "Certificate of Graduation with special paper for loss diploma",
+    "CTC of Diploma",
+    "Certified True Copy of TOR",
+    "CAV for Board Exam (Graduate - 2017 - Below)",
+    "CAV for Board Exam (Graduate - 2018 - Present)",
+    "CAV for Abroad or DFA/CHED Authentication (Graduate - 2017 - Below)",
+    "CAV for Abroad or DFA/CHED Authentication (Graduate - 2018 - Present)",
+    "English Translation of Diploma",
+    "Honorable Dismissal / Original TOR for other school / Transfer Credentials"
+  ];
+
+  const handleSubmitRequest = async () => {
     const needsAccessCode = Object.keys(selectedDocuments).some(doc =>
-    accessCodeRequiredDocs.includes(doc)
-  );
-  if (needsAccessCode && !pendingSubmit) {
-    setShowAccessCodeModal(true);
-    setAccessCodeInput('');
-    setAccessCodeError('');
-    setPendingSubmit(true);
-    return;
-  }
-    const transactionRef = generateTransactionRef();
-<<<<<<< HEAD
-  const payload = {
-    studentNumber,
-    firstName,
-    lastName,
-    middleName,
-    degreeProgram,
-    selectedCollege,
-    ayAdmitted,
-    semAdmitted,
-    graduationDate,
-    phoneNumber: document.getElementById('phone-number').value,
-    landline: document.getElementById('landline').value,
-    email: document.getElementById('email').value,
-    viber: document.getElementById('viber').value,
-    address: {
-      streetNumber: document.getElementById('street-number').value,
-      barangay: document.getElementById('barangay').value,
-      municipality: document.getElementById('municipality').value,
-      province: document.getElementById('province').value,
-    },
-    purposeOfRequest: document.getElementById('purpose-request')?.value || 'Not specified'
-  };
+      accessCodeRequiredDocs.includes(doc)
+    );
 
-  try {
-    const res = await fetch('/api/submit-request', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-    if (res.ok) {
-      console.log('Request saved with ID:', data.requestId);
-    } else {
-      console.error('Failed to save:', data.error);
+    if (Object.keys(selectedDocuments).length === 0) {
+      alert('Please select at least one document to request.');
+      return;
     }
-  } catch (err) {
-    console.error('Submission error:', err);
-  }
 
-  setTransactionDetails({
-    transactionRef,
-    name: `${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`,
-    studentNumber,
-    college: selectedCollege,
-    degreeProgram,
-    totalAmount,
-    selectedDocuments,
-    docStampCount
-  });
-  setCurrentPage(3);
-};
+    if (needsAccessCode && !pendingSubmit) {
+      setShowAccessCodeModal(true);
+      setAccessCodeInput('');
+      setAccessCodeError('');
+      setPendingSubmit(true);
+      return;
+    }
 
-=======
-    setTransactionDetails({
-      transactionRef,
-      name: `${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`,
-      studentNumber: studentNumber,
-      college: selectedCollege,
-      degreeProgram: degreeProgram,
-      totalAmount: totalAmount,
-      selectedDocuments: selectedDocuments,
-      docStampCount: docStampCount
-});
-    setCurrentPage(3); 
-    setPendingSubmit(false);
->>>>>>> a4ba250322a27ea301b5053032e4b44645181cb5
+    const currentTransactionRef = generateTransactionRef();
+    setTransactionRef(currentTransactionRef); // Store in state for later use - FIX APPLIED HERE
+
+    try {
+      // 1. Submit Request Form (Applicant's Information)
+      const requestFormPayload = {
+        formRequestId: transactionRef,
+        studentNumber,
+        firstName,
+        lastName,
+        middleName,
+        degreeProgram,
+        selectedCollege,
+        ayAdmitted,
+        semAdmitted,
+        graduationDate: graduationDate ? graduationDate.toISOString().split('T')[0] : null, // Format date for DB
+        phoneNumber,
+        landline,
+        emailAddress,
+        viber,
+        streetName: streetNumber, // Flatten address fields
+        barangay,
+        municipality,
+        province,
+        purposeOfRequest: JSON.stringify({
+  evaluation: purposeTorEvaluation,
+  boardExam: purposeTorBoardExam,
+  employment: purposeTorEmployment,
+  furtherStudies: purposeTorFurtherStudies,
+  furtherStudiesText: purposeTorFurtherStudiesText,
+  certificationsText: purposeCertificationsText
+})
+
+      };
+
+      console.log('Submitting Request Form Payload:', requestFormPayload);
+
+      const requestFormRes = await fetch('http://localhost:5000/api/incoming.requestForm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestFormPayload)
+      });
+
+    if (!requestFormRes.ok) {
+      const contentType = requestFormRes.headers.get("content-type");
+      let errorMessage = `Failed to save request form: ${requestFormRes.statusText}`;
+
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await requestFormRes.json();
+        errorMessage = errorData.error || errorMessage;
+      } else {
+        const errorText = await requestFormRes.text();
+        console.error("Unexpected response body:", errorText);
+      }
+
+      throw new Error(errorMessage);
+    }
+
+      const requestFormData = await requestFormRes.json();
+      const formRequestId = requestFormData.requestId; // Get the ID of the newly created request form
+
+      // 2. Submit Document Requested details (loop through selectedDocuments)
+      for (const docName in selectedDocuments) {
+        const doc = selectedDocuments[docName];
+        const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, docName);
+        const docInfo = documentDetails[docName]?.[currentProgramType];
+        const unitPriceValue = docInfo ? (docInfo.amount === "FREE" ? 0 : docInfo.amount) : 0;
+
+        const documentRequestedPayload = {
+          formRequestId: transactionRef, // Link to the main request
+          studentNumber,
+          firstName,
+          lastName,
+          middleName,
+          degreeProgram,
+          ayAdmitted,
+          semAdmitted,
+          documentType: docName,
+          unitPrice: unitPriceValue,
+          quantity: doc.qty,
+          attachmentFile: 'placeholder_attachment_path', // Placeholder, actual file upload needs FormData
+          totalAmount: doc.amount, // Total for this specific document (qty * unitPrice)
+          transactionRef: currentTransactionRef
+        };
+
+        console.log('Submitting Document Requested Payload:', documentRequestedPayload);
+
+        const docReqRes = await fetch('http://localhost:5000/api/incoming.documentRequested', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(documentRequestedPayload)
+        });
+
+        if (!docReqRes.ok) {
+          const errorData = await docReqRes.json();
+          console.error(`Backend Error (Document ${docName}):`, errorData);
+          alert(`Failed to save document ${docName}: ${errorData.error || docReqRes.statusText}`);
+          // Decide whether to throw or continue based on desired error handling
+        }
+      }
+
+      // 3. Update Transaction Summary for display
+      setTransactionDetails({
+        transactionRef: currentTransactionRef,
+        name: `${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`,
+        studentNumber,
+        college: selectedCollege,
+        degreeProgram,
+        totalAmount: totalAmount + docStampAmount, // Include doc stamp in final total
+        selectedDocuments,
+        docStampCount
+      });
+      setCurrentPage(3);
+      setPendingSubmit(false);
+
+    } catch (err) {
+      console.error('Submission error:', err);
+      alert(`An error occurred during submission: ${err.message}. Please check console for details.`);
+      setPendingSubmit(false);
+    }
   };
 
-  const handleSubmitOriginalReceiptForm = () => {
-    //Temporary only WAIT FOR DB
-    // Logic to handle original receipt form submission (e.g., send data to backend)
-    // For now, just redirect to a confirmation page.
-    setCurrentPage(4); // Go to original receipt confirmation page
+  const handleSubmitOriginalReceiptForm = async () => {
+    // Basic validation for OR form
+    if (!orFirstName || !orLastName || !orMiddleName || !orReferenceNo || !orNumberInput || !uploadReceiptFile) {
+      alert('Please fill in all required fields (marked with *) and upload the receipt before submitting.');
+      return;
+    }
+
+    try {
+      const receiptDetailsPayload = {
+        orNumber: orNumberInput,
+        formRequestId: transactionRef, // Assuming orReferenceNo is intended to be the transactionRef/formRequestId
+        firstName: orFirstName,
+        lastName: orLastName,
+        middleName: orMiddleName,
+        studentNumber: orStudentNumber,
+        transactionRef: orReferenceNo, // Use the reference number as transactionRef
+        originalReceipt: uploadReceiptFile ? uploadReceiptFile.name : 'no_file_uploaded' // Placeholder for file name
+      };
+
+      console.log('Submitting Receipt Details Payload:', receiptDetailsPayload);
+
+      const receiptRes = await fetch('http://localhost:5000/api/incoming.receiptDetailsSubmission', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(receiptDetailsPayload)
+      });
+
+      if (!receiptRes.ok) {
+        const errorData = await receiptRes.json();
+        console.error('Backend Error (Receipt Submission):', errorData);
+        throw new Error(`Failed to save receipt details: ${errorData.error || receiptRes.statusText}`);
+      }
+      console.log('Receipt details submitted successfully!');
+      setCurrentPage(4);
+    } catch (err) {
+      console.error('Receipt submission error:', err);
+      alert(`An error occurred during receipt submission: ${err.message}. Please check console for details.`);
+    }
   };
 
   const handleDownloadFile = (fileName) => {
-    //Temporary only WAIT FOR DB
-    // Dummy download logic: In a real application, you would fetch the file from a server
-    // and trigger a download. Here, we'll just log and simulate.
     console.log(`Simulating download for: ${fileName}`);
-    //Temporary only WAIT FOR DB
-    // For a real download, create a temporary anchor tag and click it:
-    // const link = document.createElement('a');
-    // link.href = '/path/to/your/downloadable/files/' + encodeURIComponent(fileName);
-    // link.download = fileName;
-    // document.body.appendChild(link);
-    // link.click();
-    // document.body.removeChild(link);
     alert(`Downloading dummy file: ${fileName}`);
-  
   };
-  const accessCodeRequiredDocs = [
-  // Undergraduate
-  "Transfer out/Honorable Dismissal",
-  "Replacement of ID",
-  "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2017 - Below)",
-  "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2018 - Present)",
-  // Graduate/Alumni
-  "Certificate of Graduation with special paper for loss diploma",
-  "CTC of Diploma",
-  "Certified True Copy of TOR",
-  "CAV for Board Exam (Graduate - 2017 - Below)",
-  "CAV for Board Exam (Graduate - 2018 - Present)",
-  "CAV for Abroad or DFA/CHED Authentication (Graduate - 2017 - Below)",
-  "CAV for Abroad or DFA/CHED Authentication (Graduate - 2018 - Present)",
-  "English Translation of Diploma",
-  "Honorable Dismissal / Original TOR for other school / Transfer Credentials"
-];
 
   return (
     <div className="app-container">
       {msg && <p>Backend Status: {msg}</p>}
-      {/* Header component */}
       <Header isFormExpanded={activeForm !== null} />
 
       <main className={`main-content ${activeForm !== null ? 'main-content-expanded' : ''}`}>
@@ -842,7 +947,7 @@ I, hereby commit, in the performance of my official duties and functions, to str
 </p><p className='privacy-content-inside'>
 2. Not use or divulge confidential, privileged or classified information which are officially known to me by reason of my official position, in order to further my private interests or give undue patronage to anyone, or to prejudice the University's, the public's or anyone's interest;
 </p><p className='privacy-content-inside'>
-3. Disclose or process personal information only in instances authorized by law, such as when there is informed consent, or by virtue of a contractual obligation of the University, or under legal obligation, or for the protection of life and health, or by any other criteria provided under the Data Privacy Act of 2012;
+3. Disclose or process personal information only in instances authorized by law, such as when there is informed consent, or by virtue of a contractual obligation of the University, or for the protection of life and health, or by any other criteria provided under the Data Privacy Act of 2012;
 </p><p className='privacy-content-inside'>
 4. Strictly adhere to the data privacy principles of transparency, legitimate purpose and proportionality whenever I process personal information in the course of my official functions;
 </p><p className='privacy-content-inside'>
@@ -875,14 +980,7 @@ I fully understand that failure to comply with the above-mentioned obligations m
       </div>
     </div>
   ) : activeForm === null ? (
-    // ...existing code...
             <>
-              {/*<p className="privacy-header">DATA PRIVACY AND NON-DISCLOSURE AGREEMENT</p>
-              <label htmlFor="agree-checkbox" className="privacy-checkbox-label">
-                <input type="checkbox" id="agree-checkbox" className="privacy-checkbox" />
-                <span>I fully understand and agree to the <a href="#" className="privacy-link">Terms and Conditions</a> and <a href="#" className="privacy-link">Privacy Policy</a>.</span>
-              </label>*/}
-
               <div className="button-group-row">
                 <button className="undergrad-button" onClick={handleUndergraduateClick}>
                   Undergraduate
@@ -904,43 +1002,43 @@ I fully understand that failure to comply with the above-mentioned obligations m
                 <div className="request-form-content">
                   <div className="form-group">
                     <label className="form-label" htmlFor="student-number-or">Student Number</label>
-                    <input className="form-input" type="text" id="student-number-or" />
+                    <input className="form-input" type="text" id="student-number-or" value={orStudentNumber} onChange={e => setOrStudentNumber(e.target.value)} />
                   </div>
                   <div className="form-group">
                     <label className="form-label" htmlFor="first-name-or">First Name
                       <span style={{color: 'red'}}>*</span>
                     </label>
-                    <input className="form-input" type="text" id="first-name-or" />
+                    <input className="form-input" type="text" id="first-name-or" value={orFirstName} onChange={e => setOrFirstName(e.target.value)} />
                   </div>
                   <div className="form-group">
                     <label className="form-label" htmlFor="last-name-or">Last Name
                       <span style={{color: 'red'}}>*</span>
                     </label>
-                    <input className="form-input" type="text" id="last-name-or" />
+                    <input className="form-input" type="text" id="last-name-or" value={orLastName} onChange={e => setOrLastName(e.target.value)} />
                   </div>
                   <div className="form-group">
                     <label className="form-label" htmlFor="middle-name-or">Middle Name
                       <span style={{color: 'red'}}>*</span>
                     </label>
-                    <input className="form-input" type="text" id="middle-name-or" />
+                    <input className="form-input" type="text" id="middle-name-or" value={orMiddleName} onChange={e => setOrMiddleName(e.target.value)} />
                   </div>
                   <div className="form-group">
                     <label className="form-label" htmlFor="reference-no-or">Reference No.:
                       <span style={{color: 'red'}}>*</span>
                     </label>
-                    <input className="form-input" type="text" id="reference-no-or" />
+                    <input className="form-input" type="text" id="reference-no-or" value={orReferenceNo} onChange={e => setOrReferenceNo(e.target.value)} />
                   </div>
                   <div className="form-group">
                     <label className="form-label" htmlFor="or-number-or">OR Number:
                       <span style={{color: 'red'}}>*</span>
                     </label>
-                    <input className="form-input" type="text" id="or-number-or" />
+                    <input className="form-input" type="text" id="or-number-or" value={orNumberInput} onChange={e => setOrNumberInput(e.target.value)} />
                   </div>
                   <div className="form-group form-group-vertical">
                     <label className="form-label" htmlFor="upload-receipt">Upload Scanned Copy of Original Receipt
                       <span style={{color: 'red'}}>*</span>
                     </label>
-                    <input className="form-input" type="file" id="upload-receipt" />
+                    <input className="form-input" type="file" id="upload-receipt" onChange={e => setUploadReceiptFile(e.target.files[0])} />
                   </div>
                   <button className="submit-or-button" onClick={handleSubmitOriginalReceiptForm}>Submit</button>
                   <button className="close-or-button" onClick={closeForm}>Close</button>
@@ -974,51 +1072,6 @@ I fully understand that failure to comply with the above-mentioned obligations m
                         <label className="form-label" htmlFor="student-number">Student Number</label>
                         <input className="form-input" type="text" id="student-number" placeholder="202100098" value={studentNumber} onChange={(e) => setStudentNumber(e.target.value)} />
                       </div>
-  {/*<label className="form-label" htmlFor="student-number">Student Number</label>
-  <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-   } <input
-      className="form-input"
-      type="text"
-      id="student-number"
-      placeholder="202100098"
-      value={studentNumber}
-      onChange={(e) => {
-        setStudentNumber(e.target.value);
-        setFieldsDisabled(false); // Allow editing if student number changes
-      }}
-      style={{ flex: 1 }}
-      disabled={fieldsDisabled}
-    />
-    <button
-      type="button"
-      className="search-student-btn"
-      style={{ marginLeft: '8px', padding: '0.3rem 0.8rem', borderRadius: '6px', background: '#b8a054', color: 'white', border: 'none', cursor: 'pointer' }}
-      onClick={() => {
-        const data = dummyStudentData[studentNumber];
-        if (data) {
-          setFirstName(data.firstName);
-          setLastName(data.lastName);
-          setMiddleName(data.middleName);
-          setSelectedCollege(data.selectedCollege);
-          setDegreeProgram(data.degreeProgram);
-          setAyAdmitted(data.ayAdmitted);
-          setSemAdmitted(data.semAdmitted);
-          setPhoneNumber(data.phoneNumber);
-          setLandline(data.landline);
-          setEmail(data.email);
-          setViber(data.viber);
-          setStreetNumber(data.streetNumber);
-          setBarangay(data.barangay);
-          setMunicipality(data.municipality);
-          setProvince(data.province);
-          setFieldsDisabled(true);
-        } else {
-          alert("Student not found in dummy data.");
-        }
-      }}
-    >
-      Search
-    </button>*/}
   
                       <div className="form-group-triple-inline">
                         <div className="form-group-vertical">
@@ -1126,28 +1179,20 @@ I fully understand that failure to comply with the above-mentioned obligations m
                       <h4 className="form-section-title">Contact Information</h4>
                       <div className="form-group-double-inline">
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="street-number">Phone Number
+                          <label className="form-label" htmlFor="phone-number">Phone Number
                             <span style={{color: 'red'}}>*</span>
 
                           </label>
-                          <input className="form-input" type="text" id="phone-number" />
-                        </div>
-                        <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="barangay">Landline No</label>
-                          <input className="form-input" type="text" id="landline"/>
+                          <input className="form-input" type="text" id="phone-number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
                         </div>
                       </div>
                       <div className="form-group-double-inline">
                         <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="municipality">Email Address
+                          <label className="form-label" htmlFor="email">Email Address
                             <span style={{color: 'red'}}>*</span>
 
                           </label>
-                          <input className="form-input" type="text" id="email"/>
-                        </div>
-                        <div className="form-group-vertical">
-                          <label className="form-label" htmlFor="province">Viber</label>
-                          <input className="form-input" type="text" id="viber" />
+                          <input className="form-input" type="text" id="email" value={emailAddress} onChange={(e) => setEmailAddress(e.target.value)} />
                         </div>
                       </div>
                       <hr className="form-divider" />
@@ -1159,14 +1204,14 @@ I fully understand that failure to comply with the above-mentioned obligations m
                             <span style={{color: 'red'}}>*</span>
 
                           </label>
-                          <input className="form-input" type="text" id="street-number" />
+                          <input className="form-input" type="text" id="street-number" value={streetNumber} onChange={(e) => setStreetNumber(e.target.value)} />
                         </div>
                         <div className="form-group-vertical">
                           <label className="form-label" htmlFor="barangay">Barangay
                             <span style={{color: 'red'}}>*</span>
 
                           </label>
-                          <input className="form-input" type="text" id="barangay"/>
+                          <input className="form-input" type="text" id="barangay" value={barangay} onChange={(e) => setBarangay(e.target.value)} />
                         </div>
                       </div>
                       <div className="form-group-double-inline">
@@ -1175,14 +1220,14 @@ I fully understand that failure to comply with the above-mentioned obligations m
                             <span style={{color: 'red'}}>*</span>
 
                           </label>
-                          <input className="form-input" type="text" id="municipality"/>
+                          <input className="form-input" type="text" id="municipality" value={municipality} onChange={(e) => setMunicipality(e.target.value)} />
                         </div>
                         <div className="form-group-vertical">
                           <label className="form-label" htmlFor="province">Province
                             <span style={{color: 'red'}}>*</span>
 
                           </label>
-                          <input className="form-input" type="text" id="province" />
+                          <input className="form-input" type="text" id="province" value={province} onChange={(e) => setProvince(e.target.value)} />
                         </div>
                       </div>
 
@@ -1197,24 +1242,24 @@ I fully understand that failure to comply with the above-mentioned obligations m
                       <div className="form-group-checkbox">
                         <p className="checkbox-section-title">A. Transcript of Records (TOR)</p>
                         <label className="checkbox-label">
-                          <input type="checkbox" className="form-checkbox" /> Evaluation
+                          <input type="checkbox" className="form-checkbox" checked={purposeTorEvaluation} onChange={e => setPurposeTorEvaluation(e.target.checked)} /> Evaluation
                         </label>
                         <label className="checkbox-label">
-                          <input type="checkbox" className="form-checkbox" /> Board Exam
+                          <input type="checkbox" className="form-checkbox" checked={purposeTorBoardExam} onChange={e => setPurposeTorBoardExam(e.target.checked)} /> Board Exam
                         </label>
                         <label className="checkbox-label">
-                          <input type="checkbox" className="form-checkbox" /> Employment or Promotion
+                          <input type="checkbox" className="form-checkbox" checked={purposeTorEmployment} onChange={e => setPurposeTorEmployment(e.target.checked)} /> Employment or Promotion
                         </label>
                         <label className="checkbox-label checkbox-label-with-input">
-                          <input type="checkbox" className="form-checkbox" /> Further Studies (specify College/University)
-                          <input type="text" className="form-input checkbox-input" />
+                          <input type="checkbox" className="form-checkbox" checked={purposeTorFurtherStudies} onChange={e => setPurposeTorFurtherStudies(e.target.checked)} /> Further Studies (specify College/University)
+                          <input type="text" className="form-input checkbox-input" value={purposeTorFurtherStudiesText} onChange={e => setPurposeTorFurtherStudiesText(e.target.value)} disabled={!purposeTorFurtherStudies} />
                         </label>
                       </div>
 
                       <div className="form-group-checkbox">
                         <label className="checkbox-label checkbox-label-with-input">
                           B. Certifications (specify):
-                          <input type="text" className="form-input checkbox-input" />
+                          <input type="text" className="form-input checkbox-input" value={purposeCertificationsText} onChange={e => setPurposeCertificationsText(e.target.value)} />
                         </label>
                       </div>
 
@@ -1295,13 +1340,13 @@ I fully understand that failure to comply with the above-mentioned obligations m
       style={{ background: '#f0f0f0', color: '#888' }}
     />
     <span className="document-amount-display">
-      P{docStampAmount.toFixed(2)}
+      P{(docStampAmount).toFixed(2)}
     </span>
   </div>
 )}
                         <div className="documents-table-total">
                           <span className="total-label">Total:</span>
-                          <span className="total-value">P{totalAmount.toFixed(2)}</span>
+                          <span className="total-value">P{(totalAmount + docStampAmount).toFixed(2)}</span>
                         </div>
                       </div>
 
@@ -1492,10 +1537,10 @@ I fully understand that failure to comply with the above-mentioned obligations m
   </div>
 )}
 
-      {/* Footer component */}
       <Footer />
     </div>
   );
 }
+
 
 export default App;
