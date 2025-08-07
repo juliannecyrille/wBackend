@@ -72,9 +72,7 @@ try{
 } catch (error){
   console.error(error)
   res.status(500).json({error: 'Database Connecitonfailed'})
-}
-
-}),
+}}),
 
 app.use(cors()); // Enable CORS for development
 app.use(express.json()); // For parsing JSON request bodies (for non-file uploads)
