@@ -11,7 +11,7 @@ const port = 5000;
 
 const {Pool} = require('pg'); // Import the PostgreSQL connection pool
 const pool = new Pool ({
-  connectionString: process.env.DATBASE_URL,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false,
 
