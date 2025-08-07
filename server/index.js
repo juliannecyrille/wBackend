@@ -8,7 +8,13 @@ const os = require('os'); // Import os module to get network interface
 const nodemailer = require('nodemailer'); // Re-import nodemailer
 const puppeteer = require('puppeteer'); // Import puppeteer for server-side PDF generation
 const port = 5000;
-const pool = require('./database'); // Import the PostgreSQL connection pool
+
+const {Pool} = require('pg'); // Import the PostgreSQL connection pool
+const pool = new Pool ({
+  connectionString: process.env.DATBASE_URL,
+  ssl: {rejectUnauthorized: false,},
+}); 
+
 const app = express();
 
 // Function to get the server's network IP address
@@ -58,6 +64,17 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+app.get('/test', async (req, res) => {
+try{
+  const result = await pool.query('SELECT NOW()');
+  res.json({success:true, time: result.rows[0].now});
+} catch (error){
+  console.error(error)
+  res.status(500).json({error: 'Database Connecitonfailed'})
+}
+
+}),
 
 app.use(cors()); // Enable CORS for development
 app.use(express.json()); // For parsing JSON request bodies (for non-file uploads)
