@@ -12,7 +12,10 @@ const port = 5000;
 const {Pool} = require('pg'); // Import the PostgreSQL connection pool
 const pool = new Pool ({
   connectionString: process.env.DATBASE_URL,
-  ssl: {rejectUnauthorized: false,},
+  ssl: {
+    rejectUnauthorized: false,
+
+  },
 }); 
 
 const app = express();
@@ -329,14 +332,13 @@ app.get('/server/test', (req, res) => {
 });
 
 // API endpoint to test database connection
-app.get('/database', async(req,res) => {
-  
-  try{
-    const result = await pool.query('SELECT NOW()')
-    res.json(result.rows[0])
+app.get('/database', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW()');
+    res.json({ now: result.rows[0].now });
   } catch (error) {
-    console.error('Backend: Database Connection failed:', error);
-    res.status(500).json({error:'Database Connection failed whawha'})
+    console.error('Database connection failed:', error);
+    res.status(500).json({ error: 'Database connection failed' });
   }
 });
 
