@@ -77,7 +77,11 @@ try{
   res.status(500).json({error: 'Database Connecitonfailed'})
 }}),
 
-app.use(cors()); // Enable CORS for development
+app.use(cors({
+  origin: "https://requestour-d84b4.web.app",
+  credentials: true
+}));
+
 app.use(express.json()); // For parsing JSON request bodies (for non-file uploads)
 
 // Nodemailer Transporter Configuration
