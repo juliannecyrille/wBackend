@@ -22,7 +22,7 @@
     }
   ],
   "hosting": {
-    "public": "C:\\Users\\PLM-User\\Our-Requests\\our_frontend\\temp\\my-mobile-app\\dist",
+    "public": "C:\\Users\\shang\\Projects\\wBackend\\our_frontend\\temp\\my-mobile-app\\dist",
     "ignore": [
       "firebase.json",
       "**/.*",
