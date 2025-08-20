@@ -96,7 +96,7 @@ app.use(express.json()); // For parsing JSON request bodies (for non-file upload
 // });
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: process.env.EMAIL_HOST,
   port: 587,
   secure: false,
   auth: {
@@ -104,8 +104,6 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS
   }
 });
-
-
 
 // Verify transporter configuration (optional, but good for debugging)
 transporter.verify(function (error, success) {
