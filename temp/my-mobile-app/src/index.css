@@ -1,3 +1,5 @@
+
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
@@ -7,14 +9,11 @@ html, body {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
-  scrollbar-width: none; 
-  -ms-overflow-style: none;  
 }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  display: none; 
-}
+
+
+
 
 body {
   position: relative;
@@ -26,7 +25,7 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-color: var(--navy-blue); 
+  background-color: var(--navy-blue);
 }
 
 #root {
@@ -70,7 +69,7 @@ body {
 .app-header {
   width: 100%;
   background-color: var(--navy-blue);
-  opacity: 0.9; 
+  opacity: 0.9;
   color: #D7B993;
   padding: 0rem 1rem;
   display: flex;
@@ -227,7 +226,7 @@ body {
   flex-direction: column;
   justify-content: flex-end;
   overflow: hidden;
-  background-color: rgba(5, 23, 59, 0.9); 
+  background-color: rgba(5, 23, 59, 0.9);
 }
 
 .main-content-expanded {
@@ -235,6 +234,8 @@ body {
   background-color: transparent;
   width: 100vw;
   min-width: none;
+   overflow-y: auto; /* Changed from hidden to auto */
+
 }
 
 
@@ -245,7 +246,7 @@ body {
   background-color: #F4EFEB;
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
-  
+
   margin-left: auto;
   margin-right: auto;
   width: 100vw;
@@ -269,8 +270,8 @@ body {
   padding-bottom: 0;
   border-top-left-radius: 3rem;
   border-top-right-radius: 3rem;
-  background-image: none; 
-  background-color: transparent; 
+  background-image: none;
+  background-color: transparent;
   opacity: 1;
   margin-top: 10px;
   animation: slideUpSection 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
@@ -420,13 +421,13 @@ body {
 .request-form-container {
   display: flex;
   flex-direction: column;
-  height: 100%; 
+  height: 100%;
   width: 100%;
   background-color: white;
-  border-top-left-radius: 1rem; 
+  border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
   box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
-  overflow: hidden; 
+  
 }
 
 .request-form-header {
@@ -435,7 +436,7 @@ body {
   padding: .5rem 1.5rem;
   font-size: 9px;
   font-weight: bold;
-  border-top-left-radius: 1rem; 
+  border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
   font-family: 'Poppins', sans-serif;
 }
@@ -456,7 +457,7 @@ body {
   height: 100vh;
 }
 
-.submit-form-button, .submit-or-button, .close-or-button,.back-button, .close-form-button, .close-form-button1 {
+.submit-form-button, .submit-or-button, .close-or-button, .back-button, .close-form-button, .close-form-button1 {
   background-color: var(--red-accent);
   color: white;
   font-weight: 600;
@@ -481,7 +482,7 @@ body {
 
 .submit-form-button, .submit-or-button{
   margin-top: 40px;
-  
+
 }
 .submit-form-button:hover, .submit-or-button:hover, .close-form-button:hover, .close-or-button:hover, .back-button:hover{
   background-color: #8B0000;
@@ -492,6 +493,9 @@ body {
   margin-top: 0.5rem;
 }
 
+.close-form-button1{
+  margin-bottom: 50px;
+}
 .close-form-button:hover, .close-or-button:hover {
   background-color: #4b5563;
 }
@@ -504,6 +508,14 @@ body {
   border-bottom: 1px solid var(--form-border);
   padding-bottom: 0.5rem;
   margin-top: 10px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.form-section-title1{
+  font-size: 27px;
+  font-weight: 600;
+  color: var(--red-accent);
+  margin-top: 70px;
   font-family: 'Poppins', sans-serif;
 }
 
@@ -550,20 +562,20 @@ body {
 .form-group-double-inline,
 .form-group-triple-inline {
   display: flex;
-  flex-direction: column; 
-  gap: 0.6rem; 
+  flex-direction: column;
+  gap: 0.6rem;
   margin-bottom: 0.6rem;
   width: 100%;
 }
 
 .form-group-double-inline > div,
 .form-group-triple-inline > div {
-  width: 100%; 
+  width: 100%;
 }
 
 
 .form-label {
-  min-width: 110px; 
+  min-width: 110px;
   margin-bottom: 0;
   margin-right: 1rem;
   text-align: left;
@@ -593,6 +605,48 @@ body {
   background-repeat: no-repeat;
   background-position: right 0.7em top 50%, 0 0;
   background-size: 0.8em auto, 100%;
+}
+
+/* index.css */
+
+.input-with-search {
+  display: flex; /* Make the container a flex container */
+  align-items: center; /* Vertically align items in the middle */
+  gap: 5px;
+  margin-bottom: 15px; /* Add some space between the input and the button (optional) */
+}
+
+/* Optional: Adjust the input field's width if needed */
+.input-with-search .birth-date-input {
+  flex-grow: 1; /* Allow the input to take up available space */
+  /* You might also set a specific max-width if desired */
+}
+
+/* Optional: Basic styling for the search button to make it look clean */
+.search-button {
+  background: none; /* Remove default button background */
+  border: 1px solid #ccc; /* Add a subtle border */
+  padding: 5px 8px; /* Adjust padding as needed */
+  cursor: pointer;
+  display: flex; /* Use flex to center the icon if it's not perfectly centered */
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px; /* Slightly rounded corners */
+}
+
+.search-message{
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  color: var(--red-accent);
+  margin-top: -5px;
+  text-align: center;
+}
+
+/* Optional: Style the search icon itself if needed */
+.search-button .lucide-search {
+  width: 16px; /* Example: Make the icon slightly larger */
+  height: 16px;
+  color: #555; /* Example: Change icon color */
 }
 
 .date-input-container {
@@ -677,13 +731,13 @@ body {
 }
 
 .checkbox-label-with-input {
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
 }
 
 .checkbox-label-with-input .checkbox-input {
   margin-top: 0.5rem;
   margin-left: 1.5rem;
-  width: calc(100% - 1.5rem); 
+  width: calc(100% - 1.5rem);
 }
 
 
@@ -775,11 +829,6 @@ body {
   background-color: var(--light-gray-bg);
 }
 
-.day-cell.empty {
-  visibility: hidden;
-  cursor: default;
-}
-
 .day-cell.selected {
   background-color: var(--red-accent);
   color: white;
@@ -805,14 +854,14 @@ body {
 
 .footer-social-icons {
   display: flex;
-  gap: 1.5rem; 
+  gap: 1.5rem;
   align-items: center;
 }
 
 .social-icon {
-  width: 1.8rem; 
-  height: 1.8rem; 
-  color: var(--navy-blue); 
+  width: 1.8rem;
+  height: 1.8rem;
+  color: var(--navy-blue);
   transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
@@ -826,7 +875,7 @@ body {
   margin-bottom: 1.5rem;
   text-align: left;
   font-family: 'Poppins', sans-serif;
-  padding-left: 4px; 
+  padding-left: 4px;
   padding-bottom: 1rem;
 }
 
@@ -839,7 +888,7 @@ body {
 .info-label {
   font-weight: 600;
   color: var(--text-gray-dark);
-  min-width: 150px; 
+  min-width: 150px;
   font-family: 'Poppins', sans-serif;
 }
 
@@ -859,26 +908,26 @@ body {
 
 .documents-table-header {
   display: grid;
-  grid-template-columns: 2fr 0.5fr 0.7fr; 
+  grid-template-columns: 2fr 0.5fr 0.7fr;
   gap: 1rem;
   align-items: center;
   padding: 0.5rem 1rem;
   border-bottom: 1px solid var(--border-gray);
   font-size: 13px;
   font-weight: 600;
-  background-color: var(--red-accent); 
-  color: white; 
+  background-color: var(--red-accent);
+  color: white;
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
 }
 
 .documents-table-header > div {
-  padding: 0.2rem 0; 
+  padding: 0.2rem 0;
 }
 
 .documents-table-row {
   display: grid;
-  grid-template-columns: 2fr 0.5fr 0.7fr; 
+  grid-template-columns: 2fr 0.5fr 0.7fr;
   gap: 1rem;
   align-items: center;
   padding: 0.5rem 0;
@@ -887,17 +936,17 @@ body {
 }
 
 .documents-table-row > .document-name-label {
-  background-color: var(--light-gray-bg); 
+  background-color: var(--light-gray-bg);
   padding: 0.4rem 0.6rem;
-  border-radius: 0.3rem; 
+  border-radius: 0.3rem;
   box-sizing: border-box;
-  
+
   font-size: 10px;
   font-family: 'Poppins', sans-serif;
 }
 
 .documents-table-row > .document-qty-input {
-  background-color: #d0d0d0; 
+  background-color: #d0d0d0;
   padding: 0.4rem 0.6rem;
   border-radius: 0.3rem;
   box-sizing: border-box;
@@ -906,7 +955,7 @@ body {
 }
 
 .documents-table-row > .document-amount-display {
-  background-color: #a0a0a0; 
+  background-color: #a0a0a0;
   color: white;
   padding: 0.4rem 0.6rem;
   border-radius: 0.3rem;
@@ -1012,7 +1061,7 @@ body {
 .document-detail-downloads,
 .document-detail-attachments {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   margin-bottom: 0.4rem;
   font-size: 11px;
   text-align: left;
@@ -1024,7 +1073,7 @@ body {
 .document-detail-attachments .info-label {
   font-weight: 500;
   color: var(--text-gray-dark);
-  min-width: 120px; 
+  min-width: 120px;
   margin-right: 0.5rem;
 }
 
@@ -1050,7 +1099,7 @@ body {
 }
 
 .upload-file-input {
-  width: 140px; 
+  width: 140px;
   margin-left: auto;
   display: block;
 }
@@ -1071,7 +1120,7 @@ body {
 .modal-overlay {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
   background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 9999;
-  
+
 }
 .modal-content {
   background: #fff; padding: 2rem 0rem; border-radius: 8px; box-shadow: 0 2px 16px rgba(0,0,0,0.2); max-width: 350px; width: 100%;
@@ -1124,6 +1173,14 @@ body {
   max-width: 500%;
   align-items: center;
 }
+.transaction-summary-container1 {
+  padding: 0rem;
+  background-color: white;
+  border-radius: 1rem;
+  text-align: center;
+  max-width: 500%;
+  align-items: center;
+}
 
 .transaction-message {
   margin-top: 50px;
@@ -1132,6 +1189,16 @@ body {
   color: var(--red-accent);
   margin-bottom: 2.5rem;
   font-family: 'Poppins', sans-serif;
+}
+
+.transaction-message01 {
+  font-size: 12PX;
+  font-weight: 600;
+  color: var(--text-gray-dark);
+  margin-bottom: 2.5rem;
+  font-family: 'Poppins', sans-serif;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .transaction-message2 {
@@ -1152,6 +1219,89 @@ body {
   padding: 1rem 1rem;
   font-family: 'Poppins', sans-serif;
 }
+
+.message-below01{
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--red-accent);
+  padding: 0rem 2rem;
+  font-family: 'Poppins', sans-serif;
+  text-align: left;
+  margin-bottom: -20px;
+}
+
+.message-below02{
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gray-dark);
+  margin-bottom: 5.5rem;
+  padding: 1rem 2rem;
+  text-align: left;
+  font-family: 'Poppins', sans-serif;
+}
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.steps-list li {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.steps-list .label {
+  width: 150px;
+  font-weight: bold;
+}
+
+.steps-list .desc {
+  flex: 1;
+}
+.registrar-contact-info {
+  margin-top: 30px;
+  text-align: left;
+}
+
+.contact-message {
+  font-size: 11px;
+  color: #333;
+  line-height: 1.6;
+  margin: 15px 0;
+  padding: 0rem 2rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Shared styles for all horizontal lines */
+.registrar-contact-info hr {
+  border: none;
+  border-top: 1px solid #ccc;
+}
+
+/* Reduce top margin of the first <hr> */
+.registrar-contact-info hr:first-of-type {
+  margin-top: 4px;
+  margin-bottom: 6px;
+}
+
+/* Increase bottom margin of the second <hr> */
+.registrar-contact-info hr:last-of-type {
+  margin-top: 6px;
+  margin-bottom: 70px;
+}
+
+.contact-message a {
+  color: #042344;
+}
+
+.contact-message p {
+  margin: 4px 0; /* Reduce spacing between lines */
+}
+.contact-message a:hover {
+  text-decoration: underline;
+}
+
 
 .message-below2{
   font-size: 12px;
@@ -1181,9 +1331,9 @@ body {
   margin-bottom: 3rem;
   margin-top: -3rem;
   margin-left: 20px;
-  text-align: left;
-  padding: 1rem 0rem;
+  padding: 1rem 0srem;
   font-family: 'Poppins', sans-serif;
+
 }
 
 .summary-info-block {
@@ -1249,7 +1399,7 @@ body {
 }
 
 .summary-document-item {
-  
+
   font-size: 12px;
   color: var(--text-gray-medium);
   margin-bottom: 0.5rem;
@@ -1274,6 +1424,39 @@ body {
   margin-bottom: 2rem;
 }
 
+/* NEW STYLES FOR SPECIFIC SUBJECT INPUT */
+.specific-subject-input-container {
+  grid-column: 1 / span 3; /* Span across all columns */
+  margin-top: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 2rem; /* Align with checkbox */
+  position: relative; /* For error message positioning */
+}
+
+.specific-subject-input {
+  width: calc(100% - 2rem); /* Adjust width to fit container */
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--form-border);
+  border-radius: 0.5rem;
+  font-size: 11px;
+  color: var(--text-gray-dark);
+  box-sizing: border-box;
+}
+
+.specific-subject-input.input-error {
+  border-color: red;
+}
+
+.error-message-inline {
+  color: red;
+  font-size: 10px;
+  margin-top: 0.2rem;
+  display: block;
+  text-align: left;
+  padding-left: 0.2rem;
+}
+
 
 @media (max-width: 1023px) {
   .documents-row-wrapper {
@@ -1291,6 +1474,18 @@ body {
     box-shadow: none;
   }
 
+  .back-button {
+    grid-column: auto;
+    width: 80%;
+    max-width: 150px;
+    margin-left: 660px;
+    margin-top: 5px;
+    margin-right: auto;
+    margin-bottom: -24px;
+    padding: .4rem;
+    font-size: 14px;
+
+  }
   .app-header {
     padding: 3rem 2rem;
   }
@@ -1305,16 +1500,16 @@ body {
   }
 
   .privacy-section {
-    max-width: none; 
-    width: 100vw; 
+    max-width: none;
+    width: 100vw;
     min-height: 50px;
     max-height: unset;
-    border-radius: 0; 
+    border-radius: 0;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     box-shadow: none;
     margin: 0;
-    padding: 0; 
+    padding: 0;
   }
 
   .privacy-section-expanded {
@@ -1325,7 +1520,7 @@ body {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     box-shadow: none;
-    padding: 20px; 
+    padding: 20px;
     padding-bottom: 0;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -1344,7 +1539,7 @@ body {
   .privacy-content{
     font-size: 12px;
     padding: 0rem 20rem;
-  
+
   }
 
   #graduate-privacy-checkbox{
@@ -1359,7 +1554,103 @@ body {
     margin-right: 80px;
   }
   .privacy-section{
-    border-top-left-radius: 3rem; 
+    border-top-left-radius: 3rem;
+    border-top-right-radius: 3rem;
+  }
+  .undergrad-button, .submit-form-button, .close-form-button {
+    max-width: 20rem;
+  }
+}
+
+
+@media (min-width: 768px) {
+  #root {
+    max-width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .back-button {
+    grid-column: auto;
+    width: 80%;
+    max-width: 150px;
+    margin-left: 660px;
+    margin-top: 5px;
+    margin-right: auto;
+    margin-bottom: -24px;
+    padding: .4rem;
+    font-size: 14px;
+
+  }
+  .app-header {
+    padding: 3rem 2rem;
+  }
+
+  .university-logo {
+    width: 10rem;
+    height: 10rem;
+  }
+
+  .office-title {
+    font-size: 1.2rem;
+  }
+
+  .privacy-section {
+    max-width: none;
+    width: 100vw;
+    min-height: 50px;
+    max-height: unset;
+    border-radius: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .privacy-section-expanded {
+    max-width: none;
+    width: 100vw;
+    min-height: 100vh;
+    border-radius: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    box-shadow: none;
+    padding: 20px;
+    padding-bottom: 0;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    background-color: transparent;
+    opacity: 1;
+    margin-top: 20px;
+  }
+
+  .privacy-header{
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  .privacy-checkbox-label{
+    font-size: 12px;
+  }
+  .privacy-content{
+    font-size: 12px;
+    padding: 0rem 20rem;
+
+  }
+
+  #graduate-privacy-checkbox{
+    margin-right: 15px;
+    margin-bottom: 20px;
+  }
+  .privacy-content .close-form-button{
+    margin-top: 30px;
+  }
+ .privacy-checkbox{
+    margin-top: 20px;
+    margin-right: 80px;
+  }
+  .privacy-section{
+    border-top-left-radius: 3rem;
     border-top-right-radius: 3rem;
   }
   .undergrad-button, .submit-form-button, .close-form-button {
@@ -1367,80 +1658,13 @@ body {
   }
 }
 @media (min-width: 1024px) {
-  
-  .request-form-content {
-    display: flex;
-    flex-direction: column; 
-    align-items: top; 
-    gap: 1.5rem; 
-    padding: 1.5rem;
-  }
 
-  .pre-filled-info .info-value {
-  color: var(--text-gray-medium);
-  flex-grow: 1;
-  padding-left: 1rem;
-width: 250px;
-}
-  .pre-filled-info {
-    width: 100%; 
-    max-width: 600px; 
-    margin-bottom: 1rem; 
-    text-align: left; 
-    align-items: top;
-    padding-right: 2rem;
-    padding-left: 2rem;
-    margin-left: 1rem;
-  }
-  
-
- .documents-row-wrapper {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  align-items: flex-start;
-  width: 100%;
-  margin-bottom: 2rem;
-}
-
-
-  .documents-requested-section,
-.selected-documents-details {
-  flex: 1 1 0;
-  min-width: 350px;
-  max-width: 700px;
-  margin: 0;
-}
-
-  .submit-form-button, .close-form-button, .submit-or-button, .close-or-button {
-    grid-column: auto; 
-    width: 80%; 
-    max-width: 150px; 
-    margin-left: auto; 
-    margin-right: auto; 
-  }
-  .back-button {
-    grid-column: auto; 
-    width: 80%; 
-    max-width: 150px; 
-    margin-left: 637px;
-    margin-top: 5px; 
-    margin-right: auto; 
-    margin-bottom: -24px;
-    padding: .5rem;
-    font-size: 14px;
-    
-  }
-}
-
-@media (min-width: 1024px) {
-  
   .form-group-double-inline > .form-group-vertical:nth-child(2):has([id="degree-program"]) {
-    margin-left: -480px; 
+    margin-left: -490px;
   }
 
   .form-group-double-inline > .form-group-vertical:nth-child(2):has([id="sem-admitted"]) {
-    margin-left: -480px;
+    margin-left: -490px;
   }
 
   .form-group-double-inline > .form-group-vertical:nth-child(2):has([id="landline"]) {
@@ -1547,9 +1771,10 @@ width: 250px;
 
   .request-form-content {
     display: grid;
-    grid-template-columns: 1fr 1fr; 
-    gap: 1.5rem 4.5rem; 
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 4.5rem;
     padding: 1.5rem;
+    width: 100%;
   }
   .request-form-container {
     max-height: 100vh;
@@ -1563,15 +1788,16 @@ width: 250px;
   .form-subtitle{
     font-size: 15px;
     margin-left: 30px;
-    
-
   }
+
+ 
+
   .form-section-title,
   .form-section-title-secondary,
   .form-subtitle,
   .form-group-checkbox {
     grid-column: 1 / span 2;
-    width: 100%; 
+    width: 100%;
   }
   .form-section-title-secondary {
     font-size: 12px;
@@ -1592,24 +1818,24 @@ width: 250px;
   }
   .form-group {
     grid-column: auto;
-    flex-direction: column; 
+    flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    width: 100%; 
+    width: 100%;
     padding-left: 4rem;
     font-size: 14px;
   }
-  
+
   .form-group-vertical .form-label {
     margin-bottom: 0.3rem;
-    margin-right: 0; 
+    margin-right: 0;
     font-size: 13px;
     font-family: 'Poppins', sans-serif;
   }
 
   .form-group .form-label {
     margin-bottom: 0.3rem;
-    margin-right: 0; 
+    margin-right: 0;
     font-size: 13px;
     font-family: 'Poppins', sans-serif;
   }
@@ -1617,8 +1843,13 @@ width: 250px;
   .form-label[for="graduation-date"] {
   margin-left: 4rem;
 }
+
+.form-label[for="birth-date"] {
+  margin-left: 4rem;
+}
+
   .form-input, .form-select {
-    width: 350px; 
+    width: 350px;
     max-width: 100%;
     min-width: 0;
     margin-left: 0;
@@ -1626,13 +1857,17 @@ width: 250px;
     display: block;
   }
 
+  .form-input .graduation-date-input {
+  margin-left: 4rem;
+}
+
   .form-group-double-inline,
   .form-group-triple-inline {
     display: flex;
-    flex-direction: row; 
-    gap: 1rem; 
-    grid-column: 1 / span 2; 
-    width: 100%; 
+    flex-direction: row;
+    gap: 1rem;
+    grid-column: 1 / span 2;
+    width: 100%;
     margin-bottom: 0.6rem;
     padding-left: 4rem;
     font-size: 13px;
@@ -1641,8 +1876,8 @@ width: 250px;
 
   .form-group-double-inline > div,
   .form-group-triple-inline > div {
-    flex: 1; 
-    width: auto; 
+    flex: 1;
+    width: auto;
   }
   .checkbox-section-title,
   .form-group-checkbox,
@@ -1659,6 +1894,13 @@ width: 250px;
     flex-grow: 0;
   }
 
+  .graduation-date-input {
+  margin-left: 4rem;
+}
+
+.birth-date-input {
+  margin-left: 4rem;
+}
   .checkbox-label-with-input .checkbox-input {
     margin-top: 0;
     margin-left: 0.5rem;
@@ -1697,7 +1939,7 @@ width: 250px;
 }
 
   .submit-form-button, .submit-or-button,
-  .close-form-button, .close-or-button {
+  .close-form-button, .close-or-button{
     grid-column: 1 / 3;
     justify-self: center;
     margin-left: auto;
@@ -1727,24 +1969,36 @@ width: 250px;
   background-color: white;
   border-radius: 1rem;
   text-align: center;
-  width: 500px;
-  margin-left: 450px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: static; 
+  position: static;
+  
+
 }
 .transaction-summary-container {
   padding: 2rem;
   background-color: white;
   border-radius: 1rem;
   text-align: center;
-  width: 500px;
-  margin-left: 400px;
+  width: 100vw;
+  margin-left: 350px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: static; 
+  position: static;
+}
+
+.transaction-summary-container1 {
+  background-color: white;
+  border-radius: 1rem;
+  text-align: center;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: static;
 }
 
 .transaction-message {
@@ -1768,7 +2022,7 @@ width: 250px;
   width: 60px;
   margin: 5px;
   padding: 4px 0;
-  
+
   border-radius: 2px;
   cursor: pointer;
 }
@@ -1798,7 +2052,6 @@ width: 250px;
   color: var(--text-gray-medium);
   margin-bottom: 1rem;
   margin-top: -3rem;
-  margin-left: 20px;
   padding: 1rem 1rem;
   font-family: 'Poppins', sans-serif;
 }
@@ -1823,12 +2076,12 @@ width: 250px;
   margin-left: 20px;
   padding: 1rem 0srem;
   font-family: 'Poppins', sans-serif;
-  
+
 }
 .modal-overlay {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
   background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 9999;
-  
+
 }
 .modal-content {
   background: #fff; padding: 2rem 0rem; border-radius: 8px; box-shadow: 0 2px 16px rgba(0,0,0,0.2); max-width: 350px; width: 100%;
@@ -1872,5 +2125,181 @@ width: 250px;
   cursor: pointer;
   box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
   font-family: 'Poppins', sans-serif;
+}
+}
+
+/* Laptop Media Query for Original Receipt Confirmation Page */
+@media (min-width: 1024px) {
+  .request-form-container .request-form-content.transaction-summary-container {
+    /* Center the container and give it a reasonable width */
+    width: 700px; /* Adjust as needed */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3rem; /* Increase padding */
+    box-sizing: border-box;
+     overflow-y: visible; /* Changed from hidden to auto */
+  }
+
+  .form-section-title1 {
+    font-size: 35px; /* Adjusted to 35px */
+    margin-top: 60px; /* Adjust spacing */
+    margin-bottom: 30px;
+  }
+
+  .transaction-message01 {
+    font-size: 14px; /* Adjusted to 14px */
+    padding-left: 13rem;
+    padding-right: 16rem;
+    margin-bottom: 30px; /* Adjusted spacing */
+    line-height: 1.8; /* Improve readability */
+  }
+
+  .message-below01 {
+    font-size: 20px; /* Adjusted to 14px */
+    padding: 0rem 4rem; /* Adjust padding */
+    margin-bottom: -10px; /* Adjusted spacing */
+  }
+
+  .message-below02 {
+    font-size: 14px; /* Adjusted to 14px */
+    padding: 1rem 4rem; /* Adjusted padding */
+    margin-bottom: 50px; /* Adjusted spacing */
+    line-height: 1.8;
+  }
+
+  .steps-list {
+    margin-top: 10px; /* Adjusted spacing */
+  }
+
+  .steps-list li {
+    margin-bottom: 10px; /* Adjusted spacing between list items */
+  }
+
+  .steps-list .label {
+    width: 150px; /* Adjusted to 150px */
+    font-size: 14px; /* Adjusted to 14px */
+  }
+
+  .steps-list .desc {
+    font-size: 14px; /* Adjusted to 14px */
+  }
+
+  .registrar-contact-info {
+    margin-top: 30px; /* Adjusted spacing */
+  }
+
+  .registrar-contact-info hr {
+    margin-top: 4px; /* Adjusted to 4px */
+    margin-bottom: 6px; /* Adjusted to 6px */
+  }
+
+  .registrar-contact-info hr:last-of-type {
+    margin-top: 6px; /* Adjusted to 6px */
+    margin-bottom: 70px; /* Adjusted to 70px */
+  }
+
+  .contact-message {
+    font-size: 14px; /* Adjusted to 14px */
+    line-height: 1.6; /* Improve readability */
+    margin: 15px 0; /* Adjusted to 15px */
+    padding: 0rem 4rem; /* Adjust padding */
+  }
+
+  .contact-message p {
+    font-size: 14px; /* Ensures paragraphs within contact-message are 14px */
+    margin: 4px 0; /* Adjusted to 4px */
+  }
+
+  .close-form-button1 {
+    font-size: 14px; /* Adjusted to 14px */
+    margin-bottom: 50px; /* Adjusted spacing */
+    padding: 0.5rem 0.1rem; /* Adjusted padding */
+    max-width: 150px; /* Adjusted to 150px */
+  }
+
+
+.input-with-search {
+  width: 450px;
+  display: flex; /* Make the container a flex container */
+  align-items: center; /* Vertically align items in the middle */
+  gap: 5px; /* Add some space between the input and the button (optional) */
+}
+
+/* Optional: Adjust the input field's width if needed */
+.input-with-search .birth-date-input {
+  flex-grow: 1; /* Allow the input to take up available space */
+  /* You might also set a specific max-width if desired */
+}
+
+/* Optional: Basic styling for the search button to make it look clean */
+.search-button {
+  background: none; /* Remove default button background */
+  border: 1px solid #ccc; /* Add a subtle border */
+  padding: 5px 8px; /* Adjust padding as needed */
+  cursor: pointer;
+  display: flex; /* Use flex to center the icon if it's not perfectly centered */
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px; /* Slightly rounded corners */
+}
+
+/* Optional: Style the search icon itself if needed */
+.search-button .lucide-search {
+  width: 16px; /* Example: Make the icon slightly larger */
+  height: 16px;
+  color: #555; /* Example: Change icon color */
+}
+
+  .pre-filled-info .info-value {
+  color: var(--text-gray-medium);
+  flex-grow: 1;
+  padding-left: 1rem;
+width: 250px;
+}
+  .pre-filled-info {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 1rem;
+    text-align: left;
+    align-items: top;
+    padding-right: 2rem;
+    padding-left: 2rem;
+    margin-left: 1rem;
+  }
+
+
+ .documents-row-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+
+  .documents-requested-section,
+.selected-documents-details {
+  flex: 1 1 0;
+  min-width: 350px;
+  max-width: 700px;
+  margin: 0;
+}
+
+
+.form-divider {
+  border: none;
+  border-top: 1px solid var(--border-gray);
+  margin-left: 30px;
+  margin-bottom: 0px;
+}
+
+.search-message{
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: var(--red-accent);
+  text-align: left;
+  margin-top: 20px;
+  margin-left: -210px;
 }
 }

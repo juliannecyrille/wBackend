@@ -1,17 +1,22 @@
-
-
-// App.jsx (Frontend React App)
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
 import Header from './components/Header/Header.jsx';
-import DatePicker from './components/DatePicker/DatePicker.jsx'; 
+// Removed: import DatePicker from './components/DatePicker/DatePicker.jsx';
 import Footer from './components/Footer/Footer.jsx';
+
+// Import the search icon (e.g., from Lucide React or define it as SVG)
+// For simplicity, I'll use a simple text/emoji icon. For production, use a proper icon library.
+const SearchIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search">
+    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+  </svg>
+);
 
 function App() {
   const [msg, setMsg] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/server/test')
+    // Changed to relative path
+    fetch(`${import.meta.env.VITE_API_URL}/server/test`)
       .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -27,9 +32,9 @@ function App() {
         setMsg("Failed to connect to backend.");
       });
   }, []);
-  
-  const [activeForm, setActiveForm] = useState(null); 
-  const [currentPage, setCurrentPage] = useState(1); 
+
+  const [activeForm, setActiveForm] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Form 1 states (Applicant's Information)
   const [studentNumber, setStudentNumber] = useState('');
@@ -37,10 +42,11 @@ function App() {
   const [lastName, setLastName] = useState('');
   const [middleName, setMiddleName] = useState('');
   const [degreeProgram, setDegreeProgram] = useState('');
-  const [selectedCollege, setSelectedCollege] = useState(''); 
+  const [selectedCollege, setSelectedCollege] = useState('');
   const [ayAdmitted, setAyAdmitted] = useState('');
   const [semAdmitted, setSemAdmitted] = useState('');
-  const [graduationDate, setGraduationDate] = useState(null);
+  const [graduationDate, setGraduationDate] = useState(null); // Keep as null for initial state
+  const [birthDate, setBirthDate] = useState(null); // NEW STATE: For birthdate
 
   // Contact Information states
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -62,16 +68,15 @@ function App() {
   const [purposeTorFurtherStudiesText, setPurposeTorFurtherStudiesText] = useState('');
   const [purposeCertificationsText, setPurposeCertificationsText] = useState('');
 
-  // Date picker states
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  // const [showYearSelector, setShowYearSelector] = useState(false); // Not used in provided DatePicker
+  // Removed Date picker states as DatePicker component is no longer used for graduationDate
+  // const [showDatePicker, setShowDatePicker] = useState(false);
+  // const [currentMonth, setCurrentMonth] = new Date().getMonth());
+  // const [currentYear, setCurrentYear] = new Date().getFullYear());
 
   // Form 2 states (Document Request)
-  const [selectedDocuments, setSelectedDocuments] = useState({}); 
+  const [selectedDocuments, setSelectedDocuments] = useState({});
   const [totalAmount, setTotalAmount] = useState(0);
-  const [transactionRef, setTransactionRef] = useState(''); // To store the generated transaction reference
+  const [formRequestId, setTransactionRef] = useState(''); // To store the generated transaction reference
 
   // Transaction Summary State
   const [transactionDetails, setTransactionDetails] = useState(null);
@@ -94,6 +99,17 @@ function App() {
   const [orReferenceNo, setOrReferenceNo] = useState(''); // This will be the transactionRef for OR submission
   const [orNumberInput, setOrNumberInput] = useState('');
   const [uploadReceiptFile, setUploadReceiptFile] = useState(null); // For the actual file object
+  const[dateOfPayment, setOrDateofPayment]= useState('');
+  // NEW STATE: For document-specific attachments
+  const [documentAttachments, setDocumentAttachments] = useState({});
+
+  // UPDATED STATE: For specific subject input (now an object) and its validation errors
+  const [specificSubjects, setSpecificSubjects] = useState({});
+  const [specificSubjectErrors, setSpecificSubjectErrors] = useState({});
+
+  // NEW STATE: For student search status/message
+  const [studentSearchMessage, setStudentSearchMessage] = useState('');
+
 
   // Data for Colleges and Degree Programs
   const collegesAndPrograms = {
@@ -145,7 +161,13 @@ function App() {
       "Master of Arts in Education Major in Social Sciences",
       "Master of Arts in Special Education with Specialization in Development Delays",
       "Doctor of Education in Education Administration",
-      "Doctor of Education in Educational Management and Leadership"
+      "Doctor of Education in Educational Management and Leadership",
+      "Master of Arts in Communication Management", "Master of Social Work",
+      "Master of Science In Information And Communications Technology", "Doctor of Information Technology",
+      "Master of Arts in Nursing",
+      "Master of Public Administration", "Doctor of Public Administration",
+      "Master of Science in Physical Therapy",
+      "Master of Arts in Psychology - Clinical Psychology", "Master of Arts in Psychology - Industrial Psychology"
     ],
     "College of Humanities, Arts And Social Sciences": [
       "Bachelor of Arts in Communication",
@@ -234,12 +256,12 @@ function App() {
       "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
     "Certificate of Course Description (Specific Subject Only)": {
-      "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
-      "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
+      "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [], requiresSubjectInput: true },
+      "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [], requiresSubjectInput: true }
     },
     "Certificate of Course Syllabus": {
       "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
-      "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [] }
+      "MEDICINE": { amount: 146, message: "No other attachment needed.", attachments: [], requiresSubjectInput: true }
     },
     "CTC of F137": {
       "BACHELOR PROGRAM": { amount: 146, message: "No other attachment needed.", attachments: [] },
@@ -260,7 +282,7 @@ function App() {
     },
     "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2017 - Below)": {
       "BACHELOR PROGRAM": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
-      "MEDICINE": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] }
+      "MEDICINE": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to to be presented upon request)", attachments: [] }
     },
     "CAV for Abroad or DFA/CHED Authentication (Undergraduate - 2018 - Present)": {
       "BACHELOR PROGRAM": { amount: 584, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
@@ -282,9 +304,9 @@ function App() {
       "Medicine": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
       "Grad School Program": { amount: 1095, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] }
     },
-    
+
     "CAV for Abroad or DFA/CHED Authentication (Graduate - 2018 - Present)": {
-      "Bachelor Program": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] },
+      "Bachelor Program": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)",  attachments: [] },
       "Medicine": { amount: 730, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)",  attachments: [] },
       "Grad School Program": { amount: 1095, message: "Please see PLM Registrar Office \n and submit the following document/s: \n \n 1. Certified True Copy of Transcript of Records \n 2. Certified True Copy of Diploma \n 3. Original copy of Diploma (to be presented upon request)\n 4. Original copy of Transcript of Record (to be presented upon request)", attachments: [] }
     },
@@ -322,7 +344,7 @@ function App() {
     "Certificate of Medium of Instruction (Graduate)": {
       "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
       "Medicine": { amount: 146, message: "No other attachment needed.", attachments: [] },
-      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
+      "Grad School Program": { amount: 146, message: "No other attachment needed.", attachments: [] }
     },
     "Certificate of Units Earned (Graduate)": {
       "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
@@ -345,9 +367,9 @@ function App() {
       "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
     },
     "Course Description (Specific Subject Only)": {
-      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
-      "Medicine": { amount: 146, message: null, attachments: [] },
-      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [] }
+      "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [], requiresSubjectInput: true },
+      "Medicine": { amount: 146, message: null, attachments: [], requiresSubjectInput: true },
+      "Grad School Program": { amount: 219, message: "No other attachment needed.", attachments: [], requiresSubjectInput: true }
     },
     "Course Syllabus": {
       "Bachelor Program": { amount: 146, message: "No other attachment needed.", attachments: [] },
@@ -482,13 +504,24 @@ function App() {
   const handleUndergraduateClick = () => {
     setActiveForm('undergraduate');
     setCurrentPage(1);
-    setShowDatePicker(false);
+    // Clear specific subject inputs and errors when switching forms
+    setSpecificSubjects({});
+    setSpecificSubjectErrors({});
+    setStudentSearchMessage(''); // Clear search message
+    // Clear autofilled fields when switching to undergraduate, in case graduate data was there
+    clearAutofilledFields();
   };
 
   const handleGraduateAlumniClick = () => {
     setShowGraduatePrivacy(true);
     setGraduatePrivacyAgreed(false);
     setActiveForm(null);
+    // Clear specific subject inputs and errors when switching forms
+    setSpecificSubjects({});
+    setSpecificSubjectErrors({});
+    setStudentSearchMessage(''); // Clear search message
+    // Clear autofilled fields when switching to graduate, as autofill is not applicable
+    clearAutofilledFields();
   };
 
   const handleGraduatePrivacyAgree = () => {
@@ -496,13 +529,15 @@ function App() {
     setGraduatePrivacyAgreed(true);
     setActiveForm('graduate');
     setCurrentPage(1);
-    setShowDatePicker(false);
   };
 
   const handleSubmitOriginalReceiptClick = () => {
     setActiveForm('originalReceipt');
     setCurrentPage(1);
-    setShowDatePicker(false);
+    // Clear specific subject inputs and errors when switching forms
+    setSpecificSubjects({});
+    setSpecificSubjectErrors({});
+    setStudentSearchMessage(''); // Clear search message
   };
 
   const closeForm = () => {
@@ -518,10 +553,9 @@ function App() {
     setAyAdmitted('');
     setSemAdmitted('');
     setGraduationDate(null);
+    setBirthDate(null); // NEW: Clear birthDate
     setPhoneNumber('');
-    setLandline('');
     setEmailAddress('');
-    setViber('');
     setStreetNumber('');
     setBarangay('');
     setMunicipality('');
@@ -535,23 +569,28 @@ function App() {
     setSelectedDocuments({});
     setTotalAmount(0);
     setTransactionRef('');
-    setShowDatePicker(false);
     setTransactionDetails(null);
     setOrStudentNumber('');
     setOrFirstName('');
     setOrLastName('');
     setOrMiddleName('');
     setOrReferenceNo('');
+    setOrDateofPayment('');
     setOrNumberInput('');
     setUploadReceiptFile(null);
+    setDocumentAttachments({}); // Clear document attachments
+    setSpecificSubjects({}); // Clear specific subjects
+    setSpecificSubjectErrors({}); // Clear specific subject errors
+    setStudentSearchMessage(''); // Clear search message
   };
 
   const handleNextPage = () => {
     // Basic validation for Page 1 fields
-    if (!firstName || !lastName || !middleName || !selectedCollege || !degreeProgram || !phoneNumber || !emailAddress || !streetNumber || !barangay || !municipality || !province) {
+    if (!firstName || !lastName || !middleName || !selectedCollege || !degreeProgram || !phoneNumber || !emailAddress || !streetNumber || !barangay || !municipality || !province || !birthDate) { // NEW: Add birthDate to validation
       alert('Please fill in all required fields (marked with *) before proceeding.');
       return;
     }
+    // Check if graduationDate is null or an empty string for graduate form
     if (activeForm === 'graduate' && !graduationDate) {
       alert('Please select a graduation date for graduate/alumni requests.');
       return;
@@ -570,68 +609,60 @@ function App() {
 
   const handleBackToPage1 = () => {
     setCurrentPage(1);
+    setSpecificSubjectErrors({}); // Clear errors when going back
   };
 
-  const handleDateInputClick = () => {
-    setShowDatePicker(!showDatePicker);
-  };
-
-  const handleClearDate = (e) => {
-    e.stopPropagation();
-    setGraduationDate(null);
-    setShowDatePicker(false);
-  };
-
-  const handleDateSelect = (day) => {
-    if (day === null) return;
-    const newDate = new Date(currentYear, currentMonth, day);
-    setGraduationDate(newDate);
-    setShowDatePicker(false);
-  };
-
-  const goToPreviousMonth = () => {
-    setCurrentMonth(prevMonth => {
-      if (prevMonth === 0) {
-        setCurrentYear(prevYear => prevYear - 1);
-        return 11;
-      }
-      return prevMonth - 1;
-    });
-  };
-
-  const goToNextMonth = () => {
-    setCurrentMonth(prevMonth => {
-      if (prevMonth === 11) {
-        setCurrentYear(prevYear => prevYear + 1);
-        return 0;
-      }
-      return prevMonth + 1;
-    });
-  };
-
-  const generateDaysInMonth = (month, year) => {
-    const date = new Date(year, month, 1);
-    const days = [];
-    const firstDayIndex = date.getDay();
-    const numDaysInMonth = new Date(year, month + 1, 0).getDate();
-
-    for (let i = 0; i < firstDayIndex; i++) {
-      days.push(null);
-    }
-
-    for (let i = 1; i <= numDaysInMonth; i++) {
-      days.push(i);
-    }
-
-    return days;
-  };
-
-  const monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-  const daysInCalendar = generateDaysInMonth(currentMonth, currentYear);
+  // Removed DatePicker related functions as the component is no longer used for graduationDate
+  // const handleDateInputClick = () => {
+  //   setShowDatePicker(!showDatePicker);
+  // };
+  // const handleClearDate = (e) => {
+  //   e.stopPropagation();
+  //   setGraduationDate(null);
+  //   setShowDatePicker(false);
+  // };
+  // const handleDateSelect = (day) => {
+  //   if (day === null) return;
+  //   const newDate = new Date(currentYear, currentMonth, day);
+  //   setGraduationDate(newDate);
+  //   setShowDatePicker(false);
+  // };
+  // const goToPreviousMonth = () => {
+  //   setCurrentMonth(prevMonth => {
+  //     if (prevMonth === 0) {
+  //       setCurrentYear(prevYear => prevYear - 1);
+  //       return 11;
+  //     }
+  //     return prevMonth - 1;
+  //   });
+  // };
+  // const goToNextMonth = () => {
+  //   setCurrentMonth(prevMonth => {
+  //     if (prevMonth === 11) {
+  //       setCurrentYear(prevYear => prevYear + 1);
+  //       return 0;
+  //     }
+  //     return prevMonth + 1;
+  // });
+  // };
+  // const generateDaysInMonth = (month, year) => {
+  //   const date = new Date(year, month, 1);
+  //   const days = [];
+  //   const firstDayIndex = date.getDay();
+  //   const numDaysInMonth = new Date(year, month + 1, 0).getDate();
+  //   for (let i = 0; i < firstDayIndex; i++) {
+  //     days.push(null);
+  //   }
+  //   for (let i = 1; i <= numDaysInMonth; i++) {
+  //     days.push(i);
+  //   }
+  //   return days;
+  // };
+  // const monthNames = ["January", "February", "March", "April", "May", "June",
+  //   "July", "August", "September", "October", "November", "December"
+  // ];
+  // const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  // const daysInCalendar = generateDaysInMonth(currentMonth, currentYear);
 
   const undergraduateDocuments = [
     "Certificate of Candidacy for Graduation",
@@ -689,8 +720,40 @@ function App() {
         const docInfo = documentDetails[docName]?.[currentProgramType];
         const price = docInfo ? (docInfo.amount === "FREE" ? 0 : docInfo.amount) : 0;
         newSelected[docName] = { qty: 1, amount: price };
+
+        // If a document requiring specific subject input is selected, initialize its entry
+        if (docInfo && docInfo.requiresSubjectInput) {
+          setSpecificSubjects(prevSubjects => ({
+            ...prevSubjects,
+            [docName]: '' // Initialize with empty string
+          }));
+          setSpecificSubjectErrors(prevErrors => ({
+            ...prevErrors,
+            [docName]: false // Clear error for this document
+          }));
+        }
       } else {
         delete newSelected[docName];
+        // Also clear any attached files for this document if deselected
+        setDocumentAttachments(prevAttachments => {
+          const newAttachments = { ...prevAttachments };
+          delete newAttachments[docName];
+          return newAttachments;
+        });
+        // If a document requiring specific subject input is deselected, clear its input and error
+        const docInfo = documentDetails[docName]?.[getProgramType(selectedCollege, degreeProgram, activeForm, docName)];
+        if (docInfo && docInfo.requiresSubjectInput) {
+          setSpecificSubjects(prevSubjects => {
+            const newSubjects = { ...prevSubjects };
+            delete newSubjects[docName];
+            return newSubjects;
+          });
+          setSpecificSubjectErrors(prevErrors => {
+            const newErrors = { ...prevErrors };
+            delete newErrors[docName];
+            return newErrors;
+          });
+        }
       }
       return newSelected;
     });
@@ -716,6 +779,81 @@ function App() {
     });
   };
 
+  // NEW FUNCTION: Handler for document-specific file attachments
+  const handleDocumentAttachmentChange = (docName, attachmentType, file) => {
+    console.log(`Frontend: File selected for ${docName} - ${attachmentType}:`, file);
+    setDocumentAttachments(prev => ({
+      ...prev,
+      [docName]: {
+        ...(prev[docName] || {}), // Preserve other attachments for this docName
+        [attachmentType]: file
+      }
+    }));
+  };
+
+  // NEW FUNCTION: Function to upload a single file to the backend
+  const uploadFile = async (file, docName, attachmentType) => {
+      if (!file) return null;
+
+      const formData = new FormData();
+      formData.append('documentAttachment', file);
+
+      console.log(`Frontend: Preparing to upload file for ${docName} - ${attachmentType}:`, file.name);
+
+      try {
+          // Changed to relative path
+          const response = await fetch(`${import.meta.env.VITE_API_URL}/test/api/incoming.uploadDocumentAttachment`, {
+              method: 'POST',
+              body: formData,
+          });
+
+          console.log(`Frontend: Upload response status for ${docName} - ${attachmentType}:`, response.status);
+
+          if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(`File upload failed: ${response.status} ${response.statusText} - ${errorText}`);
+          }
+
+          const uploadResult = await response.json();
+          console.log(`Frontend: Upload response body for ${docName} - ${attachmentType}:`, uploadResult);
+
+          // Backend now returns 'filePath' with the direct web URL
+          if (uploadResult.filePath) {
+              console.log(`Frontend: Received web URL from backend for ${docName} - ${attachmentType}:`, uploadResult.filePath);
+              return uploadResult.filePath;
+          } else {
+              console.error(`Frontend: Upload response missing filePath for ${docName} - ${attachmentType}:`, uploadResult);
+              return null;
+          }
+      } catch (error) {
+          console.error(`Frontend: Error uploading file for ${docName} - ${attachmentType}:`, error);
+          alert(`Error uploading file: ${error.message}`); // Use alert as per user's original code
+          return null;
+      }
+  };
+
+  // UPDATED FUNCTION: Function to handle file downloads (now directly uses the web URL)
+  const handleDownloadFile = (webUrl) => {
+    if (!webUrl) {
+      alert("No file URL provided for download.");
+      return;
+    }
+
+    // Extract filename from the URL for the download attribute
+    const fileName = webUrl.substring(webUrl.lastIndexOf('/') + 1);
+
+    console.log(`Frontend: Attempting to download file from: ${webUrl}`);
+
+    // Create a temporary anchor element
+    const link = document.createElement('a');
+    link.href = webUrl;
+    link.download = fileName; // Suggest the original filename for download
+    document.body.appendChild(link); // Append to body (required for Firefox)
+    link.click(); // Programmatically click the link
+    document.body.removeChild(link); // Clean up the temporary link
+    alert(`Downloading: ${fileName}`); // Alert as per user's original code for consistency
+  };
+
   useEffect(() => {
     const calculatedTotal = Object.values(selectedDocuments).reduce((sum, doc) => sum + doc.amount, 0);
     setTotalAmount(calculatedTotal);
@@ -723,9 +861,12 @@ function App() {
 
   // Function to generate a unique transaction reference number
   const generateTransactionRef = () => {
-    const timestamp = Date.now().toString(36);
-    const randomChars = Math.random().toString(36).substring(2, 8);
-    return `TRN-${timestamp}-${randomChars}`.toUpperCase();
+    // Get current year
+    const year = new Date().getFullYear();
+    // Generate 6 random alphanumeric characters
+    const randomChars = Math.random().toString(36).substring(2, 8).toUpperCase(); // 6 chars
+    // Format: OUR-REQ-YYYY-XXXXXX (18 characters total)
+    return `OUR-REQ-${year}-${randomChars}`;
   };
 
   const accessCodeRequiredDocs = [
@@ -744,6 +885,109 @@ function App() {
     "Honorable Dismissal / Original TOR for other school / Transfer Credentials"
   ];
 
+  // Helper function to clear autofilled fields
+  const clearAutofilledFields = () => {
+    setStudentNumber('');
+    // Only clear these if they were autofilled, or if we're explicitly resetting the form
+    // For now, let's clear them as they are tied to the autofill functionality
+    setDegreeProgram('');
+    setSelectedCollege('');
+    setAyAdmitted('');
+    setSemAdmitted('');
+    setPhoneNumber('');
+    setEmailAddress('');
+    setStreetNumber('');
+    setBarangay('');
+    setMunicipality('');
+    setProvince('');
+    setGraduationDate(null);
+    setStudentSearchMessage('');
+  };
+
+  // Debounce utility function
+  const debounce = (func, delay) => {
+    let timeout;
+    return (...args) => {
+      const context = this;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+  };
+
+  // NEW FUNCTION: Autofill search logic
+  // This function is now called manually when the search button is clicked.
+  const performAutofillSearch = useCallback(async () => {
+    // Only perform autofill for undergraduate form
+    if (activeForm === 'graduate') {
+      setStudentSearchMessage('Autofill is not available for Graduate/Alumni forms.');
+      clearAutofilledFields(); // Ensure fields are clear if user somehow triggers this
+      return;
+    }
+
+    // Only proceed if all required fields for autofill are present
+    if (!firstName.trim() || !lastName.trim() || !middleName.trim() || !birthDate) {
+      clearAutofilledFields(); // Clear if no all required fields are present
+      setStudentSearchMessage('Please enter First Name, Last Name, Middle Name, and Birth Date, then click the search button.');
+      return;
+    }
+
+    setStudentSearchMessage('Searching for student details...');
+    try {
+      const queryParams = new URLSearchParams({
+        firstName: firstName.trim().toLowerCase(), // Convert to lowercase
+        lastName: lastName.trim().toLowerCase(),   // Convert to lowercase
+        middleName: middleName.trim().toLowerCase(), // Convert to lowercase
+        birthDate: birthDate // birthDate from input type="date" is already in YYYY-MM-DD format
+      }).toString();
+
+      console.log('Frontend: Sending search query params:', queryParams); // ADDED LOG: Log query params
+
+      // Changed to relative path
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/test/api/studentCredentials/search?${queryParams}`); // Corrected path
+
+      const contentType = response.headers.get("content-type");
+
+      if (response.ok && contentType && contentType.includes("application/json")) {
+        const studentData = await response.json();
+        console.log('Frontend: Student data found:', studentData);
+        setStudentSearchMessage('Student details found and pre-filled!');
+
+        // Populate form fields with fetched data
+        setStudentNumber(studentData.studentnumber || '');
+        setDegreeProgram(studentData.degreeprogram || '');
+        setSelectedCollege(studentData.selectedcollege || '');
+        setAyAdmitted(studentData.ayadmitted || '');
+        setSemAdmitted(studentData.semadmitted || '');
+        setPhoneNumber(studentData.phonenumber || '');
+        setEmailAddress(studentData.emailaddress || '');
+        setStreetNumber(studentData.streetname || '');
+        setBarangay(studentData.barangay || '');
+        setMunicipality(studentData.municipality || '');
+        setProvince(studentData.province || '');
+        setGraduationDate(studentData.graduationdate ? studentData.graduationdate.split('T')[0] : null);
+
+      } else if (response.status === 404) {
+        clearAutofilledFields(); // Clear if no match
+        setStudentSearchMessage('No student found with the provided exact name and birthdate.');
+      } else {
+        // This is the block that will catch the SyntaxError if the response is not JSON
+        const errorText = await response.text(); // fallback if not JSON
+        console.error("Unexpected response from server:", errorText);
+        setStudentSearchMessage("Unexpected server response. Please try again.");
+      }
+    } catch (error) {
+      clearAutofilledFields(); // Clear on network error
+      setStudentSearchMessage('An error occurred during search. Please try again.');
+      console.error('Frontend: Network or unexpected error during student search:', error);
+    }
+  }, [firstName, lastName, middleName, birthDate, activeForm]); // Dependencies for useCallback
+
+  // Removed the useEffect that triggered autofill automatically on input changes.
+  // useEffect(() => {
+  //   performAutofillSearch(firstName, lastName, middleName, birthDate);
+  // }, [firstName, lastName, middleName, birthDate, performAutofillSearch]);
+
+
   const handleSubmitRequest = async () => {
     const needsAccessCode = Object.keys(selectedDocuments).some(doc =>
       accessCodeRequiredDocs.includes(doc)
@@ -754,6 +998,33 @@ function App() {
       return;
     }
 
+    // --- UPDATED VALIDATION FOR SPECIFIC SUBJECT INPUT ---
+    let hasSpecificSubjectErrors = false;
+    const newSpecificSubjectErrors = {};
+
+    Object.keys(selectedDocuments).forEach(docName => {
+      const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, docName);
+      const docInfo = documentDetails[docName]?.[currentProgramType];
+
+      if (docInfo && docInfo.requiresSubjectInput) {
+        if (!specificSubjects[docName] || specificSubjects[docName].trim() === '') {
+          newSpecificSubjectErrors[docName] = true;
+          hasSpecificSubjectErrors = true;
+        } else {
+          newSpecificSubjectErrors[docName] = false;
+        }
+      }
+    });
+
+    setSpecificSubjectErrors(newSpecificSubjectErrors); // Update error state for visual feedback
+
+    if (hasSpecificSubjectErrors) {
+      alert('Please fill in all required specific subject fields.');
+      return;
+    }
+    // --- END UPDATED VALIDATION ---
+
+
     if (needsAccessCode && !pendingSubmit) {
       setShowAccessCodeModal(true);
       setAccessCodeInput('');
@@ -763,12 +1034,13 @@ function App() {
     }
 
     const currentTransactionRef = generateTransactionRef();
-    setTransactionRef(currentTransactionRef); // Store in state for later use - FIX APPLIED HERE
+    // No need to set state here, use the local variable directly for consistency
+    // setTransactionRef(currentTransactionRef); // Removed this line to avoid async issues
 
     try {
       // 1. Submit Request Form (Applicant's Information)
       const requestFormPayload = {
-        formRequestId: transactionRef,
+        formRequestId: currentTransactionRef, // Use local variable
         studentNumber,
         firstName,
         lastName,
@@ -777,7 +1049,9 @@ function App() {
         selectedCollege,
         ayAdmitted,
         semAdmitted,
-        graduationDate: graduationDate ? graduationDate.toISOString().split('T')[0] : null, // Format date for DB
+        // For graduationDate, if it's a Date object, convert to ISO string. If it's already a string from native input, use as is.
+        graduationDate: graduationDate ? (typeof graduationDate === 'string' ? graduationDate : graduationDate.toISOString().split('T')[0]) : null, // Format date for DB
+        birthDate: birthDate ? (typeof birthDate === 'string' ? birthDate : birthDate.toISOString().split('T')[0]) : null, // NEW: Format birthDate for DB
         phoneNumber,
         landline,
         emailAddress,
@@ -787,19 +1061,42 @@ function App() {
         municipality,
         province,
         purposeOfRequest: JSON.stringify({
-  evaluation: purposeTorEvaluation,
-  boardExam: purposeTorBoardExam,
-  employment: purposeTorEmployment,
-  furtherStudies: purposeTorFurtherStudies,
-  furtherStudiesText: purposeTorFurtherStudiesText,
-  certificationsText: purposeCertificationsText
-})
+          evaluation: purposeTorEvaluation,
+          boardExam: purposeTorBoardExam,
+          employment: purposeTorEmployment,
+          furtherStudies: purposeTorFurtherStudies,
+          furtherStudiesText: purposeTorFurtherStudiesText,
+          certificationsText: purposeCertificationsText
+        }),
+        // NEW: Add selected documents details for email generation
+        selectedDocumentsForEmail: Object.keys(selectedDocuments).map(docName => {
+            const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, docName);
+            const docInfo = documentDetails[docName]?.[currentProgramType];
+            const unitPriceValue = docInfo ? (docInfo.amount === "FREE" ? 0 : docInfo.amount) : 0;
+            const specificSubjectForDoc = (docInfo && docInfo.requiresSubjectInput) ? specificSubjects[docName] : null;
 
+            // Calculate total amount for email summary, including doc stamp if applicable
+            let emailItemTotal = unitPriceValue * selectedDocuments[docName].qty;
+            if (!isDiploma(docName)) {
+                emailItemTotal += 30 * selectedDocuments[docName].qty; // Add doc stamp per quantity of non-diploma document
+            }
+
+            return {
+                documentType: docName,
+                quantity: selectedDocuments[docName].qty,
+                unitPrice: unitPriceValue,
+                totalAmount: emailItemTotal, // Corrected: This total includes doc stamp for email display
+                specificSubject: specificSubjectForDoc
+            };
+        }),
+        calculatedDocStampAmount: docStampAmount,
+        finalTotalAmountDue: totalAmount + docStampAmount // This is the overall total
       };
 
-      console.log('Submitting Request Form Payload:', requestFormPayload);
+      console.log('Frontend: Submitting Request Form Payload:', requestFormPayload);
 
-      const requestFormRes = await fetch('http://localhost:5000/api/incoming.requestForm', {
+      // Changed to relative path
+      const requestFormRes = await fetch(`${import.meta.env.VITE_API_URL}/test/api/incoming.requestForm`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestFormPayload)
@@ -814,24 +1111,75 @@ function App() {
         errorMessage = errorData.error || errorMessage;
       } else {
         const errorText = await requestFormRes.text();
-        console.error("Unexpected response body:", errorText);
+        console.error("Frontend: Unexpected response body:", errorText);
       }
 
       throw new Error(errorMessage);
     }
 
       const requestFormData = await requestFormRes.json();
-      const formRequestId = requestFormData.requestId; // Get the ID of the newly created request form
+      // The backend returns the requestId, which should be the same as currentTransactionRef
+      // const formRequestId = requestFormData.requestId; // No longer needed to extract here
+      console.log('Frontend: Request Form submitted successfully, formRequestId:', currentTransactionRef);
+
 
       // 2. Submit Document Requested details (loop through selectedDocuments)
       for (const docName in selectedDocuments) {
+        let attachedFileUrls = []; // Initialize for each document
         const doc = selectedDocuments[docName];
         const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, docName);
         const docInfo = documentDetails[docName]?.[currentProgramType];
         const unitPriceValue = docInfo ? (docInfo.amount === "FREE" ? 0 : docInfo.amount) : 0;
 
+        // Calculate the total amount for this specific document for the database.
+        // This will include the base price (unitPrice * quantity) and the doc stamp
+        // if the document is not a diploma.
+        let documentTotalAmountForDb = unitPriceValue * doc.qty;
+        if (!isDiploma(docName)) {
+            documentTotalAmountForDb += (doc.qty * 30); // Add 30 per quantity for non-diploma documents
+        }
+
+        // ADDED LOG FOR DEBUGGING "Replacement of ID"
+        if (docName === "Replacement of ID") {
+            console.log(`DEBUG: For "Replacement of ID", unitPriceValue: ${unitPriceValue}, qty: ${doc.qty}, isDiploma: ${isDiploma(docName)}, documentTotalAmountForDb: ${documentTotalAmountForDb}`);
+        }
+
+
+        // NEW LOG: Check the documentAttachments state for the current document
+        console.log(`Frontend: Checking documentAttachments for ${docName}:`, documentAttachments[docName]);
+
+        // Check if there are files attached for this specific document type
+        if (documentAttachments[docName]) {
+            console.log(`Frontend: Processing attachments for document: ${docName}`);
+            for (const attachmentType in documentAttachments[docName]) {
+                const fileToUpload = documentAttachments[docName][attachmentType];
+                // NEW LOG: Log the file object itself
+                console.log(`Frontend: File object for ${docName} - ${attachmentType}:`, fileToUpload);
+
+                if (fileToUpload) {
+                    // This will now return the direct web URL
+                    const webUrl = await uploadFile(fileToUpload, docName, attachmentType);
+                    if (webUrl) {
+                        attachedFileUrls.push(webUrl); // Collect the web URL
+                        console.log(`Frontend: Successfully processed attachment for ${docName} (${attachmentType}), URL: ${webUrl}`);
+                    } else {
+                        console.warn(`Frontend: Failed to get web URL for ${docName} (${attachmentType}). Skipping.`);
+                    }
+                } else {
+                    console.log(`Frontend: No file object found for ${docName} - ${attachmentType}. Skipping upload.`);
+                }
+            }
+        }
+
+        console.log(`Frontend: Final attachedFileUrls (web URLs) for ${docName} before sending to DB:`, attachedFileUrls);
+        console.log(`Frontend: JSON.stringify(attachedFileUrls) for ${docName}:`, JSON.stringify(attachedFileUrls));
+
+        // UPDATED: Determine specific subject input and include it
+        const specificSubjectForDoc = (docInfo && docInfo.requiresSubjectInput) ? specificSubjects[docName] : null;
+
+
         const documentRequestedPayload = {
-          formRequestId: transactionRef, // Link to the main request
+          formRequestId: currentTransactionRef, // Use local variable
           studentNumber,
           firstName,
           lastName,
@@ -840,16 +1188,17 @@ function App() {
           ayAdmitted,
           semAdmitted,
           documentType: docName,
-          unitPrice: unitPriceValue,
+          unitPrice: unitPriceValue, // Keep unitPrice as the base price without doc stamp
           quantity: doc.qty,
-          attachmentFile: 'placeholder_attachment_path', // Placeholder, actual file upload needs FormData
-          totalAmount: doc.amount, // Total for this specific document (qty * unitPrice)
-          transactionRef: currentTransactionRef
+          attachmentFile: JSON.stringify(attachedFileUrls), // Store as JSON string of array of web URLs
+          totalAmount: documentTotalAmountForDb, // MODIFIED: This will now include the doc stamp for non-diploma items
+          specificSubject: specificSubjectForDoc // Include specific subject for THIS document
         };
 
-        console.log('Submitting Document Requested Payload:', documentRequestedPayload);
+        console.log('Frontend: Submitting Document Requested Payload:', documentRequestedPayload);
 
-        const docReqRes = await fetch('http://localhost:5000/api/incoming.documentRequested', {
+        // Changed to relative path
+        const docReqRes = await fetch(`${import.meta.env.VITE_API_URL}/test/api/incoming.documentRequested`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(documentRequestedPayload)
@@ -857,77 +1206,94 @@ function App() {
 
         if (!docReqRes.ok) {
           const errorData = await docReqRes.json();
-          console.error(`Backend Error (Document ${docName}):`, errorData);
+          console.error(`Frontend: Backend Error (Document ${docName}):`, errorData);
           alert(`Failed to save document ${docName}: ${errorData.error || docReqRes.statusText}`);
           // Decide whether to throw or continue based on desired error handling
+        } else {
+            console.log(`Frontend: Document ${docName} saved successfully.`);
         }
       }
 
       // 3. Update Transaction Summary for display
       setTransactionDetails({
-        transactionRef: currentTransactionRef,
+        formRequestId: currentTransactionRef, // Use local variable
         name: `${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`,
         studentNumber,
         college: selectedCollege,
         degreeProgram,
         totalAmount: totalAmount + docStampAmount, // Include doc stamp in final total
         selectedDocuments,
-        docStampCount
+        docStampCount,
+        specificSubjects // Pass specificSubjects to summary
       });
       setCurrentPage(3);
       setPendingSubmit(false);
 
     } catch (err) {
-      console.error('Submission error:', err);
+      console.error('Frontend: Submission error:', err);
       alert(`An error occurred during submission: ${err.message}. Please check console for details.`);
       setPendingSubmit(false);
     }
   };
 
   const handleSubmitOriginalReceiptForm = async () => {
-    // Basic validation for OR form
-    if (!orFirstName || !orLastName || !orMiddleName || !orReferenceNo || !orNumberInput || !uploadReceiptFile) {
-      alert('Please fill in all required fields (marked with *) and upload the receipt before submitting.');
-      return;
-    }
+  if (!orFirstName || !orLastName || !orMiddleName || !orReferenceNo || !orNumberInput || !uploadReceiptFile || !dateOfPayment) {
+    alert('Please fill in all required fields (marked with *) and upload the receipt before submitting.');
+    return;
+  }
 
+  console.log('Frontend: Selected receipt file:', uploadReceiptFile);
+  // ADDED LOG: Check dateOfPayment right before appending to FormData
+  console.log('Frontend: dateOfPayment before FormData append:', dateOfPayment);
+
+  try {
+    const formData = new FormData();
+    formData.append('orNumber', orNumberInput);
+    formData.append('firstName', orFirstName);
+    formData.append('lastName', orLastName);
+    formData.append('middleName', orMiddleName);
+    formData.append('studentNumber', orStudentNumber);
+    formData.append('formRequestId', orReferenceNo); // This is your transaction ref
+
+    // ⬇️ Actual receipt file
+    formData.append('originalReceipt', uploadReceiptFile);
+    // ⬇️ Date of Payment - Ensure this is correctly appended
+    formData.append('dateOfPayment', dateOfPayment); // Use the state variable here
+
+
+    console.log('Frontend: Submitting Receipt Details Payload (FormData):', [...formData.entries()]);
+
+    // Changed to relative path
+    const receiptRes = await fetch(`${import.meta.env.VITE_API_URL}/test/api/incoming.receiptDetailsSubmission`, {
+      method: 'POST',
+      body: formData // Don't set Content-Type manually
+    });
+
+    console.log('Frontend: Receipt submission response status:', receiptRes.status);
+    let receiptResult;
     try {
-      const receiptDetailsPayload = {
-        orNumber: orNumberInput,
-        formRequestId: transactionRef, // Assuming orReferenceNo is intended to be the transactionRef/formRequestId
-        firstName: orFirstName,
-        lastName: orLastName,
-        middleName: orMiddleName,
-        studentNumber: orStudentNumber,
-        transactionRef: orReferenceNo, // Use the reference number as transactionRef
-        originalReceipt: uploadReceiptFile ? uploadReceiptFile.name : 'no_file_uploaded' // Placeholder for file name
-      };
-
-      console.log('Submitting Receipt Details Payload:', receiptDetailsPayload);
-
-      const receiptRes = await fetch('http://localhost:5000/api/incoming.receiptDetailsSubmission', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(receiptDetailsPayload)
-      });
-
-      if (!receiptRes.ok) {
-        const errorData = await receiptRes.json();
-        console.error('Backend Error (Receipt Submission):', errorData);
-        throw new Error(`Failed to save receipt details: ${errorData.error || receiptRes.statusText}`);
-      }
-      console.log('Receipt details submitted successfully!');
-      setCurrentPage(4);
-    } catch (err) {
-      console.error('Receipt submission error:', err);
-      alert(`An error occurred during receipt submission: ${err.message}. Please check console for details.`);
+        receiptResult = await receiptRes.json(); // Try to parse JSON
+        console.log('Frontend: Receipt submission response body:', receiptResult);
+    } catch (jsonError) {
+        const errorText = await receiptRes.text(); // If JSON parsing fails, get raw text
+        console.error(`Frontend: Failed to parse JSON response for receipt submission. Raw response:`, errorText, 'Error:', jsonError);
+        receiptResult = { error: `Invalid JSON response: ${errorText}` };
     }
-  };
 
-  const handleDownloadFile = (fileName) => {
-    console.log(`Simulating download for: ${fileName}`);
-    alert(`Downloading dummy file: ${fileName}`);
-  };
+
+    if (!receiptRes.ok) {
+      console.error('Frontend: Backend Error (Receipt Submission):', receiptResult.error || 'Unknown error');
+      throw new Error(`Failed to save receipt details: ${receiptResult.error || receiptRes.statusText}`);
+    }
+
+    console.log('Frontend: Receipt details submitted successfully!');
+    setCurrentPage(4);
+  } catch (err) {
+    console.error('Frontend: Receipt submission error:', err);
+    alert(`An error occurred during receipt submission: ${err.message}. Please check console for details.`);
+  }
+};
+
 
   return (
     <div className="app-container">
@@ -956,8 +1322,6 @@ I, hereby commit, in the performance of my official duties and functions, to str
 6. Ensure that the personal or privileged information stored, collected, and processed by me will not be misused, altered, maliciously disclosed, or improperly disposed of, by instituting reasonable and appropriate physical and technical measures for the protection of personal information; and
 </p><p className='privacy-content-inside'>
 7. Ensure the confidentiality, privacy and privileged character of information and documents that I may process or which may come into my custody in the course of my official functions, even after employment and/or service engagement with the Pamantasan ng Lungsod ng Maynila (PLM).
-</p><p>
-I fully understand that failure to comply with the above-mentioned obligations may subject me to possible criminal and/or administrative sanctions under the Data Privacy Act of 2012, the Code of Conduct and Ethical Standards for Public Officials and Employees, and/or other pertinent Civil Service rules and regulations. 
 </p>
 <p><strong><br />CONFORME:</strong></p>
 </p>
@@ -1034,12 +1398,22 @@ I fully understand that failure to comply with the above-mentioned obligations m
                     </label>
                     <input className="form-input" type="text" id="or-number-or" value={orNumberInput} onChange={e => setOrNumberInput(e.target.value)} />
                   </div>
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="date-of-payment-or-input">Date of Payment:
+                      <span style={{color: 'red'}}>*</span>
+                    </label>
+                    <input className="form-input" type="date" id="date-of-payment-or-input" value={dateOfPayment} onChange={e => setOrDateofPayment(e.target.value)} />
+                  </div>
                   <div className="form-group form-group-vertical">
                     <label className="form-label" htmlFor="upload-receipt">Upload Scanned Copy of Original Receipt
                       <span style={{color: 'red'}}>*</span>
                     </label>
-                    <input className="form-input" type="file" id="upload-receipt" onChange={e => setUploadReceiptFile(e.target.files[0])} />
-                  </div>
+                     <input
+                          type="file"
+                          accept=".pdf" // adjust based on allowed file types
+                          onChange={(e) => setUploadReceiptFile(e.target.files[0])}
+                        />
+                      </div>
                   <button className="submit-or-button" onClick={handleSubmitOriginalReceiptForm}>Submit</button>
                   <button className="close-or-button" onClick={closeForm}>Close</button>
                 </div>
@@ -1050,10 +1424,40 @@ I fully understand that failure to comply with the above-mentioned obligations m
               <div className="request-form-header">
                 <h3 className="request-form-title">Confirmation</h3>
               </div>
-              <div className="request-form-content transaction-summary-container">
-                <h4 className="form-section-title">Your request will be processed.</h4>
-                <p className="transaction-message">Please wait for 10-15 days for claiming.</p>
-                <p className='message-below'>For more inquiries please contact landline of Office of the University Registrar at 01234567</p>
+              <div className="request-form-content transaction-summary-container1">
+                <h4 className="form-section-title1">SUCCESSFULLY SUBMITTED!</h4>
+                <p className="transaction-message01">We have received your application and it is now in queue for processing. Your request will be processed within 10–15 working days.
+<br />Please wait for a notification before proceeding to claim your documents.</p>
+                <p className='message-below01'>What Happens Next?</p>
+                <div className='message-below02'>
+  <p>Here’s what to expect:</p>
+  <ul className='steps-list'>
+    <li>
+      <span className='label'>1. <strong>Processing</strong></span>
+      <span className='desc'>Our staff will verify and process your request.</span>
+    </li>
+    <li>
+      <span className='label'>2. <strong>Notification</strong></span>
+      <span className='desc'>You will receive an email or SMS once your request is ready.</span>
+    </li>
+    <li>
+      <span className='label'>3. <strong>Claiming</strong></span>
+      <span className='desc'>Follow the instructions in the notification to claim your document(s).</span>
+    </li>
+  </ul>
+</div>
+<div className="registrar-contact-info">
+  <hr />
+  <div className="contact-message">
+    <p><strong>For More Information or Inquiries</strong></p>
+    <p>Please contact the Office of the University Registrar.</p>
+    <p>📞 Phone: <a href="tel:+63285284574">+(632) 85284574</a></p>
+    <p>📧 Email: <a href="mailto:registrar@plm.edu.ph">registrar@plm.edu.ph</a></p>
+    <p>🌐 Website: <a href="https://www.university.edu/registrar" target="_blank" rel="noopener noreferrer">www.university.edu/registrar</a></p>
+    </div>
+  <hr />
+</div>
+
                 <button className="close-form-button1" onClick={closeForm}>Close</button>
               </div>
             </div>
@@ -1072,18 +1476,20 @@ I fully understand that failure to comply with the above-mentioned obligations m
                         <label className="form-label" htmlFor="student-number">Student Number</label>
                         <input className="form-input" type="text" id="student-number" placeholder="202100098" value={studentNumber} onChange={(e) => setStudentNumber(e.target.value)} />
                       </div>
-  
+
                       <div className="form-group-triple-inline">
                         <div className="form-group-vertical">
                           <label className="form-label" htmlFor="first-name">First Name
                             <span style={{color: 'red'}}>*</span>
                           </label>
-                          <input className="form-input" type="text" id="first-name" value={firstName} onChange={(e) => setFirstName(e.target.value)} /></div>
+                          <div className="input-with-search">
+                            <input className="form-input" type="text" id="first-name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                          </div>
+                        </div>
                         <div className="form-group-vertical">
                             <label className="form-label" htmlFor="last-name">
     {activeForm === 'graduate' ? 'Maiden Last Name' : 'Last Name'} <span style={{color: 'red'}}>*</span>
   </label>
-                          
                           <input className="form-input" type="text" id="last-name" value={lastName} onChange={(e) => setLastName(e.target.value)}   />
                         </div>
                         <div className="form-group-vertical">
@@ -1093,6 +1499,36 @@ I fully understand that failure to comply with the above-mentioned obligations m
                           <input className="form-input" type="text" id="middle-name" value={middleName} onChange={(e) => setMiddleName(e.target.value)}  />
                         </div>
                       </div>
+
+                      {/* NEW: Birthdate field, always present */}
+                      <div className="form-group-vertical">
+                        <label className="form-label" htmlFor="birth-date">Date of Birth:
+                          <span style={{color: 'red'}}>*</span>
+                        </label>
+                        <div className="input-with-search">
+                          <input
+                            className="form-input birth-date-input"
+                            type="date"
+                            id="birth-date"
+                            value={birthDate || ''}
+                            onChange={(e) => setBirthDate(e.target.value)}
+                          />
+                          {/* Search icon and button only for undergraduate */}
+                          {activeForm === 'undergraduate' && (
+                            <button
+                              type="button"
+                              className="search-button"
+                              onClick={performAutofillSearch} // Call the autofill function on click
+                              title="Search Student"
+                            >
+                              <SearchIcon />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      {studentSearchMessage && <p className="search-message">{studentSearchMessage}</p>}
+
+
                       <div className="form-group-double-inline">
                         <div className="form-group-vertical">
                           <label className="form-label" htmlFor="college">College
@@ -1133,44 +1569,15 @@ I fully understand that failure to comply with the above-mentioned obligations m
                         <div className="form-group-vertical">
                           <label className="form-label" htmlFor="graduation-date">If graduated, date of graduation:
                             <span style={{color: 'red'}}>*</span>
-
                           </label>
-                          <div className="date-input-container">
-                            <input
-                              className="form-input date-input"
-                              type="text"
-                              id="graduation-date"
-                              placeholder="Choose Date"
-                              readOnly
-                              value={graduationDate ? graduationDate.toLocaleDateString() : ''}
-                              onClick={handleDateInputClick}
-                            />
-                            <button className="date-picker-button" onClick={handleDateInputClick}>
-                              <svg className="calendar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path></svg>
-                            </button>
-                            {graduationDate && (
-                              <button className="clear-date-button" onClick={handleClearDate}>
-                                <svg className="clear-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
-                            </button>
-                            )}
-                          </div>
-                          {showDatePicker && (
-                            <DatePicker
-                              setShowDatePicker={setShowDatePicker}
-                              selectedDate={graduationDate}
-                              handleDateSelect={handleDateSelect}
-                              currentMonth={currentMonth}
-                              setCurrentMonth={setCurrentMonth}
-                              currentYear={currentYear}
-                              setCurrentYear={setCurrentYear}
-                              goToPreviousMonth={goToPreviousMonth}
-                              goToNextMonth={goToNextMonth}
-                              generateDaysInMonth={generateDaysInMonth}
-                              monthNames={monthNames}
-                              weekDays={weekDays}
-                              daysInCalendar={daysInCalendar}
-                            />
-                          )}
+                          {/* Changed to type="date" and removed custom date picker logic */}
+                          <input
+                            className="form-input graduation-date-input"
+                            type="date"
+                            id="graduation-date"
+                            value={graduationDate || ''}
+                            onChange={(e) => setGraduationDate(e.target.value)}
+                          />
                         </div>
                       )}
 
@@ -1281,6 +1688,10 @@ I fully understand that failure to comply with the above-mentioned obligations m
                           <span className="info-label">Name:</span>
                           <span className="info-value">{`${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`}</span>
                         </div>
+                         <div className="info-item">
+                                  <span className="info-label">Birth Date:</span> {/* Display Birth Date */}
+                                  <span className="info-value">{birthDate || 'N/A'}</span>
+                                </div>
                         <div className="info-item">
                           <span className="info-label">Degree Program/Course:</span>
                           <span className="info-value">{degreeProgram}</span>
@@ -1300,32 +1711,53 @@ I fully understand that failure to comply with the above-mentioned obligations m
                           <div className="document-qty-header">Qty</div>
                           <div className="document-amount-header">Amount</div>
                         </div>
-                        {(activeForm === 'undergraduate' ? undergraduateDocuments : graduateAlumniDocuments).map((doc, index) => (
-                          <div key={index} className="documents-table-row">
-                            <label className="document-name-label">
-                              <input
-                                type="checkbox"
-                                className="form-checkbox"
-                                checked={!!selectedDocuments[doc]}
-                                onChange={(e) => handleDocumentCheckboxChange(doc, e.target.checked)}
-                              />
-                              {doc}
-                            </label>
-                            <input
-                              type="number"
-                              className="document-qty-input"
-                              value={selectedDocuments[doc]?.qty || ''}
-                              onChange={(e) => handleQuantityChange(doc, e.target.value)}
-                              disabled={!selectedDocuments[doc]}
-                              min="0"
-                              max="6" 
-                            />
-                            <span className="document-amount-display">
-                              {selectedDocuments[doc] ? `P${selectedDocuments[doc].amount.toFixed(2)}` : 'P0.00'}
-                            </span>
-                          </div>
+                        {(activeForm === 'undergraduate' ? undergraduateDocuments : graduateAlumniDocuments).map((doc, index) => {
+                          const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, doc);
+                          const docInfo = documentDetails[doc]?.[currentProgramType];
+                          const requiresSubjectInput = docInfo && docInfo.requiresSubjectInput;
 
-                        ))}
+                          return (
+                            <div key={index} className="documents-table-row">
+                              <label className="document-name-label">
+                                <input
+                                  type="checkbox"
+                                  className="form-checkbox"
+                                  checked={!!selectedDocuments[doc]}
+                                  onChange={(e) => handleDocumentCheckboxChange(doc, e.target.checked)}
+                                />
+                                {doc}
+                              </label>
+                              <input
+                                type="number"
+                                className="document-qty-input"
+                                value={selectedDocuments[doc]?.qty || ''}
+                                onChange={(e) => handleQuantityChange(doc, e.target.value)}
+                                disabled={!selectedDocuments[doc]}
+                                min="0"
+                                max="6"
+                              />
+
+                              <span className="document-amount-display">
+                                {selectedDocuments[doc] ? `P${selectedDocuments[doc].amount.toFixed(2)}` : 'P0.00'}
+                              </span>
+                              {requiresSubjectInput && selectedDocuments[doc] && (
+                                <div className="specific-subject-input-container">
+                                  <input
+                                    type="text"
+                                    placeholder="Specify Subject"
+                                    className={`form-input specific-subject-input ${specificSubjectErrors[doc] ? 'input-error' : ''}`}
+                                    value={specificSubjects[doc] || ''} // Use specificSubjects[doc]
+                                    onChange={(e) => setSpecificSubjects(prev => ({ ...prev, [doc]: e.target.value }))} // Update specificSubjects[doc]
+                                    required={requiresSubjectInput}
+                                  />
+                                  {specificSubjectErrors[doc] && ( // Use specificSubjectErrors[doc]
+                                    <span className="error-message-inline">Please fill out this field</span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
 
 {docStampCount > 0 && (
   <div className="documents-table-row">
@@ -1358,13 +1790,12 @@ I fully understand that failure to comply with the above-mentioned obligations m
                             const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, docName);
                             const programSpecificDetails = docInfo?.[currentProgramType];
 
-                            
+
                             if (!programSpecificDetails) {
-                              return null; 
+                              return null;
                             }
-                            
-                        
-                            
+
+
 
                             return (
                               <div key={docName} className="document-detail-item">
@@ -1414,10 +1845,27 @@ I fully understand that failure to comply with the above-mentioned obligations m
                                       {programSpecificDetails.attachments.map((attachment, idx) => (
                                         <div key={idx} className="attachment-item-container">
                                           <p className="attachment-item">{attachment}</p>
-                                          <input type="file" className="upload-file-input" />
+                                          <input
+                                            type="file"
+                                            className="upload-file-input"
+                                            onChange={(e) => handleDocumentAttachmentChange(docName, attachment, e.target.files[0])}
+                                          />
+                                          {/* Display selected file name if available */}
+                                          {documentAttachments[docName]?.[attachment] && (
+                                            <span className="file-name-display">
+                                              {documentAttachments[docName][attachment].name}
+                                            </span>
+                                          )}
                                         </div>
                                       ))}
                                     </div>
+                                  </div>
+                                )}
+                                {/* UPDATED: Display specific subject input value in details if applicable */}
+                                {programSpecificDetails.requiresSubjectInput && specificSubjects[docName] && (
+                                  <div className="document-detail-info">
+                                    <span className="info-label">Specific Subject:</span>
+                                    <span className="info-value">{specificSubjects[docName]}</span>
                                   </div>
                                 )}
                               </div>
@@ -1425,7 +1873,7 @@ I fully understand that failure to comply with the above-mentioned obligations m
                           })}
                         </div>
                       )}
-                      
+
                       </div>
 
                       <button className="submit-form-button" onClick={handleSubmitRequest}>Submit</button>
@@ -1435,7 +1883,7 @@ I fully understand that failure to comply with the above-mentioned obligations m
                   )}
 
                   {currentPage === 3 && transactionDetails && (
-                    
+
                     <div className="transaction-summary-container">
                       <h4 className="form-section-title">Request Submitted!</h4>
                       <p className="transaction-message">Please proceed to PLM Cashier for payment.</p>
@@ -1443,7 +1891,7 @@ I fully understand that failure to comply with the above-mentioned obligations m
                       <div className="summary-info-block">
                         <div className="info-item">
                           <span className="info-label">Transaction Reference No.:</span>
-                          <span className="info-value transaction-ref">{transactionDetails.transactionRef}</span>
+                          <span className="info-value transaction-ref">{transactionDetails.formRequestId}</span>
                         </div>
                         <div className="info-item">
                           <span className="info-label">Name:</span>
@@ -1459,7 +1907,7 @@ I fully understand that failure to comply with the above-mentioned obligations m
                         </div>
                         <div className="info-item">
                           <span className="info-label">Degree Program/Course:</span>
-                          <span className="info-value">{transactionDetails.degreeProgram || 'N/A'}</span>
+                          <span className="info-value">{degreeProgram || 'N/A'}</span>
                         </div>
                         <div className="info-item total-amount-summary">
                           <span className="info-label">Total Amount Due:</span>
@@ -1469,11 +1917,18 @@ I fully understand that failure to comply with the above-mentioned obligations m
 
                       <h5 className="summary-documents-title">Requested Documents:</h5>
                       <ul className="summary-documents-list">
-  {Object.keys(transactionDetails.selectedDocuments).map((docName, index) => (
-    <li key={index} className="summary-document-item">
-      {docName} (Qty: {transactionDetails.selectedDocuments[docName].qty}) - P{transactionDetails.selectedDocuments[docName].amount.toFixed(2)}
-    </li>
-  ))}
+  {Object.keys(transactionDetails.selectedDocuments).map((docName, index) => {
+    const currentProgramType = getProgramType(selectedCollege, degreeProgram, activeForm, docName);
+    const docInfo = documentDetails[docName]?.[currentProgramType];
+    const specificSubject = (docInfo && docInfo.requiresSubjectInput) ? transactionDetails.specificSubjects[docName] : null; // Get the specific subject for THIS document
+
+    return (
+      <li key={index} className="summary-document-item">
+        {docName} (Qty: {transactionDetails.selectedDocuments[docName].qty}) - P{transactionDetails.selectedDocuments[docName].amount.toFixed(2)}
+        {specificSubject && ` (Subject: ${specificSubject})`}
+      </li>
+    );
+  })}
   {transactionDetails.docStampCount > 0 && (
     <li className="summary-document-item">
       Doc Stamp (Qty: {transactionDetails.docStampCount}) - P{(transactionDetails.docStampCount * 30).toFixed(2)}
@@ -1483,14 +1938,14 @@ I fully understand that failure to comply with the above-mentioned obligations m
 <p className='transaction-message2'>🔔 Important Note:</p>
                       <p className="message-below3">Please submit a scanned copy of your Original Receipt through the Office of the Registrar website by clicking the “Submit Original Receipt” button on the homepage.</p>
                       <p className='message-below4'>⚠️ Failure to do so will result in your request not being processed.</p>
-                      
+
 
                       <button className="close-form-button" onClick={closeForm}>Close</button>
                     </div>
                   )}
                 </div>
               </div>
-              
+
             </>
           )}
         </section>
