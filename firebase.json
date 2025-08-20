@@ -22,7 +22,7 @@
     }
   ],
   "hosting": {
-    "public": "temp\\my-mobile-app\\dist",
+    "public": "our_frontend\\temp\\my-mobile-app\\dist",
     "ignore": [
       "firebase.json",
       "**/.*",
