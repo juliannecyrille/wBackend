@@ -16,7 +16,7 @@ function App() {
 
   useEffect(() => {
     // Changed to relative path
-    fetch(`${import.meta.env.VITE_API_URL}/server/test`)
+    fetch(`https://wbackend-l7y3.onrender.com/server/test`)
       .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -802,7 +802,7 @@ function App() {
 
       try {
           // Changed to relative path
-          const response = await fetch(`${import.meta.env.VITE_API_URL}/test/api/incoming.uploadDocumentAttachment`, {
+          const response = await fetch(`https://wbackend-l7y3.onrender.com/test/api/incoming.uploadDocumentAttachment`, {
               method: 'POST',
               body: formData,
           });
@@ -943,7 +943,7 @@ function App() {
       console.log('Frontend: Sending search query params:', queryParams); // ADDED LOG: Log query params
 
       // Changed to relative path
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/test/api/studentCredentials/search?${queryParams}`); // Corrected path
+      const response = await fetch(`https://wbackend-l7y3.onrender.com/test/api/studentCredentials/search?${queryParams}`); // Corrected path
 
       const contentType = response.headers.get("content-type");
 
@@ -1096,7 +1096,7 @@ function App() {
       console.log('Frontend: Submitting Request Form Payload:', requestFormPayload);
 
       // Changed to relative path
-      const requestFormRes = await fetch(`${import.meta.env.VITE_API_URL}/test/api/incoming.requestForm`, {
+      const requestFormRes = await fetch(`https://wbackend-l7y3.onrender.com/api/incoming.requestForm`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestFormPayload)
@@ -1198,7 +1198,7 @@ function App() {
         console.log('Frontend: Submitting Document Requested Payload:', documentRequestedPayload);
 
         // Changed to relative path
-        const docReqRes = await fetch(`${import.meta.env.VITE_API_URL}/test/api/incoming.documentRequested`, {
+        const docReqRes = await fetch(`https://wbackend-l7y3.onrender.com/test/api/incoming.documentRequested`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(documentRequestedPayload)
@@ -1264,7 +1264,7 @@ function App() {
     console.log('Frontend: Submitting Receipt Details Payload (FormData):', [...formData.entries()]);
 
     // Changed to relative path
-    const receiptRes = await fetch(`${import.meta.env.VITE_API_URL}/test/api/incoming.receiptDetailsSubmission`, {
+    const receiptRes = await fetch(`https://wbackend-l7y3.onrender.com/test/api/incoming.receiptDetailsSubmission`, {
       method: 'POST',
       body: formData // Don't set Content-Type manually
     });
