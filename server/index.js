@@ -85,15 +85,26 @@ app.use(cors({
 app.use(express.json()); // For parsing JSON request bodies (for non-file uploads)
 
 // Nodemailer Transporter Configuration
+// const transporter = nodemailer.createTransport({
+  // host: 'gmail',
+  // port: parseInt(process.env.EMAIL_PORT, 10),
+  // secure: process.env.EMAIL_SECURE === 'true', // Converts "false" string to boolean false
+  // auth: {
+    // user: process.env.EMAIL_USER,
+    // pass: process.env.EMAIL_PASS
+  // }
+// });
+
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: parseInt(process.env.EMAIL_PORT, 10),
-  secure: process.env.EMAIL_SECURE === 'true', // Converts "false" string to boolean false
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   }
 });
+
 
 // Verify transporter configuration (optional, but good for debugging)
 transporter.verify(function (error, success) {
